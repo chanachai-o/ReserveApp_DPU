@@ -1,0 +1,173 @@
+<app-page-header [title]="'อนุมัติ-จัดการการเบิกอุปกรณ์'" [activeTitle]="'Invoice'" [title1]="'อนุมัติ-จัดการการเบิกอุปกรณ์'"></app-page-header>
+
+  <div class="xl:col-span-9 col-span-12">
+      <div class="grid grid-cols-12 gap-x-6">
+          <div class="xl:col-span-12 col-span-12">
+              <div class="box">
+                  <div class="box-body !p-0">
+                      <div class="md:flex px-4 py-6 items-center justify-between">
+                        <div class="mt-2 md:mt-0">
+                          <a href="javascript:void(0);" class="hs-dropdown-toggle py-2  px-3 ti-btn bg-primary text-white !font-medium w-full !mb-0" data-hs-overlay="#todo-compose"><i class="ri-add-circle-line !text-[1rem]"></i>Create New Task
+                          </a>
+                        </div>
+                          <div class="mt-2 md:mt-0">
+                              <nav class="-mb-0.5 sm:flex sm:space-x-6 rtl:space-x-reverse flex-wrap">
+                                  <!-- <a class="w-full flex sm:w-auto active hs-tab-active:font-semibold  hs-tab-active:text-primary hs-tab-active:bg-primary/10 rounded-md py-2 px-3 text-sm" href="javascript:void(0);" id="alltasks-item" data-hs-tab="#all-tasks" aria-controls="all-tasks">
+                                      All Tasks
+                                  </a> -->
+                                  <a class="w-full flex sm:w-auto hs-tab-active:font-semibold  hs-tab-active:text-primary hs-tab-active:bg-primary/10 rounded-md  py-2 px-3  text-sm" href="javascript:void(0);"  id="pending-item" data-hs-tab="#pending" aria-controls="pending">
+                                    รออนุมัติการเบิก
+                                  </a>
+                                  <a class="w-full flex sm:w-auto hs-tab-active:font-semibold  hs-tab-active:text-primary hs-tab-active:bg-primary/10 rounded-md  py-2 px-3  text-sm" href="javascript:void(0);" id="in-progress-item" data-hs-tab="#in-progress" aria-controls="in-progress">
+                                    รออนุมัติการคืน
+                                  </a>
+                                  <a class="w-full flex sm:w-auto hs-tab-active:font-semibold  hs-tab-active:text-primary hs-tab-active:bg-primary/10 rounded-md  py-2 px-3 text-sm" href="javascript:void(0);" id="completed-item" data-hs-tab="#completed" aria-controls="completed">
+                                      เสร็จสิ้น
+                                  </a>
+                                </nav>
+
+                          </div>
+                          <div class="mt-2 md:mt-0">
+                            <div class="input-group">
+                              <input type="text" class="form-control w-full !rounded-md !bg-light border-0 !rounded-e-none" placeholder="Search Task Here" aria-describedby="button-addon2">
+                              <button type="button" aria-label="button" class="ti-btn ti-btn-light !rounded-s-none !mb-0" id="button-addon2"><i class="ri-search-line text-[#8c9097] dark:text-white/50"></i></button>
+                          </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="xl:col-span-12 col-span-12">
+          <div class="tab-content task-tabs-container">
+              <div class="tab-pane show active !p-0" id="all-tasks" aria-labelledby="alltasks-item"
+                  role="tabpanel">
+                  <div class="grid grid-cols-12 gap-x-6" id="tasks-container">
+                      <div class="xl:col-span-4 col-span-12 task-card">
+                          <div class="box task-pending-card">
+                              <div class="box-body">
+                                  <div class="flex justify-between flex-wrap gap-2">
+                                      <div>
+                                          <p class="font-semibold mb-4 flex items-center"><a aria-label="anchor" href="javascript:void(0);"><i class="text-[1rem] opacity-[0.5] me-1 text-[#8c9097] dark:text-white/50"></i></a>New Project Blueprint</p>
+                                          <p class="mb-4">ผู้ยื่นขออนุมัติ : <span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">นาย สิง ขวดใหญ่</span></p>
+                                          <p class="mb-4">วันที่ยื่น : <span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">20,Nov 2022</span></p>
+                                          <p class="mb-4">ผู้อนุมัติ :<span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">นาย สิง ขวดเล็ก</span></p>
+                                          <p class="mb-4">สถานะ : <span class="bg-primary/10 text-primary ">รออนุมัติการเบิก</span></p>
+                                      </div>
+                                      <div>
+                                          <div class="btn-list">
+                                            <button type="button" aria-label="button" class="ti-btn ti-btn-sm ti-btn-danger me-0"><i class="ri-delete-bin-line"></i></button>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                                </div>
+              </div>
+              <div class="tab-pane !p-0 hidden" id="pending" aria-labelledby="pending-item"
+                  role="tabpanel">
+                  <div class="grid grid-cols-12 gap-6">
+                      <div class="xl:col-span-4 col-span-12">
+                          <div class="box task-pending-card">
+                              <div class="box-body">
+                                  <div class="flex justify-between flex-wrap gap-2">
+                                    <div>
+                                      <p class="font-semibold mb-4 flex items-center"><a aria-label="anchor" href="javascript:void(0);"><i class="text-[1rem] opacity-[0.5] me-1 text-[#8c9097] dark:text-white/50"></i></a>New Project Blueprint</p>
+                                      <p class="mb-4">ผู้ยื่นขออนุมัติ : <span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">นาย สิง ขวดใหญ่</span></p>
+                                      <p class="mb-4">วันที่ยื่น : <span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">20,Nov 2022</span></p>
+                                      <p class="mb-4">ผู้อนุมัติ :<span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">นาย สิง ขวดเล็ก</span></p>
+                                      <p class="mb-4">สถานะ : <span class="bg-primary/10 text-primary">รออนุมัติการเบิก</span></p>
+                                  </div>
+                                  <div>
+                                      <div class="btn-list">
+                                        <button type="button" aria-label="button" class="ti-btn ti-btn-sm ti-btn-danger me-0"><i class="ri-delete-bin-line"></i></button>
+                                      </div>
+                                  </div>
+                              </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="xl:col-span-4 col-span-12">
+                        <div class="box task-pending-card">
+                            <div class="box-body">
+                                <div class="flex justify-between flex-wrap gap-2">
+                                  <div>
+                                    <p class="font-semibold mb-4 flex items-center"><a aria-label="anchor" href="javascript:void(0);"><i class="text-[1rem] opacity-[0.5] me-1 text-[#8c9097] dark:text-white/50"></i></a>New Project Blueprint</p>
+                                    <p class="mb-4">ผู้ยื่นขออนุมัติ : <span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">นาย สิง ขวดใหญ่1</span></p>
+                                    <p class="mb-4">วันที่ยื่น : <span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">20,Nov 2022</span></p>
+                                    <p class="mb-4">ผู้อนุมัติ :<span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">นาย สิง ขวดเล็ก2</span></p>
+                                    <p class="mb-4">สถานะ : <span class="bg-primary/10 text-primary">รออนุมัติการเบิก</span></p>
+                                </div>
+                                <div>
+                                    <div class="btn-list">
+                                      <button type="button" aria-label="button" class="ti-btn ti-btn-sm ti-btn-danger me-0"><i class="ri-delete-bin-line"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="tab-pane !p-0 hidden" id="in-progress" aria-labelledby="inprocess-item"
+                  role="tabpanel">
+                  <div class="grid grid-cols-12 gap-x-6">
+                    <div class="xl:col-span-4 col-span-12">
+                      <div class="box task-pending-card">
+                          <div class="box-body">
+                              <div class="flex justify-between flex-wrap gap-2">
+                                <div>
+                                  <p class="font-semibold mb-4 flex items-center"><a aria-label="anchor" href="javascript:void(0);"><i class="text-[1rem] opacity-[0.5] me-1 text-[#8c9097] dark:text-white/50"></i></a>New Project Blueprint</p>
+                                  <p class="mb-4">ผู้ยื่นขออนุมัติ : <span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">นาย สิง ขวดใหญ่</span></p>
+                                  <p class="mb-4">วันที่ยื่น : <span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">20,Nov 2022</span></p>
+                                  <p class="mb-4">ผู้อนุมัติ :<span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">นาย สิง ขวดเล็ก</span></p>
+                                  <p class="mb-4">สถานะ : <span class="bg-warning/10 text-warning">รออนุมัติการคืน</span></p>
+                              </div>
+                              <div>
+                                  <div class="btn-list">
+                                    <button type="button" aria-label="button" class="ti-btn ti-btn-sm ti-btn-danger me-0"><i class="ri-delete-bin-line"></i></button>
+                                  </div>
+                              </div>
+                          </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="tab-pane !p-0 hidden" id="completed" aria-labelledby="completed-item"
+                  role="tabpanel">
+                  <div class="grid grid-cols-12 gap-x-6">
+                    <div class="xl:col-span-4 col-span-12">
+                      <div class="box task-pending-card">
+                          <div class="box-body">
+                              <div class="flex justify-between flex-wrap gap-2">
+                                <div>
+                                  <p class="font-semibold mb-4 flex items-center"><a aria-label="anchor" href="javascript:void(0);"><i class="text-[1rem] opacity-[0.5] me-1 text-[#8c9097] dark:text-white/50"></i></a>New Project Blueprint</p>
+                                  <p class="mb-4">ผู้ยื่นขออนุมัติ : <span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">นาย สิง ขวดใหญ่</span></p>
+                                  <p class="mb-4">วันที่ยื่น : <span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">20,Nov 2022</span></p>
+                                  <p class="mb-4">ผู้อนุมัติ :<span class="text-[0.75rem] mb-1 text-[#8c9097] dark:text-white/50">นาย สิง ขวดเล็ก</span></p>
+                                  <p class="mb-4">สถานะ : <span class="bg-success/10 text-success">อนุมัติเสร็จสิ้น</span></p>
+                              </div>
+                              <div>
+                                  <div class="btn-list">
+                                    <button type="button" aria-label="button" class="ti-btn ti-btn-sm ti-btn-danger me-0"><i class="ri-delete-bin-line"></i></button>
+                                  </div>
+                              </div>
+                          </div>
+                          </div>
+                      </div>
+                  </div>
+                  </div>
+              </div>
+          </div>
+          </div>
+      </div>
+      <nav aria-label="Page navigation">
+          <ul class="ti-pagination ltr:float-right rtl:float-left mb-4">
+              <li class="page-item disabled"><a class="page-link px-3 py-[0.375rem]" href="javascript:void(0);">Previous</a></li>
+              <li class="page-item"><a class="page-link px-3 py-[0.375rem]" href="javascript:void(0);">1</a></li>
+              <li class="page-item"><a class="page-link px-3 py-[0.375rem]" href="javascript:void(0);">2</a></li>
+              <li class="page-item"><a class="page-link px-3 py-[0.375rem]" href="javascript:void(0);">Next</a></li>
+          </ul>
+      </nav>
+  </div>
+<!--End::row-1 -->

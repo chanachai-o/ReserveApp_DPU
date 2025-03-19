@@ -1,0 +1,94 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { InstallManagementComponent } from './company-management.component';
+import { RouterModule, Routes } from '@angular/router';
+
+export const companyRoutes: Routes = [
+
+  {
+    path: 'company/home/:projectId',
+    loadComponent: () =>
+      import('./home-installer/home-installer.component').then((m) => m.HomeInstallerComponent),
+  },
+  // {
+  //   path: 'company/company-info',
+  //   loadComponent: () =>
+  //     import('./company-info/company-info.component').then((m) => m.CompanyInfoComponent),
+  // },
+  // {
+  //   path: 'company/company-location',
+  //   loadComponent: () =>
+  //     import('./company-location/company-location.component').then((m) => m.CompanyLocationComponent),
+  // },
+  // {
+  //   path: 'company/company-department',
+  //   loadComponent: () =>
+  //     import('../common/employee/department/department.component').then((m) => m.DepartmentComponent),
+  // },
+  // {
+  //   path: 'company/company-position',
+  //   loadComponent: () =>
+  //     import('../common/employee/position/position.component').then((m) => m.PositionComponent),
+  // },
+  // {
+  //   path: 'company/company-emp',
+  //   loadComponent: () =>
+  //     import('./company-emp/company-emp.component').then((m) => m.CompanyEmpComponent),
+  // },
+  // {
+  //   path: 'company/timestamp-log',
+  //   loadComponent: () =>
+  //     import('./timestamp-log/timestamp-log.component').then((m) => m.TimestampLogComponent),
+  // },
+  // {
+  //   path: 'company/timestamp-log/:company_employeeId',
+  //   loadComponent: () =>
+  //     import('./timestamp-log/timestamp-log.component').then((m) => m.TimestampLogComponent),
+  // },
+  // {
+  //   path: 'company/timestamp-face',
+  //   loadComponent: () =>
+  //     import('./enroll-face/enroll-face.component').then((m) => m.EnrollFaceComponent),
+  // },
+  // {
+  //   path: 'company/warning-timestamp-log',
+  //   loadComponent: () =>
+  //     import('./warning-timetamp/warning-timetamp.component').then((m) => m.WarningTimetampComponent),
+  // },
+  {
+    path: 'company/admin-home',
+    loadComponent: () =>
+      import('./admin-project-home/admin-project-home.component').then((m) => m.AdminProjectHomeComponent),
+  },
+  {
+    path: 'company/project-emp',
+    loadComponent: () =>
+      import('./admin-project-emp-manage/admin-project-emp-manage.component').then((m) => m.AdminProjectEmpManageComponent),
+  },
+  {
+    path: 'company/equirement-emp',
+    loadComponent: () =>
+      import('./admin-project-equirement/admin-project-equirement.component').then((m) => m.AdminProjectEquirementComponent),
+  },
+  {
+    path: 'company/admin-borrow',
+    loadComponent: () =>
+      import('./admin-borrow-manage/admin-borrow-manage.component').then((m) => m.AdminBorrowManageComponent),
+  },
+
+
+
+];
+
+
+@NgModule({
+  imports: [
+    CommonModule,
+    RouterModule.forChild(companyRoutes)
+  ],
+  exports: [RouterModule],
+  declarations: [InstallManagementComponent]
+})
+export class CompanyManagementModule {
+  static routes = companyRoutes;
+}

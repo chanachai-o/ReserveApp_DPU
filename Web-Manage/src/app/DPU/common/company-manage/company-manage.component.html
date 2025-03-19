@@ -1,0 +1,232 @@
+<app-page-header [title]="'จัดการโครงการ'" [activeTitle]="'ผู้ดูแลระบบ'" [title1]="'จัดการโครงการ'"></app-page-header>
+
+
+<div class="grid grid-cols-12 gap-6">
+  <div class="xl:col-span-12 col-span-12">
+    <div class="box">
+      <div class="box-header justify-between">
+        <div class="box-title">
+          {{ 'All List' | translate}} <span
+            class="badge bg-light text-default rounded-full ms-1 text-[0.75rem] align-middle">{{itemsList.length}}</span>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a href="javascript:void(0);" class="hs-dropdown-toggle ti-btn ti-btn-primary-full me-2" (click)="new()"
+            data-hs-overlay="#modal-detail"><i class="ri-add-line font-semibold align-middle"></i>{{ 'Create' |
+            translate}}
+          </a>
+
+          <!-- <a href="javascript:void(0);" class="hs-dropdown-toggle ti-btn ti-btn-success-full me-2" *ngIf="someSelected"
+            (click)="adjustSelect(1)"><i class="ri-user-follow-line font-semibold align-middle"></i>{{ 'Active' |
+            translate}}
+          </a> -->
+          <!-- <a href="javascript:void(0);" class="hs-dropdown-toggle ti-btn ti-btn-secondary-full me-2"
+            *ngIf="someSelected" (click)="adjustSelect(0)"><i
+              class="ri-user-unfollow-line font-semibold align-middle"></i>{{ 'Unactive' |
+            translate}}
+          </a> -->
+
+
+          <a href="javascript:void(0);" class="hs-dropdown-toggle ti-btn ti-btn-danger-full me-2" *ngIf="someSelected"
+            (click)="deleteSelect()"><i class="ri-delete-bin-line font-semibold align-middle"></i>{{ 'Delete' |
+            translate}}
+          </a>
+          <div>
+            <input class="form-control form-control" type="text" placeholder="ค้นหาโครงการ"
+              aria-label=".form-control-sm example" [(ngModel)]='searchTerm'>
+          </div>
+          <!-- <div>
+            <input class="form-control form-control" type="text" placeholder="กรองตามโครงการ"
+              aria-label=".form-control-sm example" [(ngModel)]='searchTerm'>
+          </div> -->
+          <!-- <a href="javascript:void(0);" class="ti-btn ti-btn-primary-full !py-1 !px-2" aria-expanded="false">
+            เรียงตาม<i class="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
+          </a>
+          <ul class="hs-dropdown-menu ti-dropdown-menu hidden" role="menu">
+            <li><a class="ti-dropdown-item" href="javascript:void(0);">Newest</a></li>
+            <li><a class="ti-dropdown-item" href="javascript:void(0);">Oldest</a></li>
+          </ul> -->
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+
+<div class="grid grid-cols-12 gap-x-6">
+  @for(item of filterList;track filterList){
+  <div class="xxl:col-span-3 xl:col-span-4 md:col-span-6 col-span-12">
+    <div class="box custom-box">
+      <div class="box-header items-center !justify-start flex-wrap !flex">
+        <div class="me-2">
+          <span class="avatar avatar-rounded p-1 bg-danger/10 text-danger">
+            <img src="{{item.getPicture()}}" alt="">
+          </span>
+        </div>
+        <div class="flex-grow">
+          <a href="javascript:void(0);"
+            class="font-semibold text-[.875rem] block text-truncate project-list-title">{{item.project_name}}</a>
+          <span class="text-[#8c9097] dark:text-white/50 block text-[0.75rem]">{{item.project_code}}</span>
+        </div>
+        <div class="hs-dropdown ti-dropdown">
+          <a aria-label="anchor" href="javascript:void(0);" class="ti-btn ti-btn-sm ti-btn-light !mb-0"
+            aria-expanded="false">
+            <i class="fe fe-more-vertical"></i>
+          </a>
+          <ul class="hs-dropdown-menu ti-dropdown-menu hidden">
+            <li><a class="ti-dropdown-item" routerLink="/company/home/{{item.projectId}}"><i
+                  class="ri-eye-line align-middle me-1 inline-flex"></i>View</a></li>
+            <li><a class="ti-dropdown-item" (click)="view(item)" data-hs-overlay="#modal-detail"><i
+                  class="ri-edit-line align-middle me-1 inline-flex"></i>Edit</a></li>
+            <li><a class="ti-dropdown-item" (click)="delete(item)"><i
+                  class="ri-delete-bin-line me-1 align-middle inline-flex"></i>Delete</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="box-body">
+
+        <div class="font-semibold mb-1">รายละเอียดโครงการ :</div>
+        <p class="text-[#8c9097] dark:text-white/50 mb-3">{{item.project_desc}}</p>
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <div class="font-semibold mb-1">ผู้รับผิดชอบ :</div>
+            <span class="badge bg-success/10 text-success">{{item.responsible}}</span>
+          </div>
+          <div class="text-end">
+            <div class="font-semibold mb-1">ติดต่อ :</div>
+            <span class="badge bg-success/10 text-success">{{item.contact}}</span>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="box-footer flex items-center justify-between">
+        <div>
+          <span class="text-[#8c9097] dark:text-white/50 text-[0.6875rem] block">ผู้รับผิดชอบ :</span>
+          <span class="font-semibold block">{{item.responsible}}</span>
+        </div>
+        <div class="text-end">
+          <span class="text-[#8c9097] dark:text-white/50 text-[0.6875rem] block">การติดต่อ :</span>
+          <span class="font-semibold block">{{item.contact}}</span>
+        </div>
+      </div> -->
+    </div>
+  </div>
+  }
+</div>
+<nav aria-label="Page navigation">
+  <ul class="ti-pagination ltr:float-right rtl:float-left mb-4">
+    <li class="page-item disabled"><a class="page-link px-3 py-[0.375rem]" href="javascript:void(0);">Previous</a></li>
+    <li class="page-item"><a class="page-link px-3 py-[0.375rem]" href="javascript:void(0);">1</a></li>
+    <li class="page-item"><a class="page-link px-3 py-[0.375rem]" href="javascript:void(0);">2</a></li>
+    <li class="page-item"><a class="page-link px-3 py-[0.375rem]" href="javascript:void(0);">Next</a></li>
+  </ul>
+</nav>
+
+
+
+<!-- Start:: Create Contact -->
+<div id="modal-detail" class="hs-overlay hidden ti-modal [--overlay-backdrop:static]">
+  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
+    <div class="ti-modal-content">
+      <div class="ti-modal-header">
+        <h6 class="modal-title text-[1rem] font-semibold text-defaulttextcolor" id="mail-ComposeLabel">{{
+          'รายละเอียดโครงการ' }}
+        </h6>
+        <button type="button" class="hs-dropdown-toggle !text-[1rem] !font-semibold !text-defaulttextcolor"
+          data-hs-overlay="#modal-detail" #closeModal>
+          <span class="sr-only">{{'Close' | translate}}</span>
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+      <div class="ti-modal-body px-4">
+        <div class="grid grid-cols-12 gap-4">
+
+          <div class="xl:col-span-12 col-span-12">
+            <div class="mb-0 text-center">
+              <span class="avatar avatar-xxl avatar-rounded">
+                <img [src]="selectModel.getPicture()" alt="" id="profile-img">
+                <span class="badge rounded-full bg-primary avatar-badge">
+                  <input ng2FileSelect [uploader]="uploaderProfile" type="file" name="photo"
+                    class="absolute w-full h-full opacity-[0]" id="profile-change">
+                  <i class="fe fe-camera text-[.625rem]"></i>
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <div class="xl:col-span-12 col-span-12">
+            <label for="deal-title" class="form-label">{{'ชื่อโครงการ' | translate}}</label>
+            <input type="text" class="form-control" id="deal-title" placeholder=""
+              [(ngModel)]="selectModel.project_name">
+            <div class="text-danger" *ngIf="!selectModel.project_name">
+              {{'Please fill in information' | translate}}
+            </div>
+          </div>
+
+          <div class="xl:col-span-12 col-span-12">
+            <label for="deal-title" class="form-label">{{'รหัสโครงการ' | translate}}</label>
+            <input type="text" class="form-control" id="deal-title" placeholder=""
+              [(ngModel)]="selectModel.project_code">
+            <div class="text-danger" *ngIf="!selectModel.project_code">
+              {{'Please fill in information' | translate}}
+            </div>
+          </div>
+
+          <div class="xl:col-span-12 col-span-12">
+            <label for="deal-title" class="form-label">{{'ผู้รับผิดชอบ' | translate}}</label>
+            <input type="text" class="form-control" id="deal-title" placeholder=""
+              [(ngModel)]="selectModel.responsible">
+          </div>
+
+          <div class="xl:col-span-12 col-span-12">
+            <label for="deal-title" class="form-label">{{'การติดต่อ' | translate}}</label>
+            <input type="text" class="form-control" id="deal-title" placeholder="" [(ngModel)]="selectModel.contact">
+          </div>
+
+          <div class="xl:col-span-12 col-span-12">
+            <label for="deal-title" class="form-label">{{'รายละเอียดโครงการ' | translate}}</label>
+            <textarea class="form-control" id="job-description" [(ngModel)]="selectModel.project_desc"
+              rows="4"></textarea>
+            <!-- <input type="text" class="form-control" id="deal-title" placeholder=""
+              [(ngModel)]="selectModel.project_desc">
+            <div class="text-danger" *ngIf="!selectModel.project_desc">
+              {{'Please fill in information' | translate}}
+            </div> -->
+          </div>
+
+          <!-- <div class="xl:col-span-12 col-span-12">
+            <label for="deal-title" class="form-label">{{'ที่อยู่' | translate}}</label>
+            <textarea type="text" class="form-control" id="deal-title" placeholder=""
+              [(ngModel)]="selectModel.address"></textarea>
+          </div> -->
+
+          <!-- <div class="xl:col-span-12 col-span-12">
+            <label for="deal-title" class="form-label">{{'เบอร๋ติดต่อ' | translate}}</label>
+            <input type="text" class="form-control" id="deal-title" placeholder="" [(ngModel)]="selectModel.contact">
+          </div> -->
+
+
+
+          <!-- <div class="xl:col-span-12 col-span-12">
+            <label class="form-label">{{'Status' | translate}}</label>
+            <ng-select name="choices-multiple-remove-button2" id="choices-multiple-remove-button2" placeholder=""
+              [(ngModel)]="selectModel.status">
+              <ng-option [value]="0">{{'Pending' | translate}}</ng-option>
+              <ng-option [value]="1" selected>{{'Public' | translate}}</ng-option>
+            </ng-select>
+          </div> -->
+
+        </div>
+      </div>
+      <div class="ti-modal-footer">
+        <button type="button" class="hs-dropdown-toggle ti-btn  ti-btn-light align-middle"
+          data-hs-overlay="#modal-detail">
+          {{'Cancel' | translate}}
+        </button>
+        <button type="button" (click)="save()" class="ti-btn bg-primary text-white !font-medium">{{'Save' |
+          translate}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End:: Create Contact -->

@@ -1,0 +1,339 @@
+<app-page-header [title]="'จัดการอุปกรณ์'" [activeTitle]="'ผู้ดูแลระบบ'" [title1]="'จัดการอุปกรณ์'"></app-page-header>
+
+<div class="grid grid-cols-12 gap-x-6">
+  <div class="xl:col-span-12 col-span-12">
+    <div class="box mt-6">
+      <div class="box-header justify-between">
+        <div class="box-title">
+          {{ 'All List' | translate}} <span
+            class="badge bg-light text-default rounded-full ms-1 text-[0.75rem] align-middle">{{itemsList.length}}</span>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a href="javascript:void(0);" class="hs-dropdown-toggle ti-btn ti-btn-primary-full me-2"
+            data-hs-overlay="#modal-detail"><i class="ri-add-line font-semibold align-middle"></i>{{ 'เพิ่ม' |
+            translate}}
+          </a>
+          <div>
+            <input [(ngModel)]='searchTerm' class="form-control form-control" type="text"
+              placeholder="{{ 'ค้นหาอุปกรณ์' | translate}}" aria-label=".form-control-sm example">
+          </div>
+          <!-- <a href="javascript:void(0);" class="ti-btn ti-btn-primary-full !py-1 !px-2" aria-expanded="false">
+            เรียงตาม<i class="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
+          </a>
+          <ul class="hs-dropdown-menu ti-dropdown-menu hidden" role="menu">
+            <li><a class="ti-dropdown-item" href="javascript:void(0);">Posted Date</a></li>
+            <li><a class="ti-dropdown-item" href="javascript:void(0);">Status</a></li>
+            <li><a class="ti-dropdown-item" href="javascript:void(0);">Department</a></li>
+            <li><a class="ti-dropdown-item" href="javascript:void(0);">Job Type</a></li>
+            <li><a class="ti-dropdown-item" href="javascript:void(0);">Newest</a></li>
+            <li><a class="ti-dropdown-item" href="javascript:void(0);">Oldest</a></li>
+          </ul> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  @for(item of filterList;track filterList){
+  <div class="xxl:col-span-2 xl:col-span-3 lg:col-span-4 md:col-span-4 sm:col-span-6 col-span-12">
+    <div class="box custom-box">
+      <img [src]="item.equipment.getPicture()" class="!rounded-t-md" alt="..."
+        style="width: 100%;height: 200px;object-fit: cover;">
+      <div class="flex items-center justify-between nft-like-section w-full px-4">
+      </div>
+      <div class="box-body">
+
+        <div class="flex items-center mb-4">
+          <div>
+            <p class="text-[.9375rem] font-semibold mb-2"><a
+                href="javascript:void(0);">{{item.equipment.equipmentName}}</a></p>
+            <p class="text-[0.75rem] text-[#8c9097] dark:text-white/50 mb-0">S/N# {{item.equipment.serialNumber}}</p>
+            <p class="text-[0.75rem] text-[#8c9097] dark:text-white/50 mb-0">STOCK# {{item.peId}}</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap align-itesm-center justify-between">
+          <div class="font-semibold mb-1">รายละเอียด :</div>
+          <p class="text-[#8c9097] dark:text-white/50 mb-3">{{item.equipment.description}}</p>
+          <!-- <div class="flex flex-wrap items-center leading-none">
+            <span class="avatar avatar-xs me-1">
+              <img src="./assets/images/crypto-currencies/square-color/Ethereum.svg" alt="">
+            </span>0.24ETH
+          </div> -->
+        </div>
+        <div class="flex flex-wrap align-itesm-center justify-between mb-2">
+          <div class="font-semibold mb-1">จำนวน :</div>
+          <h3 class="text-[#8c9097] dark:text-white/50">{{item.quantity_in_project}}</h3>
+        </div>
+        <!-- <div class="grid">
+          <button type="button" class="ti-btn ti-btn-primary btn-wave waves-effect waves-light">Place Bid</button>
+        </div> -->
+      </div>
+      <div class="box-footer border-block-start-dashed dark:border-defaultborder/10 text-center">
+        <div class="btn-list">
+          <div class="btn-list">
+            <button data-hs-overlay="#modal-stock" type="button" aria-label="button" (click)="viewStock(item);"
+              class="ti-btn ti-btn-sm ti-btn-warning me-[0.375rem]">
+              <i class="ri-store-line"></i>
+            </button>
+            <button data-hs-overlay="#modal-stock-his" (click)="viewHisStock(item);" type="button" aria-label="button"
+              class="ti-btn ti-btn-sm ti-btn-danger me-0"><i class="ri-time-line"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>
+
+
+
+<!-- Start:: New Deal -->
+<div id="modal-detail" class="hs-overlay hidden ti-modal">
+  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out lg:!max-w-4xl lg:w-full m-3 lg:!mx-auto">
+    <div class="ti-modal-content">
+      <div class="ti-modal-header">
+        <h6 class="modal-title text-[1rem] font-semibold text-defaulttextcolor" id="mail-ComposeLabel">นำเข้าอุปกรณ์
+        </h6>
+        <button type="button" class="hs-dropdown-toggle !text-[1rem] !font-semibold !text-defaulttextcolor"
+          data-hs-overlay="#modal-detail">
+          <span class="sr-only">Close</span>
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+      <div class="ti-modal-body px-4">
+        <div class="grid grid-cols-12 gap-x-6">
+          <!-- <div class="xl:col-span-12 col-span-12">
+            <div class="box mt-6">
+              <div class="box-header justify-between">
+                <div class="box-title">
+                  {{ 'All List' | translate}} <span
+                    class="badge bg-light text-default rounded-full ms-1 text-[0.75rem] align-middle">{{itemsList.length}}</span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <div>
+                    <input [(ngModel)]='searchTerm' class="form-control form-control" type="text"
+                      placeholder="{{ 'ค้นหาอุปกรณ์' | translate}}" aria-label=".form-control-sm example">
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div> -->
+          @for(item of filterListAll;track filterListAll){
+          <div class="xxl:col-span-3 xl:col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6 col-span-12">
+            <div class="box custom-box">
+              <img [src]="item.getPicture()" class="!rounded-t-md" alt="..."
+                style="width: 100%;height: 200px;object-fit: cover;">
+              <div class="flex items-center justify-between nft-like-section w-full px-4">
+              </div>
+              <div class="box-body">
+
+                <div class="flex items-center mb-4">
+                  <div>
+                    <p class="text-[.9375rem] font-semibold mb-2"><a
+                        href="javascript:void(0);">{{item.equipmentName}}</a></p>
+                    <p class="text-[0.75rem] text-[#8c9097] dark:text-white/50 mb-0">S/N# {{item.serialNumber}}</p>
+                  </div>
+                </div>
+
+                <div class="flex flex-wrap align-itesm-center justify-between">
+                  <div class="font-semibold mb-1">รายละเอียด :</div>
+                  <p class="text-[#8c9097] dark:text-white/50 mb-3">{{item.description}}</p>
+                  <!-- <div class="flex flex-wrap items-center leading-none">
+                    <span class="avatar avatar-xs me-1">
+                      <img src="./assets/images/crypto-currencies/square-color/Ethereum.svg" alt="">
+                    </span>0.24ETH
+                  </div> -->
+                </div>
+                <div class="flex flex-wrap align-itesm-center justify-between mb-2">
+                  <div class="font-semibold mb-1">จำนวน :</div>
+                  <!-- <h3 class="text-[#8c9097] dark:text-white/50">{{item.quantity}}</h3> -->
+                  <input type="number" class="form-control" id="deal-name" placeholder="จำนวน"
+                    [(ngModel)]="item.quantity">
+                </div>
+
+                <!-- <div class="grid">
+                  <button type="button" class="ti-btn ti-btn-primary btn-wave waves-effect waves-light">Place Bid</button>
+                </div> -->
+              </div>
+              <div class="box-footer border-block-start-dashed dark:border-defaultborder/10 text-center">
+                <div class="btn-list">
+                  <div class="btn-list">
+                    <a href="javascript:void(0);" class="hs-dropdown-toggle ti-btn ti-btn-primary-full me-2"
+                      (click)="stock(item)"><i class="ri-add-line font-semibold align-middle"></i>{{ 'นำเข้า' |
+                      translate}}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      <div class="ti-modal-footer">
+        <button #closeModal type="button" class="hs-dropdown-toggle ti-btn  ti-btn-light align-middle"
+          data-hs-overlay="#modal-detail">
+          ยกเลิก
+        </button>
+        <!-- <button type="button" class="ti-btn bg-primary text-white !font-medium" (click)="save()">บันทึก</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Start:: New Deal -->
+<div id="modal-stock" class="hs-overlay hidden ti-modal" *ngIf="selectModel">
+  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
+    <div class="ti-modal-content">
+      <div class="ti-modal-header">
+        <h6 class="modal-title text-[1rem] font-semibold text-defaulttextcolor" id="mail-ComposeLabel">
+          การยืม/ข้อมูลอุปกรณ์
+        </h6>
+        <button type="button" class="hs-dropdown-toggle !text-[1rem] !font-semibold !text-defaulttextcolor"
+          data-hs-overlay="#modal-stock">
+          <span class="sr-only">Close</span>
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+      <div class="ti-modal-body px-4">
+        <div class="grid grid-cols-12 gap-4">
+          <div class="xl:col-span-12 col-span-12">
+            <img [src]="selectModel.equipment.getPicture()" class="!rounded-t-md" alt="..."
+              style="width: 100%;height: auto;object-fit: cover;">
+          </div>
+          <div class="xl:col-span-12 col-span-12">
+            <label for="deal-name" class="form-label">ชื่ออุปกรณ์</label>
+            <input readonly type="text" class="form-control" id="deal-name" placeholder="ชื่ออุปกรณ์"
+              [(ngModel)]="selectModel.equipment.equipmentName">
+          </div>
+
+          <div class="xl:col-span-12 col-span-12">
+            <label for="deal-name" class="form-label">S/N</label>
+            <input readonly type="text" class="form-control" id="deal-name" placeholder="S/N"
+              [(ngModel)]="selectModel.equipment.serialNumber">
+          </div>
+
+          <div class="xl:col-span-12 col-span-12">
+            <label for="deal-name" class="form-label">จำนวนยืม</label>
+            <input type="number" class="form-control" id="deal-name" placeholder="จำนวนยืม"
+              [(ngModel)]="borrowSelect.quantity_borrowed">
+          </div>
+
+          <div class="xl:col-span-12 col-span-12">
+            <label for="input-label" class="form-label">{{ "พนักงานที่ยืม" | translate}}</label>
+            <!-- <ng-select [items]="customerList" bindLabel="companyThName" [(ngModel)]="projectModel.customer">
+            </ng-select> -->
+            <ng-select #selectCustomer [items]="empList" bindLabel="member.firstName" bindValue="memberId"
+              [(ngModel)]="borrowSelect.memberId">
+              <ng-template ng-header-tmp>
+                <input style="width: 100%; line-height: 24px" type="text"
+                  (input)="selectCustomer.filter($any($event.target).value)" />
+              </ng-template>
+            </ng-select>
+            <!-- <select class="mb-4 sm:mb-0 form-select !py-3" id="inlineFormSelectPref"
+              [(ngModel)]="projectModel.customer">
+              <option [ngValue]="null" selected>-</option>
+              <option *ngFor="let item of customerList" [ngValue]="item">{{item.getCompanyName()}}</option>
+            </select> -->
+          </div>
+
+
+        </div>
+      </div>
+      <div class="ti-modal-footer">
+        <button #closeModalStock type="button" class="hs-dropdown-toggle ti-btn  ti-btn-light align-middle"
+          data-hs-overlay="#modal-stock">
+          ยกเลิก
+        </button>
+        <button type="button" class="ti-btn bg-primary text-white !font-medium" (click)="saveBorrow()">บันทึก</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Start:: New Deal -->
+<div id="modal-stock-his" class="hs-overlay hidden ti-modal" *ngIf="selectModel">
+  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out lg:!max-w-4xl lg:w-full m-3 lg:!mx-auto">
+    <div class="ti-modal-content">
+      <div class="ti-modal-header">
+        <h6 class="modal-title text-[1rem] font-semibold text-defaulttextcolor" id="mail-ComposeLabel">
+          ประวัติการทำรายการ
+        </h6>
+        <button type="button" class="hs-dropdown-toggle !text-[1rem] !font-semibold !text-defaulttextcolor"
+          data-hs-overlay="#modal-stock-his">
+          <span class="sr-only">Close</span>
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+      <div class="ti-modal-body px-4">
+        <div class="table-responsive mb-4">
+          <table class="table whitespace-nowrap table-bordered min-w-full">
+            <thead>
+              <tr>
+                <th scope="col" class="text-start">พนักงาน</th>
+                <th scope="col" class="text-start">จำนวน</th>
+                <th scope="col" class="text-start">วันที่ยืม</th>
+                <th scope="col" class="text-start">วันที่คืน</th>
+                <th scope="col" class="text-start">สถานะ</th>
+                <th scope="col" class="text-start">ผู้อนุมัติ</th>
+                <th scope="col" class="text-start"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for(product of hisList;track product.peId){
+              <tr class="product-list">
+
+                <td>
+                  <div class="flex items-center">
+                    <div class="me-2">
+                      <span class="avatar avatar-md avatar-rounded">
+                        <img src={{product.member.getPicture()}} alt="">
+                      </span>
+                    </div>
+                    <div class="font-semibold">
+                      {{product.member.getFullname()}}
+                    </div>
+                  </div>
+                </td>
+                <td>{{product.quantity_borrowed}}</td>
+                <td>{{product.created_at}}</td>
+                <td>{{product.returned_date}}</td>
+                <td> {{product.status}}</td>
+                <td> {{product.approved_by_member.getFullname()}}</td>
+                <!-- <td>
+                          <span class="badge bg-light text-default"> {{product.category}}</span>
+                      </td>
+                      <td>{{product.price}}</td>
+                      <td>{{product.stock}}</td>
+                      <td>{{product.gender}}</td>
+                      <td>{{product.seller}}</td>
+                      <td> {{product.published}}</td> -->
+                <td>
+                  <!-- <div class="flex flex-row items-center !gap-2 text-[0.9375rem]">
+                              <a aria-label="anchor" routerLink="/pages/ecommerce/editproducts"
+                              class="ti-btn ti-btn-wave  !gap-0 !m-0 !h-[1.75rem] !w-[1.75rem] text-[0.8rem] bg-info/10 text-info hover:bg-info hover:text-white hover:border-info"><i
+                                class="ri-pencil-line"></i></a>
+                            <a aria-label="anchor" href="javascript:void(0);"  (click)="click(product.id)"
+                              class="ti-btn ti-btn-wave product-btn !gap-0 !m-0 !h-[1.75rem] !w-[1.75rem] text-[0.8rem] bg-danger/10 text-danger hover:bg-danger hover:text-white hover:border-danger"><i
+                                class="ri-delete-bin-line"></i></a>
+                          </div> -->
+                </td>
+              </tr>
+              }
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="ti-modal-footer">
+        <button #closeModalStock type="button" class="hs-dropdown-toggle ti-btn  ti-btn-light align-middle"
+          data-hs-overlay="#modal-stock-his">
+          ปิด
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
