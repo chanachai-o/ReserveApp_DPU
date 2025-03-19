@@ -1,48 +1,14 @@
-from sqlalchemy import Column, String, Integer, DateTime, Text , Enum
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.sql import func
+from sqlalchemy import Column, String, Integer, Boolean
 from ..config.database import Base
-from uuid import uuid4
-from passlib.hash import bcrypt
-from datetime import datetime
 from sqlalchemy.orm import relationship
-import enum
 
-class RoleType(enum.Enum):
-    MEMBER = 0
-    ADMIN_PROJECT = 1
-    ADMIN_SYSTEM = 99
-
-class StatusType(enum.Enum):
-    ENABLE = 1
-    DISABLED = 0
-    
 class Member(Base):
-    __tablename__ = 'member'
+    __tablename__ = "members"
 
-    memberId = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    username = Column(String, nullable=False, unique=True)
-    passwordHash = Column(String, nullable=False)
-    firstName = Column(String, nullable=True)
-    lastName = Column(String, nullable=True)
-    email = Column(String, nullable=False, unique=True)
-    phoneNumber = Column(String, nullable=True)
-    role = Column(Enum(RoleType), nullable=False, default=RoleType.MEMBER)  # Default as Enum instance
-    status = Column(Enum(StatusType), nullable=False, default=StatusType.ENABLE)  # Default as Enum instance
-    picture = Column(String)
-    createdAt = Column(DateTime, nullable=False, default=datetime.utcnow)
-    updatedAt = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # ProjectEmployees = relationship("ProjectEmployee", back_populates="member")
-    project_member = relationship("ProjectMember", back_populates="member")
-    borrow_transactions = relationship("BorrowTransaction", foreign_keys="[BorrowTransaction.memberId]", back_populates="member")
-    # Relationship สำหรับ BorrowTransaction ที่ผู้อนุมัติ
-    approved_borrow_transactions = relationship("BorrowTransaction", foreign_keys="[BorrowTransaction.approved_by]", back_populates="approved_by_member")
-    # ฟังก์ชันเพื่อแฮชรหัสผ่านก่อนบันทึก
-    def hash_password(self, password):
-        self.passwordHash = bcrypt.hash(password)
-
-    # ฟังก์ชันเพื่อตรวจสอบรหัสผ่าน
-    def verify_password(self, password):
-        return bcrypt.verify(password, self.passwordHash)
-
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True, nullable=False)
+    phone = Column(String, unique=True, index=True, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=True)
+    password = Column(String, nullable=False)
+    role = Column(String, default="customer")  # customer, staff, admin
+    is_active = Column(Boolean, default=True)
