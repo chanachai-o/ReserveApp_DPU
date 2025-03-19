@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from ..schemas.member_schema import UserCreate
+from ..schemas.member_schema import MemberBase
 
 
 class LoginRequest(BaseModel):
@@ -9,6 +9,6 @@ class LoginRequest(BaseModel):
 
 
 class Token(BaseModel):
-    member: UserCreate
+    member: MemberBase
     access_token: str
     token_type: str

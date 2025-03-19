@@ -1,12 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from ..config.database import get_db
 from ..models.member import Member
-from ..schemas.member_schema import UserResponse,UserUpdate,UserCreate
+from ..schemas.member_schema import MemberCreate, MemberResponse, MemberUpdate
 from ..controllers.member_controller import (
     get_users,
-    get_user,
+    get_user_by_id,
     create_user,
     update_user,
     delete_user
@@ -15,33 +15,44 @@ from ..middlewares.auth_middleware import authenticate_jwt  # Middleware for tok
 
 router = APIRouter()
 
-@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-def create_user_route(user: UserCreate, db: AsyncSession = Depends(get_db)):
-    db_user = create_user(db, user)
-    return db_user
+@router.get("/", response_model=List[MemberResponse])
+async def get_members(
+    db: AsyncSession = Depends(get_db),
+    # user: dict = Depends(authenticate_jwt)  # Validate JWT token
+):
+    return await get_users(db)
 
-@router.get("/{user_id}", response_model=UserResponse)
-def read_user(user_id: int, db: AsyncSession = Depends(get_db)):
-    db_user = get_user(db, user_id)
-    if not db_user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return db_user
+@router.get("/{memberId}", response_model=MemberResponse)
+async def get_member(
+    memberId: str,
+    db: AsyncSession = Depends(get_db),
+    # user: dict = Depends(authenticate_jwt)  # Validate JWT token
+):
+    member = await get_user_by_id(memberId, db)
+    if not member:
+        raise HTTPException(status_code=404, detail="Member not found")
+    return member
 
-@router.get("/", response_model=list[UserResponse])
-def read_users(skip: int = 0, limit: int = 100, db: AsyncSession = Depends(get_db)):
-    users = get_users(db, skip=skip, limit=limit)
-    return users
+@router.post("/", response_model=MemberResponse)
+async def create_new_member(
+    member: MemberCreate,
+    db: AsyncSession = Depends(get_db),
+):
+    return await create_user(member, db)
 
-@router.put("/{user_id}", response_model=UserResponse)
-def update_user_route(user_id: int, user_update: UserUpdate, db: AsyncSession = Depends(get_db)):
-    db_user = update_user(db, user_id, user_update)
-    if not db_user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return db_user
+@router.put("/{memberId}", response_model=MemberResponse)
+async def update_existing_member(
+    memberId: str, 
+    member_update: MemberUpdate, 
+    db: AsyncSession = Depends(get_db),
+    # user: dict = Depends(authenticate_jwt)  # Validate JWT token
+):
+    return await update_user(memberId, member_update, db)
 
-@router.delete("/{user_id}", response_model=UserResponse)
-def delete_user_route(user_id: int, db: AsyncSession = Depends(get_db)):
-    db_user = delete_user(db, user_id)
-    if not db_user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return db_user
+@router.delete("/{memberId}")
+async def delete_existing_member(
+    memberId: str, 
+    db: AsyncSession = Depends(get_db),
+    # user: dict = Depends(authenticate_jwt)  # Validate JWT token
+):
+    return await delete_user(memberId, db)
