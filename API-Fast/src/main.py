@@ -1,10 +1,9 @@
 from fastapi import FastAPI
-from .config.database import engine
-from .models.member import Base
+from .config.database import engine,Base
 import os
 from fastapi.staticfiles import StaticFiles
 import logging
-from .routes import member_routes,auth_routes,file_upload_router
+from .routes import member_routes,auth_routes,file_upload_router,menu_routes,menu_category_router
 
 from fastapi.middleware.cors import CORSMiddleware
 logging.basicConfig(level=logging.DEBUG)
@@ -34,7 +33,9 @@ app.mount("/images", StaticFiles(directory=UPLOAD_DIR), name="images")
 # รวม routes
 app.include_router(auth_routes.router, prefix="/auth", tags=["Authentication"])
 app.include_router(file_upload_router.router, prefix="/api", tags=["File Upload"])
-app.include_router(member_routes.router, prefix="/members", tags=["Members"])
+app.include_router(member_routes.router, prefix="/member", tags=["Member"])
+app.include_router(menu_routes.router, prefix="/menu", tags=["Menu"])
+app.include_router(menu_category_router.router, prefix="/menu_category", tags=["MenuCategory"])
 
 @app.get("/")
 async def root():

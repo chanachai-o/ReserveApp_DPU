@@ -21,7 +21,7 @@ async_session = sessionmaker(
 
 # Base สำหรับใช้ในการสร้างโมเดล
 Base = declarative_base()
-
+Base.metadata.create_all
 # Dependency สำหรับใช้ใน FastAPI
 async def get_db():
     async with async_session() as session:
