@@ -9,11 +9,16 @@ import { LandingLayoutComponent } from './shared/layouts/landing-layout/landing-
 import { AuthGuard } from './shared/services/auth.guard';
 import { LoginComponent } from './authentication/login/login.component';
 import { CoverComponent } from './components/authentication/reset-password/cover/cover.component';
+import { JobsLandingComponent } from './components/pages/jobs-landing/jobs-landing.component';
+import { LandingComponent } from './components/pages/landing/landing.component';
 
 export const App_Route: Route[] = [
-  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '', component: ContentLayoutComponent, children: content},
-
+  {
+    path: 'home',
+    component: LandingComponent
+  },
   {
     path: 'auth/login',
     component: LoginComponent
