@@ -3,11 +3,7 @@
   <!-- Start::main-sidebar-header -->
   <div class="main-sidebar-header" style="background-color: white !important;">
     <a class="header-logo">
-      <!-- <img src="./assets/images/brand-logos/logo.png" alt="logo" width="100%">test -->
-
-      ระบบจัดการทรัพสินบริษัท
-
-
+      <img src="./assets/images/brand-logos/logo.jpg" alt="logo" width="100%">
     </a>
   </div>
   <div>
@@ -28,8 +24,8 @@
                   <img [src]="tokenService.getSelectCompany().getPicture()" alt="">
                 </span>
                 <div class="ms-2">
-                  <h5 class="font-semibold mb-0 flex items-center"><a>{{tokenService.getSelectCompany().project_name}} <i
-                        class="bi bi-check-circle-fill text-success text-base" title="Verified company"></i></a></h5>
+                  <h5 class="font-semibold mb-0 flex items-center"><a>{{tokenService.getSelectCompany().project_name}}
+                      <i class="bi bi-check-circle-fill text-success text-base" title="Verified company"></i></a></h5>
                   <div class="flex gap-2">
                     <p class="mb-0 text-[#8c9097] dark:text-white/50">{{tokenService.getSelectCompany().project_code}}
                     </p>

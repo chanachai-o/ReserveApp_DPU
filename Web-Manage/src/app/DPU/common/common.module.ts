@@ -10,9 +10,24 @@ export const admin: Routes = [
         import('./home-common/home-common.component').then((m) => m.HomeCommonComponent),
     },
     {
-      path: 'member-manage',
+      path: 'manage-member',
       loadComponent: () =>
         import('./user-management/user-setting/user-setting.component').then((m) => m.UserSettingComponent),
+    },
+    {
+      path: 'manage-customer',
+      loadComponent: () =>
+        import('./customer-management/customer-management.component').then((m) => m.CustomerManagementComponent),
+    },
+    {
+      path: 'manage-menu',
+      loadComponent: () =>
+        import('./menus-management/menus-management.component').then((m) => m.MenusManagementComponent),
+    },
+    {
+      path: 'manage-room-table',
+      loadComponent: () =>
+        import('./room-table-management/room-table-management.component').then((m) => m.RoomTableManagementComponent),
     },
 
     ]

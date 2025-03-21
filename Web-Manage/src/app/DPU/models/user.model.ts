@@ -35,13 +35,13 @@ export class UserProfileModel extends BaseModel {
   //   }
   // }
 
-  // getStatus(): string {
-  //   if (this.status == 1) {
-  //     return this.translateService.instant('Active')
-  //   } else {
-  //     return this.translateService.instant('Unactive')
-  //   }
-  // }
+  getStatus(): string {
+    if (this.is_active) {
+      return this.translateService.instant('Active')
+    } else {
+      return this.translateService.instant('Unactive')
+    }
+  }
 
   // getPicture(): string {
   //   return this.picture ? environment.baseUrl + '/images/' + this.picture : './assets/images/faces/1.jpg'

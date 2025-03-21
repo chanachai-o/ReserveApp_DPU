@@ -129,7 +129,7 @@ export class LoginComponent {
       // this.routes.navigate(['/admin/member-manage'])
     }, (error) => {
       this.showLoader = false;
-      this.error = 'Username หรือ Password ไม่ถูกต้อง';
+      this.error = 'เบอร์ติดต่อ หรือ Password ไม่ถูกต้อง';
     })
 
   }

@@ -11,7 +11,7 @@ import { forkJoin, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserService {
-  apiBaseUrl = "/members";
+  apiBaseUrl = "/users";
   constructor(
     private http: HttpClient,
     private translateService: TranslateService

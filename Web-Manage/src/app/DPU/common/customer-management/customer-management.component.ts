@@ -1,21 +1,20 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgSelectModule } from "@ng-select/ng-select";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
-import { SharedModule } from "../../../../shared/shared.module";
-import { UserService } from "../../../services/user.service";
-import { UserProfileModel } from "../../../models/user.model";
 import { FormsModule } from "@angular/forms";
 import swal from 'sweetalert';
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
-import { UserRoleModel } from "../../../models/user-role-model";
 import { FileUploadModule } from 'ng2-file-upload';
 import { FileItem, FileUploader, ParsedResponseHeaders } from "ng2-file-upload";
-import { environment } from "../../../../../environments/environment";
-import { TokenService } from "../../../../shared/services/token.service";
+import { UserProfileModel } from "../../models/user.model";
+import { SharedModule } from "../../../shared/shared.module";
+import { UserService } from "../../services/user.service";
+import { TokenService } from "../../../shared/services/token.service";
+import { environment } from "../../../../environments/environment";
 
 @Component({
-  selector: 'app-user-setting',
+  selector: 'app-customer-management',
   standalone: true,
   imports: [
     CommonModule,
@@ -26,10 +25,10 @@ import { TokenService } from "../../../../shared/services/token.service";
     MatPaginator,
     FileUploadModule
   ],
-  templateUrl: './user-setting.component.html',
-  styleUrl: './user-setting.component.css'
+  templateUrl: './customer-management.component.html',
+  styleUrls: ['./customer-management.component.css']
 })
-export class UserSettingComponent {
+export class CustomerManagementComponent implements OnInit {
   @ViewChild('closeModal') public childModal?: ElementRef;
   @ViewChild('modalDetail') public modalDetail?: ElementRef;
   action = "new";
@@ -40,7 +39,6 @@ export class UserSettingComponent {
   filterList: UserProfileModel[] = []
   selectModel: UserProfileModel = new UserProfileModel()
   selectedItems = new Map<number, boolean>();
-  roleList: UserRoleModel[] = []
   empList: UserProfileModel[] = []
   descName = 'engName'
   pageIndex = 0;
@@ -119,7 +117,7 @@ export class UserSettingComponent {
 
   ngOnInit(): void {
     this.userService.getLists().subscribe(result => {
-      this.itemsList = result.filter(e => e.role != 'customer')
+      this.itemsList = result.filter(e => e.role == 'customer')
       this.updatePagedItems()
     })
   }
@@ -178,6 +176,7 @@ export class UserSettingComponent {
       .then((willDelete: any) => {
         if (willDelete) {
           if (this.action == 'add') {
+            this.selectModel.role = 'customer'
             this.userService.save(this.selectModel).subscribe(result => {
               console.log(result)
               swal("Save Success!!", "บันทึกข้อมูลสมาชิก", "success");

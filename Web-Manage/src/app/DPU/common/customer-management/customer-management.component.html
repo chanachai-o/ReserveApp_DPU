@@ -1,4 +1,4 @@
-<app-page-header [title]="'จัดการพนักงาน'" [activeTitle]="'ผู้จัดการ'" [title1]="'จัดการพนักงาน'"></app-page-header>
+<app-page-header [title]="'จัดการลูกค้า'" [activeTitle]="'ผู้จัดการ'" [title1]="'จัดการลูกค้า'"></app-page-header>
 
 
 <div class="grid grid-cols-12 gap-6">
@@ -31,7 +31,7 @@
             translate}}
           </a>
           <div>
-            <input class="form-control form-control" type="text" placeholder="ค้นหาพนักงาน"
+            <input class="form-control form-control" type="text" placeholder="ค้นหาลูกค้า"
               aria-label=".form-control-sm example" [(ngModel)]='searchTerm'>
           </div>
           <!-- <div>
@@ -239,20 +239,6 @@
             </div>
           </div>
 
-
-
-
-
-
-          <div class="xl:col-span-12 col-span-12">
-            <label class="form-label">{{'User Role' | translate}}</label>
-            <ng-select name="choices-multiple-remove-button1" id="choices-multiple-remove-button1" placeholder=""
-              [(ngModel)]="selectModel.role">
-              <ng-option value="manager">{{'ผู้จัดการ' | translate}}</ng-option>
-              <ng-option value="staff">{{'พนักงาน' | translate}}</ng-option>
-              <ng-option value="chef">{{'พ่อครัว' | translate}}</ng-option>
-            </ng-select>
-          </div>
           <div class="xl:col-span-12 col-span-12">
             <label class="form-label">{{'Status' | translate}}</label>
             <ng-select name="choices-multiple-remove-button2" id="choices-multiple-remove-button2" placeholder=""

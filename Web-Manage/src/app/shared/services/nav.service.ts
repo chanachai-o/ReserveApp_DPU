@@ -118,7 +118,7 @@ export class NavService implements OnDestroy {
 
     // ];
     return [{ headTitle: 'Admin' },
-    { path: '/admin/home', title: 'หน้าแรก', type: 'link' },
+    // { path: '/admin/home', title: 'หน้าแรก', type: 'link' },
     {
       title: 'การจัดการ',
       type: 'sub',
@@ -126,11 +126,12 @@ export class NavService implements OnDestroy {
       Menusub: true,
       active: false,
       children: [
-        { path: '/admin/member-manage', title: 'การจัดการสมาชิก', type: 'link' },
-        { path: '/admin/admin-manage', title: 'การจัดการอุปกรณ์', type: 'link' },
+        { path: '/admin/manage-member', title: 'พนักงาน', type: 'link' },
+        { path: '/admin/manage-customer', title: 'ลูกค้า', type: 'link' },
+        { path: '/admin/manage-menu', title: 'รายการอาหาร', type: 'link' },
         {
-          path: '/admin/manage-companys',
-          title: 'การจัดการโครงการ',
+          path: '/admin/manage-room-table',
+          title: 'โต๊ะ&ห้อง',
           type: 'link',
         },
       ],
