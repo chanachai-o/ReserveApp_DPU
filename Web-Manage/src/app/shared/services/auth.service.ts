@@ -11,12 +11,12 @@ export class AuthService {
   ) {
   }
 
-  login(username: string, password: string) {
+  login(phone: string, password: string) {
     const body = {
-      username: username,
+      phone: phone,
       password: password,
     };
-    return this.http.post<UserModel>(this.apiBaseUrl + '/login', body)
+    return this.http.post<UserModel>(this.apiBaseUrl + '/login?phone='+phone+'&password='+password,{})
   }
 
   refreshToken(token: string) {
@@ -25,8 +25,8 @@ export class AuthService {
     });
   }
 
-  register(body: UserModel) {
-    return this.http.post<any>(this.apiBaseUrl + "/register", new ProfileModel());
-  }
+  // register(body: UserModel) {
+  //   return this.http.post<any>(this.apiBaseUrl + "/register", new ProfileModel());
+  // }
 
 }

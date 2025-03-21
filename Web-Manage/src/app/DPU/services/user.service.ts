@@ -96,7 +96,7 @@ export class UserService {
   }
 
   update(body: UserProfileModel) {
-    return this.http.put<ResponseModel>(this.apiBaseUrl + "/" + body.memberId, new UserProfileModel(body));
+    return this.http.put<ResponseModel>(this.apiBaseUrl + "/" + body.id, new UserProfileModel(body));
   }
 
 
@@ -124,6 +124,6 @@ export class UserService {
       }),
       body: new UserProfileModel(body),
     };
-    return this.http.delete<ResponseModel>(this.apiBaseUrl + "/" + body.memberId);
+    return this.http.delete<ResponseModel>(this.apiBaseUrl + "/" + body.id);
   }
 }

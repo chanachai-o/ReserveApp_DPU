@@ -1,12 +1,6 @@
 import { Component, ElementRef, Inject, Renderer2 } from '@angular/core';
 // import { AuthService } from 'src/app/shared/services/auth.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AngularFireModule, FIREBASE_OPTIONS } from '@angular/fire/compat';
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
-import { environment } from '../../../environments/environment';
-import { FirebaseService } from '../../shared/services/firebase.service';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { CarouselModule, OwlOptions, SlidesOutputData } from 'ngx-owl-carousel-o';
 import { SharedModule } from '../../shared/shared.module';
@@ -17,8 +11,8 @@ import { AuthService } from '../../shared/services/auth.service';
 import { LoginModel } from '../../shared/user-auth.model';
 import { HttpClientModule } from '@angular/common/http';
 import { Validators } from 'ngx-editor';
-import { EmployeeService } from '../../DPU/services/employee.service';
 import { ProjectMemberService } from '../../DPU/services/project-members.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +23,7 @@ import { ProjectMemberService } from '../../DPU/services/project-members.service
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  username = ""
+  phone = ""
   password = ""
   errorMessage = '';
   showLoader = false;
@@ -51,7 +45,7 @@ export class LoginComponent {
   }
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
-      username: ['', Validators.required],
+      phone: ['', Validators.required],
       password: ['', Validators.required],
     });
     this.renderer.addClass(this.document.body, 'bg-white');
@@ -118,18 +112,17 @@ export class LoginComponent {
   login() {
     this.showLoader = true;
     let body: LoginModel = new LoginModel();
-    body.username = this.username;
+    body.phone = this.phone;
     body.password = this.password;
-    this.authService.login(this.loginForm.controls['username'].value, this.loginForm.controls['password'].value).subscribe(result => {
-      this.tokenService.saveToken(result.access_token);
+    this.authService.login(this.loginForm.controls['phone'].value, this.loginForm.controls['password'].value).subscribe(result => {
+      this.tokenService.saveToken(result);
       // this.tokenService.saveRefreshToken(result.refreshToken);
       this.tokenService.saveUser(result);
-      if (result.member.status == 1) {
-        if (result.member.role == 99) {
+      if (result.is_active) {
+        if (result.role == 'manager') {
           this.routes.navigate(['/admin/member-manage'])
-        } else {
-          this.adminCompanyList(result.member.memberId)
         }
+
       } else {
         this.error = 'ไม่สามารถใช้งานได้กรุณาติดต่อผู้ให้บริการ'
       }

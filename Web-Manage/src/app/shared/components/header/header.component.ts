@@ -18,7 +18,7 @@ interface Item {
 })
 
 export class HeaderComponent {
-  userModel : UserProfileModel = new UserProfileModel(this.tokenService.getUser().member,this.translate)
+  userModel : UserProfileModel = new UserProfileModel(this.tokenService.getUser())
   adminRole = false
   cartItemCount: number = 5;
   notificationCount: number = 5;
@@ -144,7 +144,7 @@ export class HeaderComponent {
   public text!: string;
   public SearchResultEmpty: boolean = false;
   ngOnInit() {
-    this.adminRole = this.tokenService.getUser().member.role == 99 ? true : false
+    // this.adminRole = this.tokenService.getUser().member.role == 99 ? true : false
     console.log("Admin",this.adminRole)
     this.navServices.items.subscribe((menuItems) => {
       this.items = menuItems;

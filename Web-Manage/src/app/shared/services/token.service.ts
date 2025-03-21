@@ -26,13 +26,13 @@ export class TokenService {
     this.router.navigate(["/auth/login"]);
   }
 
-  public saveToken(token: string): void {
+  public saveToken(token: UserModel): void {
     window.localStorage.removeItem(TOKEN_KEY);
-    window.localStorage.setItem(TOKEN_KEY, token);
+    window.localStorage.setItem(TOKEN_KEY, JSON.stringify(token));
 
     const user = this.getUser();
-    if (user.access_token) {
-      this.saveUser({ ...user, access_token: token });
+    if (user) {
+      this.saveUser(user);
     }
   }
 

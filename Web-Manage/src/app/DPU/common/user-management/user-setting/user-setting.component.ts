@@ -39,7 +39,7 @@ export class UserSettingComponent {
   itemsList: UserProfileModel[] = []
   filterList: UserProfileModel[] = []
   selectModel: UserProfileModel = new UserProfileModel()
-  selectedItems = new Map<string, boolean>();
+  selectedItems = new Map<number, boolean>();
   roleList: UserRoleModel[] = []
   empList: UserProfileModel[] = []
   descName = 'engName'
@@ -106,7 +106,7 @@ export class UserSettingComponent {
       if (item.isSuccess) {
         const res = JSON.parse(response);
         console.log("res", res);
-        this.selectModel.picture = res.filename
+        // this.selectModel.picture = res.filename
         swal(res.message, "บันทึกสำเร็จ", "success");
 
       } else {
@@ -127,13 +127,10 @@ export class UserSettingComponent {
   filter(v: string) {
     return this.itemsList?.filter(
       (x) =>
-        x.memberId?.toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
-        x.username?.toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
-        x.email?.toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
-        x.phoneNumber?.toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
-        x.getRole()?.toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
-        x.getStatus()?.toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
-        x.getFullname()?.toLowerCase().indexOf(v.toLowerCase()) !== -1
+        x.id?.toString().toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
+        x.name?.toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
+        x.phone?.toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
+        x.role?.toLowerCase().indexOf(v.toLowerCase()) !== -1
     );
   }
 
@@ -213,25 +210,25 @@ export class UserSettingComponent {
     this.allSelected = event.target.checked;
     this.selectedItems.clear();
     this.itemsList.forEach(item => {
-      this.selectedItems.set(item.memberId, this.allSelected);
+      this.selectedItems.set(item.id, this.allSelected);
     });
-    this.someSelected = this.itemsList.some(item => this.selectedItems.get(item.memberId));
+    this.someSelected = this.itemsList.some(item => this.selectedItems.get(item.id));
   }
 
-  onCheckboxChange(memberId: string) {
-    const isSelected = this.selectedItems.get(memberId) || false;
-    this.selectedItems.set(memberId, !isSelected);
-    this.allSelected = this.itemsList.every(item => this.selectedItems.get(item.memberId));
-    this.someSelected = this.itemsList.some(item => this.selectedItems.get(item.memberId));
+  onCheckboxChange(id: number) {
+    const isSelected = this.selectedItems.get(id) || false;
+    this.selectedItems.set(id, !isSelected);
+    this.allSelected = this.itemsList.every(item => this.selectedItems.get(item.id));
+    this.someSelected = this.itemsList.some(item => this.selectedItems.get(item.id));
   }
 
   deleteSelect() {
     let employeeInfo = '';
-    this.selectedItems.forEach((isSelected, memberId) => {
+    this.selectedItems.forEach((isSelected, id) => {
       if (isSelected) {
-        const user = this.itemsList.find(user => user.memberId === memberId);
+        const user = this.itemsList.find(user => user.id === id);
         if (user) {
-          employeeInfo += `${this.translate.instant('Fullname')}: ${user.getFullname()}\n`;
+          employeeInfo += `${this.translate.instant('Fullname')}: ${user.name}\n`;
         }
       }
     });
@@ -245,9 +242,9 @@ export class UserSettingComponent {
     })
       .then((willDelete: any) => {
         if (willDelete) {
-          this.selectedItems.forEach((isSelected, memberId) => {
+          this.selectedItems.forEach((isSelected, id) => {
             if (isSelected) {
-              const user = this.itemsList.find(user => user.memberId === memberId);
+              const user = this.itemsList.find(user => user.id === id);
               if (user) {
                 this.userService.delete(user).subscribe(result => {
                   swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
@@ -260,14 +257,14 @@ export class UserSettingComponent {
       });
   }
 
-  adjustSelect(status: number) {
+  adjustSelect(status: boolean) {
     let title = "Are you sure?"
     let employeeInfo = ''; // ตัวแปรสำหรับเก็บข้อมูลพนักงาน
-    this.selectedItems.forEach((isSelected, memberId) => {
+    this.selectedItems.forEach((isSelected, id) => {
       if (isSelected) {
-        const user = this.itemsList.find(user => user.memberId === memberId);
+        const user = this.itemsList.find(user => user.id === id);
         if (user) {
-          employeeInfo += `${this.translate.instant('Fullname')}: ${user.getFullname()}\n`;
+          employeeInfo += `${this.translate.instant('Fullname')}: ${user.name}\n`;
         }
       }
     });
@@ -280,11 +277,11 @@ export class UserSettingComponent {
     })
       .then((willDelete: any) => {
         if (willDelete) {
-          this.selectedItems.forEach((isSelected, memberId) => {
+          this.selectedItems.forEach((isSelected, id) => {
             if (isSelected) {
-              const user = this.itemsList.find(user => user.memberId === memberId);
+              const user = this.itemsList.find(user => user.id === id);
               if (user) {
-                user.status = status
+                user.is_active = status
                 this.userService.update(user).subscribe(result => {
                   swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
                   this.ngOnInit();
@@ -297,8 +294,8 @@ export class UserSettingComponent {
       });
   }
 
-  filterEmp(empId: string) {
-    this.selectModel = this.empList.filter(e => e.memberId == empId)[0]
+  filterEmp(empId: number) {
+    this.selectModel = this.empList.filter(e => e.id == empId)[0]
   }
 
 }

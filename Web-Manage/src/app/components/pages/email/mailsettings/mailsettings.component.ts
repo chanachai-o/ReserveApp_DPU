@@ -55,7 +55,7 @@ export class MailsettingsComponent {
 
 
   constructor(private tokenService: TokenService, private userService: UserService) {
-    this.roleModel = this.tokenService.getUserData().role
+    // this.roleModel = this.tokenService.getUserData().role
   }
 
   resetPassword() {

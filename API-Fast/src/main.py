@@ -70,7 +70,7 @@ async def login(phone: str, password: str, db: AsyncSession = Depends(get_db)):
     # เปรียบเทียบ password (ควรใช้ hashing จริงจัง)
     # ...
 
-    return {"token": "example_token"}
+    return user
 
 @auth_router.post("/logout")
 async def logout(token: str):

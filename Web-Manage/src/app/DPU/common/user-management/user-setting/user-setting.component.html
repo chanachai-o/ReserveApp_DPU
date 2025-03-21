@@ -16,11 +16,11 @@
           </a>
 
           <a href="javascript:void(0);" class="hs-dropdown-toggle ti-btn ti-btn-success-full me-2" *ngIf="someSelected"
-            (click)="adjustSelect(1)"><i class="ri-user-follow-line font-semibold align-middle"></i>{{ 'Active' |
+            (click)="adjustSelect(true)"><i class="ri-user-follow-line font-semibold align-middle"></i>{{ 'Active' |
             translate}}
           </a>
           <a href="javascript:void(0);" class="hs-dropdown-toggle ti-btn ti-btn-secondary-full me-2"
-            *ngIf="someSelected" (click)="adjustSelect(0)"><i
+            *ngIf="someSelected" (click)="adjustSelect(false)"><i
               class="ri-user-unfollow-line font-semibold align-middle"></i>{{ 'Unactive' |
             translate}}
           </a>
@@ -58,11 +58,9 @@
                 </th>
                 <th scope="col" class="text-start">{{ 'Username' | translate}}</th>
                 <th scope="col" class="text-start">{{ 'Fullname' | translate}}</th>
-                <th scope="col" class="text-start">{{ 'Email' | translate}}</th>
                 <th scope="col" class="text-start">{{ 'Mobile' | translate}}</th>
                 <th scope="col" class="text-start">{{ 'User Group' | translate}}</th>
                 <th scope="col" class="text-start">{{ 'Status' | translate}}</th>
-                <th scope="col" class="text-start">{{ 'Update Date' | translate}}</th>
                 <th scope="col" class="text-start"></th>
               </tr>
             </thead>
@@ -70,20 +68,20 @@
               @for(item of filterList;track filterList){
 
               <tr class="border border-defaultborder dark:border-defaultborder/10">
-                <td class="product-checkbox"><input class="form-check-input" type="checkbox" [checked]="selectedItems.get(item.memberId)"
-                  (change)="onCheckboxChange(item.memberId)" aria-label="..." value="">
+                <td class="product-checkbox"><input class="form-check-input" type="checkbox" [checked]="selectedItems.get(item.id)"
+                  (change)="onCheckboxChange(item.id)" aria-label="..." value="">
                 </td>
                 <td>
                   <div class="flex items-center">
-                    <span class="avatar avatar-sm p-1 me-1 bg-light !rounded-full">
+                    <!-- <span class="avatar avatar-sm p-1 me-1 bg-light !rounded-full">
                       <img
                         [src]="item.getPicture()"
                         alt="" id="profile-img">
-                    </span>
+                    </span> -->
                     <div class="ms-2">
                       <p class="font-semibold mb-0 flex items-center text-primary"><a (click)="view(item)">
-                          {{item.username}}</a></p>
-                      <p class="text-[0.75rem] text-muted mb-0">{{item.memberId}}</p>
+                          {{item.name}}</a></p>
+                      <p class="text-[0.75rem] text-muted mb-0">{{item.phone}}</p>
                     </div>
                   </div>
                 </td>
@@ -98,28 +96,19 @@
                     </div>
                   </div>
                 </td> -->
-                <td> {{item.firstName}} {{item.lastName}}</td>
-                <td>
-                  <div>
-                    <span class="block mb-1"><i
-                        class="ri-mail-line me-2 align-middle text-[.875rem] text-[#8c9097] dark:text-white/50 inline-flex"></i>{{item.email}}</span>
-                  </div>
-                </td>
+                <td> {{item.name}}</td>
                 <td>
                   <div>
                     <span class="block"><i
-                        class="ri-phone-line me-2 align-middle text-[.875rem] text-[#8c9097] dark:text-white/50 inline-flex"></i>{{item.phoneNumber}}</span>
+                        class="ri-phone-line me-2 align-middle text-[.875rem] text-[#8c9097] dark:text-white/50 inline-flex"></i>{{item.phone}}</span>
                   </div>
                 </td>
                 <td> <span
-                    class="badge bg-{{ item.role == 1 ? 'primary' : 'info'}} text-white">{{item.getRole()}}</span>
+                    class="badge bg-{{ item.role != 'customer' ? 'primary' : 'info'}} text-white">{{item.role}}</span>
                 </td>
                 <td> <span
-                    class="badge bg-{{ item.status == 1 ? 'primary' : 'danger'}} text-white">{{item.getStatus()}}</span>
+                    class="badge bg-{{ item.is_active ? 'primary' : 'danger'}} text-white">{{item.is_active}}</span>
                 </td>
-                <td><span class="badge bg-info/10 text-primary"><i
-                      class="bi bi-clock me-1"></i>{{item.updatedAt | date : 'medium'}}</span></td>
-                <td>
 
                 <td>
                   <div class="flex flex-row items-center !gap-2 ">
@@ -201,7 +190,7 @@
       <div class="ti-modal-body px-4">
         <div class="grid grid-cols-12 gap-4">
 
-          <div class="xl:col-span-12 col-span-12">
+          <!-- <div class="xl:col-span-12 col-span-12">
             <div class="mb-0 text-center">
               <span class="avatar avatar-xxl avatar-rounded">
                 <img [src]="selectModel.getPicture()" alt="" id="profile-img">
@@ -211,12 +200,13 @@
                 </span>
               </span>
             </div>
-          </div>
+          </div> -->
 
-          <div class="xl:col-span-12 col-span-12">
-            <label for="deal-title" class="form-label">{{'Username' | translate}}</label>
-            <input type="text" class="form-control" id="deal-title" placeholder="" [(ngModel)]="selectModel.username">
-            <div class="text-danger" *ngIf="!selectModel.username">
+          <div class="xl:col-span-6 col-span-12">
+            <label for="deal-title" class="form-label">{{'เบอร์ติดต่อ' | translate}}</label>
+            <input type="text" class="form-control" id="deal-title" placeholder=""
+              [(ngModel)]="selectModel.phone">
+            <div class="text-danger" *ngIf="!selectModel.phone">
               {{'Please fill in information' | translate}}
             </div>
           </div>
@@ -242,54 +232,32 @@
           </div>
 
           <div class="xl:col-span-6 col-span-12">
-            <label for="deal-title" class="form-label">{{'ชื่อ' | translate}}</label>
-            <input type="text" class="form-control" id="deal-title" placeholder="" [(ngModel)]="selectModel.firstName">
-            <div class="text-danger" *ngIf="!selectModel.firstName">
-              {{'Please fill in information' | translate}}
-            </div>
-          </div>
-
-          <div class="xl:col-span-6 col-span-12">
-            <label for="deal-title" class="form-label">{{'นามสกุล' | translate}}</label>
-            <input type="text" class="form-control" id="deal-title" placeholder="" [(ngModel)]="selectModel.lastName">
-            <div class="text-danger" *ngIf="!selectModel.lastName">
-              {{'Please fill in information' | translate}}
-            </div>
-          </div>
-
-          <div class="xl:col-span-6 col-span-12">
-            <label for="deal-title" class="form-label">{{'อีเมล' | translate}}</label>
-            <input type="text" class="form-control" id="deal-title" placeholder="" [(ngModel)]="selectModel.email">
-            <div class="text-danger" *ngIf="!selectModel.email">
+            <label for="deal-title" class="form-label">{{'ชื่อ-สกุล' | translate}}</label>
+            <input type="text" class="form-control" id="deal-title" placeholder="" [(ngModel)]="selectModel.name">
+            <div class="text-danger" *ngIf="!selectModel.name">
               {{'Please fill in information' | translate}}
             </div>
           </div>
 
 
-          <div class="xl:col-span-6 col-span-12">
-            <label for="deal-title" class="form-label">{{'เบอร์ติดต่อ' | translate}}</label>
-            <input type="text" class="form-control" id="deal-title" placeholder=""
-              [(ngModel)]="selectModel.phoneNumber">
-            <div class="text-danger" *ngIf="!selectModel.phoneNumber">
-              {{'Please fill in information' | translate}}
-            </div>
-          </div>
+
+
 
 
           <div class="xl:col-span-12 col-span-12">
             <label class="form-label">{{'User Role' | translate}}</label>
             <ng-select name="choices-multiple-remove-button1" id="choices-multiple-remove-button1" placeholder=""
               [(ngModel)]="selectModel.role">
-              <ng-option [value]="0">{{'ผู้ใช้งานทั่วไป' | translate}}</ng-option>
-              <ng-option [value]="1">{{'ผู้ดูแลบริษัท' | translate}}</ng-option>
+              <ng-option value="manager">{{'manager' | translate}}</ng-option>
+              <ng-option value="staff">{{'staff' | translate}}</ng-option>
             </ng-select>
           </div>
           <div class="xl:col-span-12 col-span-12">
             <label class="form-label">{{'Status' | translate}}</label>
             <ng-select name="choices-multiple-remove-button2" id="choices-multiple-remove-button2" placeholder=""
-              [(ngModel)]="selectModel.status">
-              <ng-option [value]="0">{{'Unactive' | translate}}</ng-option>
-              <ng-option [value]="1">{{'Active' | translate}}</ng-option>
+              [(ngModel)]="selectModel.is_active">
+              <ng-option [value]="false">{{'Unactive' | translate}}</ng-option>
+              <ng-option [value]="true">{{'Active' | translate}}</ng-option>
             </ng-select>
           </div>
 
