@@ -130,8 +130,13 @@ export class NavService implements OnDestroy {
         { path: '/admin/manage-customer', title: 'ลูกค้า', type: 'link' },
         { path: '/admin/manage-menu', title: 'รายการอาหาร', type: 'link' },
         {
-          path: '/admin/manage-room-table',
-          title: 'โต๊ะ&ห้อง',
+          path: '/admin/manage-table',
+          title: 'โต๊ะอาหาร',
+          type: 'link',
+        },
+        {
+          path: '/admin/manage-room',
+          title: 'ห้องประชุม',
           type: 'link',
         },
       ],
@@ -145,65 +150,6 @@ export class NavService implements OnDestroy {
       //   active: false,
       // }
     ]
-  }
-
-  getProjectAdminMenu() {
-    return [
-      // Dashboard
-      { headTitle: 'จัดการโครงการ' },
-      {
-        icon: 'home',
-        path: '/company/admin-home',
-        title: 'หน้าแรก',
-        type: 'link',
-        selected: false,
-        Menusub: true,
-        active: false,
-      },
-      // { headTitle: 'User Management' },
-      {
-        title: 'จัดการข้อมูลโครงการ',
-        icon: 'buildings',
-        type: 'sub',
-        badgeClass: 'warning',
-        badgeText: 'warning',
-        active: false,
-        children: [
-          { path: '/company/equirement-emp', title: 'สินทรัพย์', type: 'link' },
-          { path: '/company/project-emp', title: 'พนักงาน', type: 'link' }
-        ],
-      },
-      {
-        icon: 'store',
-        path: '/company/admin-borrow',
-        title: 'จัดการการเบิก-คืน',
-        type: 'link',
-        selected: false,
-        Menusub: true,
-        active: false,
-      },
-    ];
-  }
-
-  getProjectEmpMenu() {
-    return [
-      // Dashboard
-      { headTitle: 'จัดการบริษัท' },
-      // { headTitle: 'User Management' }
-      {
-        title: 'จัดการข้อมูลการลงเวลา',
-        icon: 'time',
-        type: 'sub',
-        badgeClass: 'warning',
-        badgeText: 'warning',
-        active: false,
-        children: [
-          { path: '/company/company-location', title: 'สถานที่การลงเวลา', type: 'link' },
-          { path: '/company/timestamp-log', title: 'ข้อมูลการลงเวลา', type: 'link' },
-          // { path: '/company/warning-timestamp-log', title: 'อนุมัติการลงเวลา', type: 'link' },
-        ],
-      }
-    ];
   }
 
   items = new BehaviorSubject<Menu[]>(this.MENUITEMS);

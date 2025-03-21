@@ -169,22 +169,27 @@ export class SidebarComponent {
   }
 
   changeMenu() {
-    if (this.isInstallerRoute) {
-      if(this.tokenService.getUser().role=='manager'){
-        this.menuitemsSubscribe$ = this.navServices.items.subscribe((items) => {
-          this.menuItems = this.navServices.getProjectAdminMenu();
-        });
-      }else{
-        this.menuitemsSubscribe$ = this.navServices.items.subscribe((items) => {
-          this.menuItems = this.navServices.getProjectEmpMenu();
-        });
-      }
-
-    } else {
+    if (this.isCommonRoute) {
       this.menuitemsSubscribe$ = this.navServices.items.subscribe((items) => {
         this.menuItems = this.navServices.getCommonMenu();
       });
+      // if(this.tokenService.getUser().role=='manager'){
+      //   this.menuitemsSubscribe$ = this.navServices.items.subscribe((items) => {
+      //     this.menuItems = this.navServices.getCommonMenu();
+      //   });
+      // }
+      // else{
+      //   this.menuitemsSubscribe$ = this.navServices.items.subscribe((items) => {
+      //     this.menuItems = this.navServices.getProjectEmpMenu();
+      //   });
+      // }
+
     }
+    // else {
+    //   this.menuitemsSubscribe$ = this.navServices.items.subscribe((items) => {
+    //     this.menuItems = this.navServices.getCommonMenu();
+    //   });
+    // }
     this.ParentActive()
   }
 

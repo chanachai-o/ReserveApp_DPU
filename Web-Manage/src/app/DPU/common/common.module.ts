@@ -25,9 +25,14 @@ export const admin: Routes = [
         import('./menus-management/menus-management.component').then((m) => m.MenusManagementComponent),
     },
     {
-      path: 'manage-room-table',
+      path: 'manage-table',
       loadComponent: () =>
-        import('./room-table-management/room-table-management.component').then((m) => m.RoomTableManagementComponent),
+        import('./table-management/table-management.component').then((m) => m.TableManagementComponent),
+    },
+    {
+      path: 'manage-room',
+      loadComponent: () =>
+        import('./room-management/room-management.component').then((m) => m.RoomManagementComponent),
     },
 
     ]

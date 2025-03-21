@@ -23,7 +23,7 @@ export class TokenService {
   signOut(): void {
     window.localStorage.clear();
     localStorage.clear();
-    this.router.navigate(["/auth/login"]);
+    this.router.navigate(["/"]);
   }
 
   public saveToken(token: UserModel): void {
