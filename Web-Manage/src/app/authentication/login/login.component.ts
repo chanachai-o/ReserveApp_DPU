@@ -120,7 +120,7 @@ export class LoginComponent {
       this.tokenService.saveUser(result);
       if (result.is_active) {
         if (result.role == 'manager') {
-          this.routes.navigate(['/admin/member-manage'])
+          this.routes.navigate(['/admin/home'])
         }
 
       } else {

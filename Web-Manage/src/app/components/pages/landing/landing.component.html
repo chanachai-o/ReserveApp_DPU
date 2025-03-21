@@ -125,8 +125,7 @@
               <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path>
             </svg></div>
           <div class="lg:flex hidden space-x-2 rtl:space-x-reverse">
-            <a routerLink="/auth/login"
-              class="ti-btn w-[6.375rem] ti-btn-primary-full m-0 p-2">เข้าสู่ระบบ</a>
+            <a routerLink="/auth/login" class="ti-btn w-[6.375rem] ti-btn-primary-full m-0 p-2">เข้าสู่ระบบ</a>
             <a routerLink="/apps/jobs/job-post"
               class="ti-btn  bg-secondary text-white !font-medium me-[0.365rem] whitespace-nowrap">
               จองเลย
@@ -166,7 +165,8 @@
             </div>
             <div class="xxl:col-span-5 xl:col-span-5 lg:col-span-5 col-span-12">
               <div class="text-end landing-main-image landing-heading-img flex justify-end w-full">
-                <img src="./assets/images/media/landing/1.jpg" alt="" class="img-fluid" style="width: 100%;height: auto;">
+                <img src="./assets/images/media/landing/1.jpg" alt="" class="img-fluid"
+                  style="width: 100%;height: auto;">
               </div>
             </div>
           </div>
@@ -348,7 +348,57 @@
           </div>
         </div>
         <div class="grid grid-cols-12 gap-x-6">
-          <div class="lg:col-span-4 md:col-span-6 col-span-12">
+          @for(item of menuList;track menuList){
+            <div class="xxl:col-span-2 xl:col-span-3 lg:col-span-4 md:col-span-4 sm:col-span-6 col-span-12">
+              <div class="box custom-box">
+                <img [src]="item.getPicture()" class="!rounded-t-md" alt="..."
+                  style="width: 100%;height: 200px;object-fit: cover;">
+                <div class="flex items-center justify-between nft-like-section w-full px-4">
+                  <!-- <div class="flex-grow">
+                    <button type="button" aria-label="button"
+                      class="ti-btn ti-btn-sm ti-btn-success-full !rounded-full btn-wave waves-effect waves-light">
+                      <i class="ri-heart-fill"></i>
+                    </button>
+                  </div>
+                  <div>
+                    <span class="badge nft-like-badge text-white"><i
+                        class="ri-heart-fill me-1 text-danger align-middle inline-block"></i>0.47k</span>
+                  </div> -->
+                </div>
+                <div class="box-body">
+
+                  <div class="flex items-center mb-4">
+                    <div>
+
+                      <p class="text-[.9375rem] font-semibold mb-2"><a href="javascript:void(0);">{{item.name}}</a></p>
+
+                    </div>
+                  </div>
+
+                  <div class="flex flex-wrap align-itesm-center justify-between">
+                    <div class="font-semibold mb-1">รายละเอียด :</div>
+                    <p class="text-[#8c9097] dark:text-white/50 mb-3">{{item.description}}</p>
+                    <!-- <div class="flex flex-wrap items-center leading-none">
+                      <span class="avatar avatar-xs me-1">
+                        <img src="./assets/images/crypto-currencies/square-color/Ethereum.svg" alt="">
+                      </span>0.24ETH
+                    </div> -->
+                  </div>
+
+                  <div class="flex flex-wrap align-itesm-center justify-between">
+                    <div class="font-semibold mb-1">หมวดหมู่ :</div>
+                    <p class="text-[#8c9097] dark:text-white/50 mb-3">{{item.category}}</p>
+                  </div>
+                  <div class="flex flex-wrap align-itesm-center justify-between mb-2">
+                    <div class="font-semibold mb-1">ราคา :</div>
+                    <h3 class="text-[#8c9097] dark:text-white/50">{{item.price}}</h3>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          <!-- <div class="lg:col-span-4 md:col-span-6 col-span-12">
             <div class="box border dark:border-defaultborder/10">
               <div class="grid grid-cols-12 g-0">
                 <div class="md:col-span-3 col-span-4">
@@ -365,97 +415,8 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div class="lg:col-span-4 md:col-span-6 col-span-12">
-            <div class="box border dark:border-defaultborder/10">
-              <div class="grid grid-cols-12 g-0">
-                <div class="md:col-span-3 col-span-4">
-                  <img src="./assets/images/media/jobs-landing/2.jpg"
-                    class="img-fluid rounded-start h-full browse-jobs-image !rounded-s-md" alt="...">
-                </div>
-                <div class="md:col-span-9 col-span-8 my-auto">
-                  <div class="box-body">
-                    <h5 class="box-title font-semibold !text-[1.25rem]">Customer Support</h5>
-                    <p class="mb-4"><span class="text-default font-semibold ">370 Jobs</span> available</p>
-                    <a class="text-primary font-semibold" href="javascript:void(0);">Explore Jobs<i
-                        class="ri-arrow-right-s-line align-middle rtl:rotate-180"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="lg:col-span-4 md:col-span-6 col-span-12">
-            <div class="box border dark:border-defaultborder/10">
-              <div class="grid grid-cols-12 g-0">
-                <div class="md:col-span-3 col-span-4">
-                  <img src="./assets/images/media/jobs-landing/3.jpg"
-                    class="img-fluid rounded-start h-full browse-jobs-image !rounded-s-md" alt="...">
-                </div>
-                <div class="md:col-span-9 col-span-8 my-auto">
-                  <div class="box-body">
-                    <h5 class="box-title font-semibold !text-[1.25rem]">Marketing</h5>
-                    <p class="mb-4"><span class="text-default font-semibold">743 Jobs</span> available</p>
-                    <a class="text-primary font-semibold" href="javascript:void(0);">Explore Jobs<i
-                        class="ri-arrow-right-s-line align-middle rtl:rotate-180"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="lg:col-span-4 md:col-span-6 col-span-12">
-            <div class="box border dark:border-defaultborder/10">
-              <div class="grid grid-cols-12 g-0">
-                <div class="md:col-span-3 col-span-4">
-                  <img src="./assets/images/media/jobs-landing/4.jpg"
-                    class="img-fluid rounded-start h-full browse-jobs-image !rounded-s-md" alt="...">
-                </div>
-                <div class="md:col-span-9 col-span-8 my-auto">
-                  <div class="box-body">
-                    <h5 class="box-title font-semibold !text-[1.25rem]">Product Management</h5>
-                    <p class="mb-4"><span class="text-default font-semibold">156 Jobs</span> available</p>
-                    <a class="text-primary font-semibold" href="javascript:void(0);">Explore Jobs<i
-                        class="ri-arrow-right-s-line align-middle rtl:rotate-180"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="lg:col-span-4 md:col-span-6 col-span-12">
-            <div class="box border dark:border-defaultborder/10">
-              <div class="grid grid-cols-12 g-0">
-                <div class="md:col-span-3 col-span-4">
-                  <img src="./assets/images/media/jobs-landing/5.jpg"
-                    class="img-fluid rounded-start h-full browse-jobs-image !rounded-s-md" alt="...">
-                </div>
-                <div class="md:col-span-9 col-span-8 my-auto">
-                  <div class="box-body">
-                    <h5 class="box-title font-semibold !text-[1.25rem]">Accountant</h5>
-                    <p class="mb-4"><span class="text-default font-semibold">67 Jobs</span> available</p>
-                    <a class="text-primary font-semibold" href="javascript:void(0);">Explore Jobs<i
-                        class="ri-arrow-right-s-line align-middle rtl:rotate-180"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="lg:col-span-4 md:col-span-6 col-span-12">
-            <div class="box border dark:border-defaultborder/10">
-              <div class="grid grid-cols-12 g-0">
-                <div class="md:col-span-3 col-span-4">
-                  <img src="./assets/images/media/jobs-landing/6.jpg"
-                    class="img-fluid rounded-start h-full browse-jobs-image !rounded-s-md" alt="...">
-                </div>
-                <div class="md:col-span-9 col-span-8 my-auto">
-                  <div class="box-body">
-                    <h5 class="box-title font-semibold !text-[1.25rem]">Technical Support</h5>
-                    <p class="mb-4"><span class="text-default font-semibold">140 Jobs</span> available</p>
-                    <a class="text-primary font-semibold" href="javascript:void(0);">Explore Jobs<i
-                        class="ri-arrow-right-s-line align-middle rtl:rotate-180"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          </div> -->
+          }
         </div>
       </div>
     </section>
