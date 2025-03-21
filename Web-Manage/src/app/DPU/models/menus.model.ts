@@ -64,3 +64,37 @@ export class TablesModel {
   }
 
 }
+
+export class RoomModel {
+  name: string;
+  picture?: any;
+  capacity: number;
+  equipment: string;
+  status: string;
+  id: number;
+
+  constructor(data?: Partial<RoomModel>) {
+    this.picture = data?.picture ?? '';
+    this.name = data?.name!
+    this.capacity = data?.capacity!
+    this.status = data?.status!
+    this.id = data?.id!
+    this.equipment = data?.equipment!
+  }
+
+  getPicture(): string {
+    return this.picture ? environment.baseUrl + '/images/' + this.picture : './assets/images/faces/333.png'
+  }
+
+  getStatus(): string {
+    // # available, reserved, unavailable
+    if (this.status == 'available') {
+      return 'เปิดบริการ'
+    } else if (this.status == 'reserved') {
+      return 'จอง'
+    } {
+      return 'ไม่เปิดให้บริการ'
+    }
+  }
+
+}

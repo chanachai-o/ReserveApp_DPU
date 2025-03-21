@@ -280,52 +280,17 @@
               incididunt ut labore et dolore magna aliqua</span>
           </div> -->
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="md:col-span-1 col-span-12">
-            <div class="box border dark:border-defaultborder/10">
-              <a href="javascript:void(0);">
-                <img src="./assets/images/media/jobs-landing/blog/1.jpg" class="!rounded-t-md" alt="...">
-              </a>
-              <div class="box-body">
-                <span class="badge bg-secondary text-white blog-badge">Interview</span>
-                <h5 class="font-semibold mb-1 text-[1.25rem]">How to prepare an interview?</h5>
-                <p class="card-text mb-4">The holographic principle, theorized to be a property of quantum gravity,
-                  postulates that the description.</p>
-                <a class="text-primary font-semibold" href="javascript:void(0);">Read this post<i
-                    class="ri-arrow-right-s-line align-middle rtl:rotate-180"></i></a>
-              </div>
-            </div>
+        <div class="grid grid-cols-12 gap-x-6" gallerize>
+          @for(img of roomList; track img.id){
+
+          <div class="lg:col-span-3 md:col-span-3 sm:col-span-6 col-span-12">
+            <a class="glightbox box" data-gallery="gallery1">
+              <img [src]="img.getPicture()" alt="image">
+
+            </a>
           </div>
-          <div class="md:col-span-1 col-span-12">
-            <div class="box border dark:border-defaultborder/10">
-              <a href="javascript:void(0);">
-                <img src="./assets/images/media/jobs-landing/blog/2.jpg" class="!rounded-t-md" alt="...">
-              </a>
-              <div class="box-body">
-                <span class="badge bg-danger text-white blog-badge">Freelancer</span>
-                <h5 class="font-semibold mb-1 text-[1.25rem]">Freelancer vs Employement</h5>
-                <p class="card-text mb-4">The holographic principle, theorized to be a property of quantum gravity,
-                  postulates that the description.</p>
-                <a class="text-primary font-semibold" href="javascript:void(0);">Read this post<i
-                    class="ri-arrow-right-s-line align-middle rtl:rotate-180"></i></a>
-              </div>
-            </div>
-          </div>
-          <div class="md:col-span-1 col-span-12">
-            <div class="box border dark:border-defaultborder/10">
-              <a href="javascript:void(0);">
-                <img src="./assets/images/media/jobs-landing/blog/3.jpg" class="!rounded-t-md" alt="...">
-              </a>
-              <div class="box-body">
-                <span class="badge bg-warning text-white blog-badge">Jobmaster</span>
-                <h5 class="font-semibold mb-1 text-[1.25rem]">Job opportunity in jobmaster</h5>
-                <p class="card-text mb-4">The holographic principle, theorized to be a property of quantum gravity,
-                  postulates that the description.</p>
-                <a class="text-primary font-semibold" href="javascript:void(0);">Read this post<i
-                    class="ri-arrow-right-s-line align-middle rtl:rotate-180"></i></a>
-              </div>
-            </div>
-          </div>
+          }
+
         </div>
       </div>
     </section>

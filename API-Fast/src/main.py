@@ -169,6 +169,19 @@ async def update_table(id: int, table: TableUpdate, db: AsyncSession = Depends(g
     await db.refresh(db_table)
     return db_table
 
+@tables_router.delete("/{id}")
+async def delete_table(id: int, db: AsyncSession = Depends(get_db)):
+    stmt = select(Table).where(Table.id == id)
+    result = await db.execute(stmt)
+    db_table = result.scalars().first()
+
+    if not db_table:
+        raise HTTPException(status_code=404, detail="Table not found")
+
+    await db.delete(db_table)
+    await db.commit()
+    return {"detail": "Table deleted"}
+
 ### Rooms Endpoints
 rooms_router = APIRouter(prefix="/rooms", tags=["Rooms"])
 
@@ -201,6 +214,19 @@ async def update_room(id: int, room: RoomUpdate, db: AsyncSession = Depends(get_
     await db.commit()
     await db.refresh(db_room)
     return db_room
+
+@rooms_router.delete("/{id}")
+async def delete_room(id: int, db: AsyncSession = Depends(get_db)):
+    stmt = select(Room).where(Room.id == id)
+    result = await db.execute(stmt)
+    db_room = result.scalars().first()
+
+    if not db_room:
+        raise HTTPException(status_code=404, detail="Room not found")
+
+    await db.delete(db_room)
+    await db.commit()
+    return {"detail": "Room deleted"}
 
 ### Reservations Endpoints
 reservations_router = APIRouter(prefix="/reservations", tags=["Reservations"])

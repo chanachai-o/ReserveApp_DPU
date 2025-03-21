@@ -7,8 +7,9 @@ import { fromEvent } from 'rxjs';
 import { SharedModule } from '../../../shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { MenuModel } from '../../../DPU/models/menus.model';
+import { MenuModel, RoomModel } from '../../../DPU/models/menus.model';
 import { MenusService } from '../../../DPU/services/menu.service';
+import { RoomService } from '../../../DPU/services/room.service';
 
 export interface PhotosApi {
   albumId?: number;
@@ -28,11 +29,13 @@ export interface PhotosApi {
 })
 export class LandingComponent {
   menuList: MenuModel[] = []
+  roomList: RoomModel[] = []
   body: HTMLBodyElement | null;
   constructor(
     @Inject(DOCUMENT) private document: Document, private elementRef: ElementRef,
     private renderer: Renderer2, private el: ElementRef,
-    private menuService: MenusService
+    private menuService: MenusService,
+    private roomService: RoomService
 
   ) {
     this.body = document.querySelector('body');
@@ -48,6 +51,10 @@ export class LandingComponent {
   ngOnInit(): void {
     this.menuService.getLists().subscribe(result => {
       this.menuList = result
+    })
+
+    this.roomService.getLists().subscribe(result => {
+      this.roomList = result
     })
 
     this.renderer.addClass(this.document.body, 'landing-body');
