@@ -1,7 +1,7 @@
 import { TranslateService } from "@ngx-translate/core";
 import { BaseModel } from "./base.model";
 import { ProjectModel } from "./project.model";
-import { EquipmentModel } from "./equipments.model";
+import { EquipmentModel } from "./menus.model";
 
 export class ProjectEquipmentModel extends BaseModel {
   quantity_in_project: number;

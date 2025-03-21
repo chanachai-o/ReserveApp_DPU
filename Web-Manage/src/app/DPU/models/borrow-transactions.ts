@@ -1,7 +1,7 @@
 import { TranslateService } from "@ngx-translate/core";
 import { BaseModel } from "./base.model";
 import { UserProfileModel } from "./user.model";
-import { EquipmentModel } from "./equipments.model";
+import { EquipmentModel } from "./menus.model";
 import { ProjectEquipmentModel } from "./project-equipments";
 
 export class BorrowTransactionsModel extends BaseModel {

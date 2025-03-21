@@ -27,6 +27,7 @@ class PaymentStatus(str, enum.Enum):
 class UserBase(BaseModel):
     phone: str
     name: str
+    picture: Optional[str] = None
     role: UserRole
 
 class UserCreate(UserBase):
@@ -35,6 +36,7 @@ class UserCreate(UserBase):
 class UserUpdate(BaseModel):
     name: Optional[str]
     role: Optional[UserRole]
+    picture: Optional[str] = None
     is_active: Optional[bool]
 
 class UserOut(UserBase):
@@ -48,6 +50,7 @@ class UserOut(UserBase):
 class TableBase(BaseModel):
     table_number: str
     capacity: int
+    picture: Optional[str] = None
     status: str  # available, reserved, unavailable
 
 class TableCreate(TableBase):
@@ -56,6 +59,7 @@ class TableCreate(TableBase):
 class TableUpdate(BaseModel):
     capacity: Optional[int]
     status: Optional[str]
+    picture: Optional[str] = None
 
 class TableOut(TableBase):
     id: int
@@ -66,6 +70,7 @@ class TableOut(TableBase):
 # Room schemas
 class RoomBase(BaseModel):
     name: str
+    picture: Optional[str] = None
     capacity: int
     equipment: Optional[str]
     status: str
@@ -77,6 +82,7 @@ class RoomUpdate(BaseModel):
     capacity: Optional[int]
     equipment: Optional[str]
     status: Optional[str]
+    picture: Optional[str] = None
 
 class RoomOut(RoomBase):
     id: int
@@ -113,7 +119,9 @@ class ReservationOut(ReservationBase):
 class MenuBase(BaseModel):
     name: str
     description: Optional[str]
+    category: Optional[str]
     price: Decimal
+    picture: Optional[str] = None
 
 class MenuCreate(MenuBase):
     pass
@@ -121,8 +129,10 @@ class MenuCreate(MenuBase):
 class MenuUpdate(BaseModel):
     name: Optional[str]
     description: Optional[str]
+    category: Optional[str]
     price: Optional[Decimal]
     is_active: Optional[bool]
+    picture: Optional[str] = None
 
 class MenuOut(MenuBase):
     id: int

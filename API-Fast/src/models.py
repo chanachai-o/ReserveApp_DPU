@@ -38,7 +38,7 @@ class User(Base):
     name = Column(String, nullable=False)
     role = Column(Enum(UserRole), default=UserRole.customer)
     is_active = Column(Boolean, default=True)
-
+    picture = Column(String)
     reservations = relationship("Reservation", back_populates="user")
     orders = relationship("Order", back_populates="user")
 
@@ -49,7 +49,7 @@ class Table(Base):
     table_number = Column(String, unique=True, index=True, nullable=False)
     capacity = Column(Integer, nullable=False)
     status = Column(Enum(TableStatus), default=TableStatus.available)
-
+    picture = Column(String)
     reservations = relationship("Reservation", back_populates="table")
 
 # Room model (ห้องประชุมหรือห้องพิเศษ)
@@ -60,6 +60,7 @@ class Room(Base):
     capacity = Column(Integer, nullable=False)
     equipment = Column(String)  # รายการอุปกรณ์ (อาจเก็บเป็น comma-separated string)
     status = Column(String, default="available")  # สามารถเปลี่ยนเป็น Enum ได้เช่นกัน
+    picture = Column(String)
 
     reservations = relationship("Reservation", back_populates="room")
 
@@ -85,8 +86,10 @@ class Menu(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     description = Column(String)
+    category = Column(String)
     price = Column(Numeric(10, 2), nullable=False)
     is_active = Column(Boolean, default=True)
+    picture = Column(String)
 
 # Order model
 class Order(Base):
@@ -118,5 +121,6 @@ class Payment(Base):
     id = Column(Integer, primary_key=True, index=True)
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
     amount = Column(Numeric(10,2), nullable=False)
+    picture = Column(String)
     slip_url = Column(String, nullable=False)  # URL สำหรับสลิปการโอน
     status = Column(Enum(PaymentStatus), default=PaymentStatus.pending)

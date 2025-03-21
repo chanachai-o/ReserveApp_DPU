@@ -1,8 +1,9 @@
 from fastapi import FastAPI, APIRouter, Depends, HTTPException, status
+from fastapi.staticfiles import StaticFiles
 from typing import List, Optional
 import os
 import logging
-
+from .routes import file_upload_router
 # Import AsyncSession จาก sqlalchemy.ext.asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select  # สำหรับใช้กับ await db.execute(select(...))
@@ -52,7 +53,7 @@ if not os.path.exists(UPLOAD_DIR):
 def get_current_active_user():
     # ตัวอย่าง placeholder – ควร implement JWT หรือวิธีการ auth ที่ปลอดภัย
     pass
-
+app.mount("/images", StaticFiles(directory=UPLOAD_DIR), name="images")
 ### Authentication Endpoints
 auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -288,7 +289,7 @@ menus_router = APIRouter(prefix="/menus", tags=["Menus"])
 
 @menus_router.get("/", response_model=List[MenuOut])
 async def get_menus(db: AsyncSession = Depends(get_db)):
-    stmt = select(Menu).where(Menu.is_active == True)
+    stmt = select(Menu)
     result = await db.execute(stmt)
     return result.scalars().all()
 
@@ -476,7 +477,7 @@ app.include_router(reservations_router)
 app.include_router(menus_router)
 app.include_router(orders_router)
 app.include_router(payments_router)
-
+app.include_router(file_upload_router.router, prefix="/api", tags=["File Upload"])
 @app.get("/")
 async def root():
     logging.debug("This is a debug message")
