@@ -106,7 +106,7 @@ export class UserSettingComponent {
       if (item.isSuccess) {
         const res = JSON.parse(response);
         console.log("res", res);
-        // this.selectModel.picture = res.filename
+        this.selectModel.picture = res.filename
         swal(res.message, "บันทึกสำเร็จ", "success");
 
       } else {

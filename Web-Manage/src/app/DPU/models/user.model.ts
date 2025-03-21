@@ -10,6 +10,7 @@ export class UserProfileModel extends BaseModel {
   id: number = 0
   role: string;
   is_active: boolean;
+  picture: string
   constructor(
     data?: Partial<UserProfileModel>,
     translateService?: TranslateService
@@ -22,6 +23,7 @@ export class UserProfileModel extends BaseModel {
     this.id = data?.id || this.id
     this.role = data?.role || ""
     this.is_active = data?.is_active!
+    this.picture = data?.picture!
   }
 
   // getRole(): string {
@@ -43,7 +45,7 @@ export class UserProfileModel extends BaseModel {
     }
   }
 
-  // getPicture(): string {
-  //   return this.picture ? environment.baseUrl + '/images/' + this.picture : './assets/images/faces/1.jpg'
-  // }
+  getPicture(): string {
+    return this.picture ? environment.baseUrl + '/images/' + this.picture : './assets/images/faces/1.jpg'
+  }
 }
