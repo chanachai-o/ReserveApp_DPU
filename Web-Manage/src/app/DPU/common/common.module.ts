@@ -9,6 +9,11 @@ export const admin: Routes = [
       loadComponent: () =>
         import('./home-common/home-common.component').then((m) => m.HomeCommonComponent),
     },
+     {
+      path: 'manage-store',
+      loadComponent: () =>
+        import('./store-management/store-management.component').then((m) => m.StoreManagementComponent),
+    },
     {
       path: 'manage-member',
       loadComponent: () =>

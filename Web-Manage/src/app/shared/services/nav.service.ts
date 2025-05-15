@@ -126,6 +126,7 @@ export class NavService implements OnDestroy {
       Menusub: true,
       active: false,
       children: [
+        { path: '/admin/manage-store', title: 'จัดการร้าน', type: 'link' },
         { path: '/admin/manage-member', title: 'พนักงาน', type: 'link' },
         { path: '/admin/manage-customer', title: 'ลูกค้า', type: 'link' },
         { path: '/admin/manage-menu', title: 'รายการอาหาร', type: 'link' },
