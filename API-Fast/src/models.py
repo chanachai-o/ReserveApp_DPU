@@ -1,9 +1,9 @@
 # models.py
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Enum, Numeric
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Enum, Numeric, func, Time
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 import enum
-
+from datetime import time
 Base = declarative_base()
 
 # Enum definitions
@@ -124,3 +124,27 @@ class Payment(Base):
     picture = Column(String)
     slip_url = Column(String, nullable=False)  # URL สำหรับสลิปการโอน
     status = Column(Enum(PaymentStatus), default=PaymentStatus.pending)
+
+class StoreProfile(Base):
+    """
+    เก็บข้อมูลบริษัท/ร้าน มีได้ 1 แถว
+    """
+    __tablename__ = "store_profile"
+
+    id                 = Column(Integer, primary_key=True, default=1)   # single-row
+    name               = Column(String,  nullable=False)
+    address            = Column(String)
+    phone              = Column(String)
+    email              = Column(String)
+    open_time          = Column(Time)      # เวลาเปิดร้าน
+    close_time         = Column(Time)      # เวลาปิดร้าน
+    tax_id             = Column(String)
+    service_charge_pct = Column(Numeric(5, 2), default=0)
+    vat_pct            = Column(Numeric(5, 2), default=0)
+    logo_url           = Column(String)
+
+    created_at         = Column(DateTime(timezone=True),
+                                 server_default=func.now())
+    updated_at         = Column(DateTime(timezone=True),
+                                 onupdate=func.now(),
+                                 server_default=func.now())

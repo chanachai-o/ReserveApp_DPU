@@ -1,7 +1,7 @@
 # schemas.py
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, EmailStr
 from typing import Optional, List
-from datetime import datetime
+from datetime import time, datetime
 from decimal import Decimal
 import enum
 
@@ -183,3 +183,36 @@ class PaymentOut(PaymentBase):
 
 class PaymentVerify(BaseModel):
     status: PaymentStatus  # completed หรือ declined
+
+class StoreProfileBase(BaseModel):
+    name: str            = Field(..., example="My Bistro")
+    address: Optional[str]
+    phone:   Optional[str] = Field(None, example="02-123-4567")
+    email:   Optional[EmailStr]
+    open_time:  Optional[time]
+    close_time: Optional[time]
+    tax_id: Optional[str]
+    service_charge_pct: Optional[Decimal]
+    vat_pct: Optional[Decimal]
+    logo_url: Optional[str]
+
+class StoreProfileCreate(StoreProfileBase):
+    pass                       # ทุก field เหมือน Base
+
+class StoreProfileUpdate(BaseModel):
+    """ ทุกฟิลด์ optional – PUT เพื่อแก้บางค่า """
+    name: Optional[str]
+    address: Optional[str]
+    phone:   Optional[str]
+    email:   Optional[EmailStr]
+    open_time:  Optional[time]
+    close_time: Optional[time]
+    tax_id: Optional[str]
+    service_charge_pct: Optional[Decimal]
+    vat_pct: Optional[Decimal]
+    logo_url: Optional[str]
+
+class StoreProfileOut(StoreProfileBase):
+    id: int
+    class Config:
+        orm_mode = True

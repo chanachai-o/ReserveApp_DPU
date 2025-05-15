@@ -4,10 +4,10 @@ from typing import List, Optional
 import os
 import logging
 from .routes import file_upload_router
+from .routes.store_router import store_router
 # Import AsyncSession จาก sqlalchemy.ext.asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select  # สำหรับใช้กับ await db.execute(select(...))
-
 from fastapi.middleware.cors import CORSMiddleware
 
 # สมมติว่าใน config.database มีการสร้าง engine และ get_db แบบ async
@@ -503,6 +503,7 @@ app.include_router(reservations_router)
 app.include_router(menus_router)
 app.include_router(orders_router)
 app.include_router(payments_router)
+app.include_router(store_router, prefix="/api", tags=["Store"])
 app.include_router(file_upload_router.router, prefix="/api", tags=["File Upload"])
 @app.get("/")
 async def root():
