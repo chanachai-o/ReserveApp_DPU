@@ -9,7 +9,7 @@ export const admin: Routes = [
       loadComponent: () =>
         import('./home-common/home-common.component').then((m) => m.HomeCommonComponent),
     },
-     {
+    {
       path: 'manage-store',
       loadComponent: () =>
         import('./store-management/store-management.component').then((m) => m.StoreManagementComponent),
@@ -41,7 +41,35 @@ export const admin: Routes = [
     },
 
     ]
-  }
+  },
+  {
+    path: 'staff', children: [
+      {
+        path: 'manage-store',
+        loadComponent: () =>
+          import('./store-management/store-management.component').then((m) => m.StoreManagementComponent),
+      },
+    ]
+  },
+  {
+    path: 'chef', children: [
+      {
+        path: 'manage-store',
+        loadComponent: () =>
+          import('./store-management/store-management.component').then((m) => m.StoreManagementComponent),
+      },
+    ]
+  },
+  {
+    path: 'customer', children: [
+      {
+        path: 'manage-store',
+        loadComponent: () =>
+          import('./store-management/store-management.component').then((m) => m.StoreManagementComponent),
+      },
+    ]
+  },
+
 ];
 
 

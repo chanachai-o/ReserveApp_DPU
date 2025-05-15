@@ -121,8 +121,13 @@ export class LoginComponent {
       if (result.is_active) {
         if (result.role == 'manager') {
           this.routes.navigate(['/admin/home'])
+        } else if (result.role == 'staff') {
+          this.routes.navigate(['/staff/manage-store'])
+        } else if (result.role == 'chef') {
+          this.routes.navigate(['/chef/manage-store'])
+        } else if (result.role == 'customer') {
+          this.routes.navigate(['/customer/home'])
         }
-
       } else {
         this.error = 'ไม่สามารถใช้งานได้กรุณาติดต่อผู้ให้บริการ'
       }
