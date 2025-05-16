@@ -1,0 +1,27 @@
+<div class="box kanban-tasks new shadow rounded-lg p-4 mb-4">
+  <div class="flex items-center justify-between">
+    <div>
+      <span class="badge bg-primary/10 text-primary mr-2">โต๊ะ {{ table.table_number }}</span>
+      <span class="text-sm text-gray-500">นั่งได้ {{ table.capacity }} คน</span>
+    </div>
+    <div class="flex gap-2">
+      <button class="ti-btn ti-btn-success ti-btn-md" (click)="onOpen()">เปิดโต๊ะ</button>
+      <button class="ti-btn ti-btn-primary ti-btn-md" (click)="onReserve()">จองโต๊ะ</button>
+    </div>
+  </div>
+  <div class="mt-3 flex justify-center">
+    <ng-container *ngIf="table.picture; else noPic">
+      <img
+        [src]="table.picture"
+        alt="โต๊ะ"
+        class="rounded-md w-32 h-20 object-cover border shadow"
+        style="background: #f5f5f5"
+      />
+    </ng-container>
+    <ng-template #noPic>
+      <div class="w-32 h-20 flex items-center justify-center bg-gray-100 border rounded-md text-gray-400">
+        ไม่มีรูป
+      </div>
+    </ng-template>
+  </div>
+</div>

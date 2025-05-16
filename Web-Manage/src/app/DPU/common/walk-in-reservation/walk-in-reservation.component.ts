@@ -9,15 +9,21 @@ import { HttpClient } from '@angular/common/http';
 import { FilePondModule, FilePondComponent } from 'ngx-filepond';
 import { SimplebarAngularModule } from 'simplebar-angular';
 import * as FilePond from 'filepond';
+import { AvailableTableCardComponent } from './available-table-card/available-table-card.component';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-walk-in-reservation',
   standalone: true,
-  imports: [SharedModule, NgSelectModule, FlatpickrModule, MaterialModuleModule, SimplebarAngularModule, FilePondModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, SharedModule, NgSelectModule, FlatpickrModule, MaterialModuleModule, SimplebarAngularModule, FilePondModule, FormsModule, ReactiveFormsModule, AvailableTableCardComponent],
   providers: [FlatpickrDefaults],
   templateUrl: './walk-in-reservation.component.html',
   styleUrl: './walk-in-reservation.component.scss'
 })
 export class WalkInReservationComponent {
+  availableTables = [
+    { id: 1, table_number: 'A01', capacity: 4, status: 'available', description: 'ริมหน้าต่าง' },
+    // ...ดึงจาก API จริง
+  ];
   selectedNames = ['Angelina May'];
   names = [
     { id: 1, name: 'Angelina May' },
@@ -81,6 +87,16 @@ export class WalkInReservationComponent {
     };
 
     flatpickr('#pretime', this.flatpickrOptions);
+  }
+
+
+
+  handleOpenTable(id: number) {
+    // เรียก API เปิดโต๊ะ/Check-in
+  }
+
+  handleReserveTable(id: number) {
+    // เรียก API จองโต๊ะ
   }
 
 }
