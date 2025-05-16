@@ -96,6 +96,7 @@ class ReservationCreate(ReservationBase):
     phone: Optional[str] = None
     table_id: Optional[int] = None
     room_id: Optional[int] = None
+    status: ReservationStatus = None
 
 class ReservationUpdate(ReservationBase):
     table_id: Optional[int]

@@ -283,8 +283,7 @@ async def create_reservation(
 
     new_reservation = Reservation(
         **reservation.dict(exclude={"user_id", "phone"}),
-        user_id=user_id,
-        status="pending"
+        user_id=user_id
     )
     db.add(new_reservation)
     await db.commit()
