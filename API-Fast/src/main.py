@@ -144,8 +144,10 @@ async def delete_user(id: int, db: AsyncSession = Depends(get_db)):
 tables_router = APIRouter(prefix="/tables", tags=["Tables"])
 
 @tables_router.get("/", response_model=List[TableOut])
-async def get_tables(db: AsyncSession = Depends(get_db)):
+async def get_tables(status: Optional[str] = None, db: AsyncSession = Depends(get_db)):
     stmt = select(Table)
+    if status:
+        stmt = stmt.where(Table.status == status)
     result = await db.execute(stmt)
     return result.scalars().all()
 
@@ -268,15 +270,29 @@ async def create_reservation(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
+    if reservation.phone:
+        result = await db.execute(select(User).where(User.phone == reservation.phone))
+        user = result.scalars().first()
+        if not user:
+            raise HTTPException(404, detail="No user found for this phone number")
+        user_id = user.id
+    elif reservation.user_id:
+        user_id = reservation.user_id
+    else:
+        user_id = current_user.id
+
     new_reservation = Reservation(
-        **reservation.dict(),
-        user_id=current_user.id,
+        **reservation.dict(exclude={"user_id", "phone"}),
+        user_id=user_id,
         status="pending"
     )
     db.add(new_reservation)
     await db.commit()
     await db.refresh(new_reservation)
-    return new_reservation
+
+    # ✅ ปลอดภัย: แปลงเป็น Pydantic ก่อน return
+    return ReservationOut.from_orm(new_reservation)
+
 
 @reservations_router.put("/{id}", response_model=ReservationOut)
 async def update_reservation(id: int, reservation: ReservationUpdate, db: AsyncSession = Depends(get_db)):

@@ -73,8 +73,8 @@ class Reservation(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     table_id = Column(Integer, ForeignKey("tables.id"), nullable=True)
     room_id = Column(Integer, ForeignKey("rooms.id"), nullable=True)
-    start_time = Column(DateTime, nullable=False)
-    end_time = Column(DateTime, nullable=False)
+    start_time = Column(DateTime(timezone=True), server_default=func.now())
+    end_time = Column(DateTime(timezone=True), server_default=func.now())
     num_people = Column(Integer, nullable=False)
     status = Column(Enum(ReservationStatus), default=ReservationStatus.pending)
 

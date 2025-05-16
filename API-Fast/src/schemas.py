@@ -4,6 +4,7 @@ from typing import Optional, List, Literal
 from datetime import time, datetime
 from decimal import Decimal
 import enum
+from src.models import TableStatus, ReservationStatus
 
 # Enum definitions (สามารถอ้างอิงจาก models ได้เหมือนกัน)
 class UserRole(str, enum.Enum):
@@ -11,12 +12,6 @@ class UserRole(str, enum.Enum):
     staff = "staff"
     chef = "chef"
     manager = "manager"
-
-class ReservationStatus(str, enum.Enum):
-    pending = "pending"
-    checked_in = "checked_in"
-    completed = "completed"
-    cancelled = "cancelled"
 
 class PaymentStatus(str, enum.Enum):
     pending = "pending"
@@ -97,6 +92,8 @@ class ReservationBase(BaseModel):
     num_people: int
 
 class ReservationCreate(ReservationBase):
+    user_id: Optional[int] = None
+    phone: Optional[str] = None
     table_id: Optional[int] = None
     room_id: Optional[int] = None
 
@@ -105,15 +102,18 @@ class ReservationUpdate(ReservationBase):
     room_id: Optional[int]
     status: Optional[ReservationStatus]
 
-class ReservationOut(ReservationBase):
+class ReservationOut(BaseModel):
     id: int
-    status: ReservationStatus
-    user: UserOut
-    table: Optional[TableOut] = None
-    room: Optional[RoomOut] = None
+    user_id: int
+    table_id: Optional[int]
+    room_id: Optional[int]
+    start_time: datetime
+    end_time: datetime
+    num_people: int
+    status: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # ✅ สำหรับ Pydantic v2
 
 # Menu schemas
 class MenuBase(BaseModel):

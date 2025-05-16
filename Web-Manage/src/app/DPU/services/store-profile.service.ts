@@ -16,7 +16,7 @@ export class StoreProfile {
   service_charge_pct?: number;
   vat_pct?: number;
   logo_url?: string;
-  laylout_picture?: string;
+  layout_picture?: string;
 
   constructor(
     data?: Partial<StoreProfile>
@@ -32,7 +32,7 @@ export class StoreProfile {
     this.service_charge_pct = data?.service_charge_pct!;
     this.vat_pct = data?.vat_pct!;
     this.logo_url = data?.logo_url!;
-    this.laylout_picture = data?.laylout_picture!;
+    this.layout_picture = data?.layout_picture!;
   }
 
   getPicture(): string {
@@ -40,7 +40,7 @@ export class StoreProfile {
   }
 
   getLayout(): string {
-    return this.laylout_picture ? environment.baseUrl + '/images/' + this.laylout_picture : ''
+    return this.layout_picture ? environment.baseUrl + '/images/' + this.layout_picture : ''
   }
 }
 
