@@ -94,12 +94,18 @@ class Menu(Base):
     picture = Column(String)
 
 # Order model
+class OrderStatus(enum.Enum):
+    pending    = "pending"
+    preparing  = "preparing"
+    cooked     = "cooked"
+    served     = "served"        # 🆕 บิลเสิร์ฟครบ
+    
 class Order(Base):
     __tablename__ = "orders"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     reservation_id = Column(Integer, ForeignKey("reservations.id"), nullable=True)
-    status = Column(String, default="pending")  # อาจเปลี่ยนเป็น Enum ตามที่ต้องการ
+    status = Column(Enum(OrderStatus), default=OrderStatus.pending)
     total_amount = Column(Numeric(10,2), default=0)
 
     user = relationship("User", back_populates="orders")
@@ -108,10 +114,11 @@ class Order(Base):
 
 # OrderItem model
 class OrderItemStatus(enum.Enum):
-    pending     = "PENDING"      # เพิ่งสร้างยังไม่เข้าครัว
-    preparing   = "PREPARING"    # เชฟกำลังทำ
-    cooked      = "COOKED"       # ทำเสร็จ ส่งเสิร์ฟได้
-    rejected    = "REJECTED"     # ปฏิเสธ/ยกเลิกเมนูนี้
+    pending    = "PENDING"
+    preparing  = "PREPARING"
+    cooked     = "COOKED"
+    rejected   = "REJECTED"
+    served     = "SERVED"        # 🆕 เสิร์ฟแล้ว
 
 class OrderItem(Base):
     __tablename__ = "order_items"

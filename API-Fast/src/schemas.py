@@ -277,3 +277,24 @@ AllowedItemStatus = Literal["PREPARING", "COOKED", "REJECTED"]
 
 class OrderItemStatusUpdate(BaseModel):
     status: AllowedItemStatus
+    
+class DeliverItem(BaseModel):
+    """ไม่ต้องส่งอะไร – แค่ตี PATCH ก็พอ"""
+    pass
+
+class DeliverOrder(BaseModel):
+    pass
+
+class CheckoutRequest(BaseModel):
+    discount_type: Optional[Literal["percent", "fixed"]] = None   # "percent" 10%  | "fixed"  50฿
+    discount_value: Optional[Decimal] = 0                         # 10  | 50
+
+class CheckoutResponse(BaseModel):
+    order_id: int
+    sub_total: Decimal
+    service_charge: Decimal
+    discount: Decimal
+    vat: Decimal
+    grand_total: Decimal
+    qr_code_url: str               # path หรือ S3 URL
+    status: str
