@@ -174,6 +174,7 @@ class OrderOut(BaseModel):
     id: int
     user_id: int
     reservation_id: int | None
+    reservation_id: Optional[int]
     status: str
     total_amount: Decimal
     order_items: List[OrderItemOut]

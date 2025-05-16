@@ -138,7 +138,7 @@ class Payment(Base):
     id = Column(Integer, primary_key=True, index=True)
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
     amount = Column(Numeric(10,2), nullable=False)
-    picture = Column(String)
+    # picture = Column(String)
     slip_url = Column(String, nullable=False)  # URL สำหรับสลิปการโอน
     status = Column(Enum(PaymentStatus), default=PaymentStatus.pending)
 
