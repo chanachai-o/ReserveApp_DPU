@@ -19,6 +19,13 @@ class TableStatus(enum.Enum):
     occupied     = "occupied"      # มีลูกค้านั่งแล้ว
     cleaning     = "cleaning"      # รอพนักงานเช็ดโต๊ะ
     maintenance  = "maintenance"   # ปิดปรับปรุง / ซ่อม
+    
+class RoomStatus(enum.Enum):
+    available    = "available"     # ว่าง ลูกค้าจองได้
+    reserved     = "reserved"      # มีการจองล่วงหน้า
+    occupied     = "occupied"      # มีลูกค้านั่งแล้ว
+    cleaning     = "cleaning"      # รอพนักงานเช็ดโต๊ะ
+    maintenance  = "maintenance"   # ปิดปรับปรุง / ซ่อม   
 
 class ReservationStatus(enum.Enum):
     pending = "pending"
@@ -61,7 +68,7 @@ class Room(Base):
     name = Column(String, unique=True, nullable=False)
     capacity = Column(Integer, nullable=False)
     equipment = Column(String)  # รายการอุปกรณ์ (อาจเก็บเป็น comma-separated string)
-    status = Column(String, default="available")  # สามารถเปลี่ยนเป็น Enum ได้เช่นกัน
+    status = Column(Enum(RoomStatus), default=RoomStatus.available)
     picture = Column(String)
 
     reservations = relationship("Reservation", back_populates="room")
