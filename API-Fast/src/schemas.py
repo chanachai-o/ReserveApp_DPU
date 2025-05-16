@@ -255,3 +255,25 @@ class TableQuickStatus(BaseModel):
         if v not in TableStatus.__members__:
             raise ValueError("Invalid table status")
         return v
+    
+class KitchenOrderItem(BaseModel):
+    menu_id: int
+    name: str        # ชื่อเมนู (join จาก Menu)
+    quantity: int
+    class Config:
+        orm_mode = True
+
+class KitchenOrderOut(BaseModel):
+    id: int
+    reservation_id: Optional[int]
+    created_at: datetime
+    status: str
+    items: List[KitchenOrderItem]
+
+    class Config:
+        orm_mode = True
+
+AllowedItemStatus = Literal["PREPARING", "COOKED", "REJECTED"]
+
+class OrderItemStatusUpdate(BaseModel):
+    status: AllowedItemStatus

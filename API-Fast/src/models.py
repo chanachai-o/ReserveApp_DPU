@@ -107,15 +107,23 @@ class Order(Base):
     reservation = relationship("Reservation")
 
 # OrderItem model
+class OrderItemStatus(enum.Enum):
+    pending     = "PENDING"      # เพิ่งสร้างยังไม่เข้าครัว
+    preparing   = "PREPARING"    # เชฟกำลังทำ
+    cooked      = "COOKED"       # ทำเสร็จ ส่งเสิร์ฟได้
+    rejected    = "REJECTED"     # ปฏิเสธ/ยกเลิกเมนูนี้
+
 class OrderItem(Base):
     __tablename__ = "order_items"
-    id = Column(Integer, primary_key=True, index=True)
-    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
-    menu_id = Column(Integer, ForeignKey("menus.id"), nullable=False)
-    quantity = Column(Integer, nullable=False)
+
+    id        = Column(Integer, primary_key=True)
+    order_id  = Column(Integer, ForeignKey("orders.id"), nullable=False)
+    menu_id   = Column(Integer, ForeignKey("menus.id"),  nullable=False)
+    quantity  = Column(Integer, nullable=False)
+    status    = Column(Enum(OrderItemStatus), default=OrderItemStatus.pending)
 
     order = relationship("Order", back_populates="order_items")
-    menu = relationship("Menu")
+    menu  = relationship("Menu")
 
 # Payment model
 class Payment(Base):

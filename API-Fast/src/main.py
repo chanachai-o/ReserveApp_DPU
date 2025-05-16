@@ -6,6 +6,7 @@ import logging
 from .routes import file_upload_router
 from .routes.store_router import store_router
 from .routes.customers import customers_router
+from .routes.kitchen import kitchen_router
 # Import AsyncSession จาก sqlalchemy.ext.asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select  # สำหรับใช้กับ await db.execute(select(...))
@@ -526,6 +527,7 @@ app.include_router(orders_router)
 app.include_router(payments_router)
 app.include_router(store_router, prefix="/api", tags=["Store"])
 app.include_router(customers_router, prefix="/api", tags=["Customers"])
+app.include_router(kitchen_router, prefix="/api", tags=["Kitchen"])
 app.include_router(file_upload_router.router, prefix="/api", tags=["File Upload"])
 @app.get("/")
 async def root():
