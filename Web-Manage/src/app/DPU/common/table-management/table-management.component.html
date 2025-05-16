@@ -162,16 +162,19 @@
 
           <div class="xl:col-span-12 col-span-12">
             <label for="deal-name" class="form-label">จำนวนคนที่จุได้</label>
-            <input type="number" class="form-control" id="deal-name" placeholder="จำนวนคนที่จุได้" [(ngModel)]="selectModel.capacity">
+            <input type="number" class="form-control" id="deal-name" placeholder="จำนวนคนที่จุได้"
+              [(ngModel)]="selectModel.capacity">
           </div>
 
           <div class="xl:col-span-12 col-span-12">
             <label class="form-label">{{'สถานะการบริการ' | translate}}</label>
             <ng-select name="choices-multiple-remove-button1" id="choices-multiple-remove-button1" placeholder=""
               [(ngModel)]="selectModel.status">
-              <ng-option value="available">{{'เปิดบริการ' | translate}}</ng-option>
-              <ng-option value="reserved">{{'จอง' | translate}}</ng-option>
-              <ng-option value="unavailable">{{'ไม่เปิดให้บริการ' | translate}}</ng-option>
+              <ng-option value="available">{{'ว่าง' | translate}}</ng-option>
+              <ng-option value="reserved">{{'มีการจองล่วงหน้า' | translate}}</ng-option>
+              <ng-option value="occupied">{{'มีลูกค้านั่งแล้ว' | translate}}</ng-option>
+              <ng-option value="cleaning">{{'รอพนักงานเช็ดโต๊ะ' | translate}}</ng-option>
+              <ng-option value="maintenance">{{'maintenance / ซ่อม' | translate}}</ng-option>
             </ng-select>
           </div>
 

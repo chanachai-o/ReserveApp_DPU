@@ -55,12 +55,25 @@ export class TablesModel {
   getStatus(): string {
     // # available, reserved, unavailable
     if (this.status == 'available') {
-      return 'เปิดบริการ'
+      return 'ว่าง'
     } else if (this.status == 'reserved') {
-      return 'จอง'
-    } {
-      return 'ไม่เปิดให้บริการ'
+      return 'มีการจองล่วงหน้า'
+    } else if (this.status == 'occupied') {
+      return 'มีลูกค้านั่งแล้ว'
     }
+    else if (this.status == 'cleaning') {
+      return 'รอพนักงานเช็ดโต๊ะ'
+    } else if (this.status == 'maintenance') {
+      return 'ปิดปรับปรุง / ซ่อม'
+    }
+    else {
+      return '-'
+    }
+    //  available    = "available"     # ว่าง ลูกค้าจองได้
+    // reserved     = "reserved"      # มีการจองล่วงหน้า
+    // occupied     = "occupied"      # มีลูกค้านั่งแล้ว
+    // cleaning     = "cleaning"      # รอพนักงานเช็ดโต๊ะ
+    // maintenance  = "maintenance"   # ปิดปรับปรุง / ซ่อม
   }
 
 }
