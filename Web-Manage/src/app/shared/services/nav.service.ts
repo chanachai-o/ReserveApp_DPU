@@ -143,25 +143,28 @@ export class NavService implements OnDestroy {
       ],
     },
     {
-      title: 'การบริการ',
-      type: 'sub',
+      path: '/admin/walk-in',
+      title: 'บริการหน้าร้าน',
+      type: 'link',
       selected: false,
       Menusub: true,
       active: false,
-      children: [
-        { path: '/admin/manage-store', title: 'Walk-In', type: 'link' },
-        { path: '/admin/manage-store', title: 'Reserved', type: 'link' },
-        { path: '/admin/manage-store', title: 'Take-Home', type: 'link' },
-      ],
     },
-      // {
-      //   path: '/admin/borrow-management',
-      //   title: 'การเบิกคืนอุปกรณ์',
-      //   type: 'link',
-      //   selected: false,
-      //   Menusub: true,
-      //   active: false,
-      // }
+    {
+      path: '/admin/reserved',
+      title: 'จองโต๊ะ/ห้องประชุม',
+      type: 'link',
+      selected: false,
+      Menusub: true,
+      active: false,
+    }, {
+      path: '/admin/takehome',
+      title: 'สั่งอาหารกลับบ้าน',
+      type: 'link',
+      selected: false,
+      Menusub: true,
+      active: false,
+    }
     ]
   }
 

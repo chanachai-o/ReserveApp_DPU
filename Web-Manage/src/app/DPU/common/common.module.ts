@@ -39,34 +39,22 @@ export const admin: Routes = [
       loadComponent: () =>
         import('./room-management/room-management.component').then((m) => m.RoomManagementComponent),
     },
+    {
+        path: 'walk-in',
+        loadComponent: () =>
+          import('./walk-in-reservation/walk-in-reservation.component').then((m) => m.WalkInReservationComponent),
+      },
+      {
+        path: 'reserved',
+        loadComponent: () =>
+          import('./reserved-room-tables/reserved-room-tables.component').then((m) => m.ReservedRoomTablesComponent),
+      },
+      {
+        path: 'takehome',
+        loadComponent: () =>
+          import('./take-home/take-home.component').then((m) => m.TakeHomeComponent),
+      },
 
-    ]
-  },
-  {
-    path: 'staff', children: [
-      {
-        path: 'manage-store',
-        loadComponent: () =>
-          import('./store-management/store-management.component').then((m) => m.StoreManagementComponent),
-      },
-    ]
-  },
-  {
-    path: 'chef', children: [
-      {
-        path: 'manage-store',
-        loadComponent: () =>
-          import('./store-management/store-management.component').then((m) => m.StoreManagementComponent),
-      },
-    ]
-  },
-  {
-    path: 'customer', children: [
-      {
-        path: 'customer-reserve',
-        loadComponent: () =>
-          import('./customer-reserve/customer-reserve.component').then((m) => m.CustomerReserveComponent),
-      },
     ]
   },
 
