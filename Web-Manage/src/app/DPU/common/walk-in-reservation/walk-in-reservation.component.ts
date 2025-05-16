@@ -11,19 +11,40 @@ import { SimplebarAngularModule } from 'simplebar-angular';
 import * as FilePond from 'filepond';
 import { AvailableTableCardComponent } from './available-table-card/available-table-card.component';
 import { CommonModule } from '@angular/common';
+import { ReservationCardComponent } from './reservation-card/reservation-card.component';
 @Component({
   selector: 'app-walk-in-reservation',
   standalone: true,
-  imports: [CommonModule, SharedModule, NgSelectModule, FlatpickrModule, MaterialModuleModule, SimplebarAngularModule, FilePondModule, FormsModule, ReactiveFormsModule, AvailableTableCardComponent],
+  imports: [CommonModule, SharedModule, NgSelectModule, FlatpickrModule, MaterialModuleModule, SimplebarAngularModule, FilePondModule, FormsModule, ReactiveFormsModule, AvailableTableCardComponent, ReservationCardComponent],
   providers: [FlatpickrDefaults],
   templateUrl: './walk-in-reservation.component.html',
   styleUrl: './walk-in-reservation.component.scss'
 })
 export class WalkInReservationComponent {
   availableTables = [
-    { id: 1, table_number: 'A01', capacity: 4, status: 'available', description: 'ริมหน้าต่าง' },
+    { id: 1, table_number: "A01", capacity: 4, picture: '' },
+    { id: 2, table_number: "A02", capacity: 2, picture: '' }
     // ...ดึงจาก API จริง
   ];
+  reservationList = [{
+    "start_time": "2025-05-16T19:18:37.523Z",
+    "end_time": "2025-05-16T19:18:37.523Z",
+    "num_people": 0,
+    "user_id": 0,
+    "phone": "string",
+    "table_id": 0,
+    "room_id": 0,
+    "status": "pending"
+  }, {
+    "start_time": "2025-05-16T19:18:37.523Z",
+    "end_time": "2025-05-16T19:18:37.523Z",
+    "num_people": 0,
+    "user_id": 0,
+    "phone": "string",
+    "table_id": 0,
+    "room_id": 0,
+    "status": "pending"
+  }]
   selectedNames = ['Angelina May'];
   names = [
     { id: 1, name: 'Angelina May' },
@@ -98,5 +119,19 @@ export class WalkInReservationComponent {
   handleReserveTable(id: number) {
     // เรียก API จองโต๊ะ
   }
+
+  handleCheckIn(id: number) {
+    // เรียก API Check-in
+  }
+
+  handleCancel(id: number) {
+    // เรียก API ยกเลิกการจอง
+  }
+
+  onViewDetail(id: number) {
+    // เรียก API ดูรายละเอียดการจอง
+  }
+
+
 
 }
