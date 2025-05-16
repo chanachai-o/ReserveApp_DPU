@@ -9,7 +9,7 @@ from ..config.database import get_db
 from ..models import User, UserRole, Order, OrderItem, Menu ,OrderItemStatus
 from ..schemas import KitchenOrderOut
 from src.schemas import OrderItemStatusUpdate
-
+from ..utils.notifier import trigger_notification
 kitchen_router = APIRouter(prefix="/kitchen", tags=["Kitchen"])
 
 @kitchen_router.get(
@@ -55,6 +55,52 @@ async def update_item_status(
     payload: OrderItemStatusUpdate,
     db: AsyncSession = Depends(get_db)
 ):
+    from sqlalchemy.future import select
+    from sqlalchemy.orm import selectinload
+    from src.models import OrderItem, OrderItemStatus, Order, Reservation, Table
+    from src.utils.notifier import trigger_notification
+
+    stmt = (
+        select(OrderItem)
+        .where(OrderItem.id == item_id, OrderItem.order_id == order_id)
+        .options(selectinload(OrderItem.menu), selectinload(OrderItem.order))
+    )
+    result = await db.execute(stmt)
+    item = result.scalars().first()
+
+    if not item:
+        raise HTTPException(status_code=404, detail="Order item not found")
+
+    try:
+        item.status = OrderItemStatus(payload.status)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid status value")
+
+    await db.commit()
+    await db.refresh(item)
+
+    # ส่ง noti ไปยังพนักงานเมื่ออาหารเสร็จ
+    if item.status == OrderItemStatus.cooked:
+        order_stmt = (
+            select(Order)
+            .where(Order.id == order_id)
+            .options(selectinload(Order.reservation).selectinload(Reservation.table))
+        )
+        result = await db.execute(order_stmt)
+        order = result.scalars().first()
+        table_no = order.reservation.table.table_number if order and order.reservation and order.reservation.table else "-"
+        waiter_id = 2  # ปรับเป็นระบบ logic จริงได้
+
+        await trigger_notification(
+            db,
+            user_id=waiter_id,
+            title="จานอาหารพร้อมเสิร์ฟ",
+            message=f"{item.menu.name} สำหรับโต๊ะ {table_no} เสร็จแล้ว",
+            type="kitchen"
+        )
+
+    return {"detail": f"Item {item_id} status updated to {item.status.value}"}
+
 
     # ➊ ตรวจว่า order กับ item สัมพันธ์กันจริง
     stmt_item = (
@@ -81,5 +127,12 @@ async def update_item_status(
         order = await db.get(Order, order_id)
         order.status = "cooked"   # หรือ Enum OrderStatus.cooked
         await db.commit()
+    await trigger_notification(
+        db,
+        user_id=waiter_id,
+        title="อาหารพร้อมเสิร์ฟ",
+        message=f"อาหาร {menu.name} ของโต๊ะ {table_no} เสร็จแล้ว",
+        type="kitchen"
+    )
 
     return {"detail": "item status updated", "item_id": item.id, "status": item.status.value}

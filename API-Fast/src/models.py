@@ -1,5 +1,5 @@
 # models.py
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Enum, Numeric, func, Time
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Enum, Numeric, func, Time, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 import enum
@@ -166,3 +166,15 @@ class StoreProfile(Base):
     updated_at         = Column(DateTime(timezone=True),
                                  onupdate=func.now(),
                                  server_default=func.now())
+    
+class Notification(Base):
+    __tablename__ = "notifications"
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+    title = Column(String, nullable=False)
+    message = Column(Text)
+    type = Column(String)
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    user = relationship("User")

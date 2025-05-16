@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy.future import select  # สำหรับใช้กับ await db.execute(select(...))
 from fastapi.middleware.cors import CORSMiddleware
+from .utils.notifier import trigger_notification
 
 # สมมติว่าใน config.database มีการสร้าง engine และ get_db แบบ async
 from src.config.database import engine, get_db
@@ -289,6 +290,32 @@ async def create_reservation(
     db.add(new_reservation)
     await db.commit()
     await db.refresh(new_reservation)
+    
+    manager_or_staff_id = 1  # หรือดึงจาก DB ตาม role
+    table_no = f"{new_reservation.table_id or new_reservation.room_id or '-'}"
+    if reservation.phone:
+        result = await db.execute(select(User).where(User.phone == reservation.phone))
+        user = result.scalars().first()
+        if not user:
+            raise HTTPException(404, detail="No user found for this phone number")
+        user_id = user.id
+        customer_name = user.name  # ✅ ได้ชื่อจาก phone
+    elif reservation.user_id:
+        user_id = reservation.user_id
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalars().first()
+        customer_name = user.name if user else "ลูกค้า"  # ✅ ได้ชื่อจาก user_id
+    else:
+        user_id = current_user.id
+        customer_name = current_user.name  # ✅ ชื่อผู้ login
+    
+    await trigger_notification(
+        db,
+        user_id=manager_or_staff_id,
+        title="มีการจองใหม่",
+        message=f"ลูกค้า {customer_name} จองโต๊ะ/ห้องหมายเลข {table_no} เวลา {reservation.start_time}",
+        type="reservation"
+    )
 
     # ✅ ปลอดภัย: แปลงเป็น Pydantic ก่อน return
     return ReservationOut.from_orm(new_reservation)

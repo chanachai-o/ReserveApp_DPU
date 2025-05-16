@@ -314,3 +314,17 @@ class CheckoutResponse(BaseModel):
     grand_total: Decimal
     qr_code_url: str               # path หรือ S3 URL
     status: str
+    
+class NotificationCreate(BaseModel):
+    user_id: int
+    title: str
+    message: str
+    type: Optional[str] = None  # เช่น reservation, payment
+
+class NotificationOut(NotificationCreate):
+    id: int
+    is_read: bool
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
