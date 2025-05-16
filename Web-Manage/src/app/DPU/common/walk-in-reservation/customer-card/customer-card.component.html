@@ -1,0 +1,22 @@
+<div class="box kanban-tasks active shadow rounded-lg p-4 mb-4" style="margin-bottom: 1rem">
+  <div class="flex items-center justify-between">
+    <div>
+      <span class="badge bg-success/10 text-success mr-2">โต๊ะ {{ table.table_number }}</span>
+      <span class="text-sm text-gray-500" *ngIf="customer">ลูกค้า: {{ customer.name || customer.phone }}</span>
+    </div>
+    <div class="flex gap-2">
+      <button class="ti-btn ti-btn-primary ti-btn-xs" (click)="onOrder()">สั่งอาหาร</button>
+      <button class="ti-btn ti-btn-warning ti-btn-xs" (click)="onBill()" *ngIf="currentOrder">เรียกบิล</button>
+      <button class="ti-btn ti-btn-danger ti-btn-xs" (click)="onClose()">ปิดโต๊ะ</button>
+    </div>
+  </div>
+  <div class="mt-2 flex flex-col gap-1 text-xs">
+    <div *ngIf="customer?.num_people">จำนวน: {{ customer.num_people }} คน</div>
+    <div *ngIf="currentOrder">
+      <span>ออเดอร์ล่าสุด: #{{ currentOrder.id }} | สถานะ: {{ currentOrder.status }}</span>
+    </div>
+    <div *ngIf="table.picture">
+      <img [src]="table.picture" alt="โต๊ะ" class="rounded-md w-24 h-16 object-cover border mt-2"/>
+    </div>
+  </div>
+</div>

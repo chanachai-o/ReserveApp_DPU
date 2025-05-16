@@ -12,10 +12,11 @@ import * as FilePond from 'filepond';
 import { AvailableTableCardComponent } from './available-table-card/available-table-card.component';
 import { CommonModule } from '@angular/common';
 import { ReservationCardComponent } from './reservation-card/reservation-card.component';
+import { CustomerCardComponent } from './customer-card/customer-card.component';
 @Component({
   selector: 'app-walk-in-reservation',
   standalone: true,
-  imports: [CommonModule, SharedModule, NgSelectModule, FlatpickrModule, MaterialModuleModule, SimplebarAngularModule, FilePondModule, FormsModule, ReactiveFormsModule, AvailableTableCardComponent, ReservationCardComponent],
+  imports: [CommonModule, SharedModule, NgSelectModule, FlatpickrModule, MaterialModuleModule, SimplebarAngularModule, FilePondModule, FormsModule, ReactiveFormsModule, AvailableTableCardComponent, ReservationCardComponent, CustomerCardComponent],
   providers: [FlatpickrDefaults],
   templateUrl: './walk-in-reservation.component.html',
   styleUrl: './walk-in-reservation.component.scss'
@@ -44,6 +45,29 @@ export class WalkInReservationComponent {
     "table_id": 0,
     "room_id": 0,
     "status": "pending"
+  }]
+  activeTableList = [{
+    "start_time": "2025-05-16T19:18:37.523Z",
+    "end_time": "2025-05-16T19:18:37.523Z",
+    "num_people": 0,
+    "user_id": 0,
+    "phone": "string",
+    "table_id": 0,
+    "room_id": 0,
+    "status": "pending",
+    "currentOrder": undefined,
+        "customer": undefined
+  }, {
+    "start_time": "2025-05-16T19:18:37.523Z",
+    "end_time": "2025-05-16T19:18:37.523Z",
+    "num_people": 0,
+    "user_id": 0,
+    "phone": "string",
+    "table_id": 0,
+    "room_id": 0,
+    "status": "pending",
+    "currentOrder": undefined,
+    "customer": undefined
   }]
   selectedNames = ['Angelina May'];
   names = [
@@ -132,6 +156,16 @@ export class WalkInReservationComponent {
     // เรียก API ดูรายละเอียดการจอง
   }
 
+  onCloseTable(item: any) {
 
+  }
+
+  onBill(item: any) {
+
+  }
+
+  onOrder(item: any) {
+
+  }
 
 }
