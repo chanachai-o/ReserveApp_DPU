@@ -10,6 +10,7 @@ from .routes.kitchen import kitchen_router
 from .routes.waiter import waiter_router
 # Import AsyncSession จาก sqlalchemy.ext.asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlalchemy.future import select  # สำหรับใช้กับ await db.execute(select(...))
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -399,21 +400,32 @@ orders_router = APIRouter(prefix="/orders", tags=["Orders"])
 
 @orders_router.get("/", response_model=List[OrderOut])
 async def get_orders(user: Optional[int] = None, db: AsyncSession = Depends(get_db)):
-    stmt = select(Order)
+    stmt = (
+        select(Order)
+        .options(selectinload(Order.order_items))  # ✅ preload order_items
+    )
     if user:
         stmt = stmt.where(Order.user_id == user)
+
     result = await db.execute(stmt)
-    return result.scalars().all()
+    orders = result.scalars().all()
+
+    return [OrderOut.from_orm(order) for order in orders]  # ✅ convert to Pydantic safely
 
 @orders_router.get("/{id}", response_model=OrderOut)
 async def get_order(id: int, db: AsyncSession = Depends(get_db)):
-    stmt = select(Order).where(Order.id == id)
+    stmt = (
+        select(Order)
+        .where(Order.id == id)
+        .options(selectinload(Order.order_items))  # ✅ preload relationship
+    )
     result = await db.execute(stmt)
     order = result.scalars().first()
 
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    return order
+
+    return OrderOut.from_orm(order)  # ✅ ปลอดภัยสำหรับ Pydantic
 
 @orders_router.post("/", response_model=OrderOut)
 async def create_order(
@@ -421,17 +433,22 @@ async def create_order(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
-    # คำนวณยอดรวม
+    # 👇 ใช้ user_id ที่ส่งมา (ถ้ามี) หรือ fallback เป็น current_user
+    target_user_id = order.user_id or current_user.id
+
+    # ✅ คำนวณยอดรวมจากรายการอาหาร
     total_amount = 0
     for item in order.items:
         stmt_menu = select(Menu).where(Menu.id == item.menu_id)
         result_menu = await db.execute(stmt_menu)
         menu_item = result_menu.scalars().first()
-        if menu_item:
-            total_amount += (menu_item.price * item.quantity)
+        if not menu_item:
+            raise HTTPException(status_code=404, detail=f"Menu ID {item.menu_id} not found")
+        total_amount += menu_item.price * item.quantity
 
+    # ✅ สร้างออเดอร์
     new_order = Order(
-        user_id=current_user.id,
+        user_id=target_user_id,
         reservation_id=order.reservation_id,
         status="pending",
         total_amount=total_amount
@@ -440,7 +457,7 @@ async def create_order(
     await db.commit()
     await db.refresh(new_order)
 
-    # เพิ่ม OrderItem
+    # ✅ สร้างรายการ OrderItem
     for item in order.items:
         order_item = OrderItem(
             order_id=new_order.id,
@@ -450,8 +467,18 @@ async def create_order(
         db.add(order_item)
 
     await db.commit()
-    await db.refresh(new_order)
-    return new_order
+
+    # ✅ ดึงออเดอร์พร้อม preload ความสัมพันธ์ order_items เพื่อให้ from_orm ใช้ได้
+    stmt = (
+        select(Order)
+        .options(selectinload(Order.order_items))
+        .where(Order.id == new_order.id)
+    )
+    result = await db.execute(stmt)
+    order_with_items = result.scalars().first()
+
+    return OrderOut.from_orm(order_with_items)
+
 
 @orders_router.put("/{id}", response_model=OrderOut)
 async def update_order(id: int, order: OrderUpdate, db: AsyncSession = Depends(get_db)):

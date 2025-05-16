@@ -39,7 +39,7 @@ class UserOut(UserBase):
     is_active: bool
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # Table schemas
 class TableBase(BaseModel):
@@ -60,7 +60,7 @@ class TableOut(TableBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # Room schemas
 class RoomBase(BaseModel):
@@ -83,7 +83,7 @@ class RoomOut(RoomBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # Reservation schemas
 class ReservationBase(BaseModel):
@@ -140,32 +140,46 @@ class MenuOut(MenuBase):
     is_active: bool
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # Order schemas
 class OrderItemSchema(BaseModel):
     menu_id: int
     quantity: int
+    
+class OrderItemCreate(BaseModel):
+    menu_id: int
+    quantity: int
+    
+class OrderItemOut(BaseModel):
+    id: int
+    menu_id: int
+    quantity: int
+
+    class Config:
+        from_attributes = True  # <-- สำคัญสำหรับ Pydantic v2
 
 class OrderBase(BaseModel):
     status: str
 
 class OrderCreate(OrderBase):
+    user_id: Optional[int] = None
     reservation_id: Optional[int] = None
-    items: List[OrderItemSchema]
+    items: List[OrderItemCreate]
 
 class OrderUpdate(BaseModel):
     status: Optional[str]
 
-class OrderOut(OrderBase):
+class OrderOut(BaseModel):
     id: int
-    user: UserOut
-    reservation: Optional[ReservationOut] = None
+    user_id: int
+    reservation_id: int | None
+    status: str
     total_amount: Decimal
-    order_items: List[OrderItemSchema]
+    order_items: List[OrderItemOut]
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # ✅ สำคัญสำหรับ .from_orm
 
 # Payment schemas
 class PaymentBase(BaseModel):
@@ -180,7 +194,7 @@ class PaymentOut(PaymentBase):
     status: PaymentStatus
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class PaymentVerify(BaseModel):
     status: PaymentStatus  # completed หรือ declined
@@ -218,21 +232,21 @@ class StoreProfileUpdate(BaseModel):
 class StoreProfileOut(StoreProfileBase):
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
         
 class ReservationBrief(BaseModel):
     id: int
     start_time: datetime
     end_time: datetime
     status: str
-    class Config: orm_mode = True
+    class Config: from_attributes = True
 
 class OrderBrief(BaseModel):
     id: int
     created_at: datetime
     status: str
     total_amount: float
-    class Config: orm_mode = True
+    class Config: from_attributes = True
 
 class CustomerHistoryOut(BaseModel):
     customer_id: int
@@ -262,7 +276,7 @@ class KitchenOrderItem(BaseModel):
     name: str        # ชื่อเมนู (join จาก Menu)
     quantity: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class KitchenOrderOut(BaseModel):
     id: int
@@ -272,7 +286,7 @@ class KitchenOrderOut(BaseModel):
     items: List[KitchenOrderItem]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 AllowedItemStatus = Literal["PREPARING", "COOKED", "REJECTED"]
 
