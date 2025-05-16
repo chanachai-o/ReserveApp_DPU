@@ -63,9 +63,9 @@ export const admin: Routes = [
   {
     path: 'customer', children: [
       {
-        path: 'manage-store',
+        path: 'customer-reserve',
         loadComponent: () =>
-          import('./store-management/store-management.component').then((m) => m.StoreManagementComponent),
+          import('./customer-reserve/customer-reserve.component').then((m) => m.CustomerReserveComponent),
       },
     ]
   },

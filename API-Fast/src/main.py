@@ -5,6 +5,7 @@ import os
 import logging
 from .routes import file_upload_router
 from .routes.store_router import store_router
+from .routes.customers import customers_router
 # Import AsyncSession จาก sqlalchemy.ext.asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select  # สำหรับใช้กับ await db.execute(select(...))
@@ -13,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # สมมติว่าใน config.database มีการสร้าง engine และ get_db แบบ async
 from src.config.database import engine, get_db
 
-from .models import Base, User, Table, Room, Reservation, Menu, Order, OrderItem, Payment
+from .models import Base, User, Table, Room, Reservation, Menu, Order, OrderItem, Payment,TableStatus
 from .schemas import (
     UserCreate, UserUpdate, UserOut,
     TableCreate, TableUpdate, TableOut,
@@ -21,8 +22,9 @@ from .schemas import (
     ReservationCreate, ReservationUpdate, ReservationOut,
     MenuCreate, MenuUpdate, MenuOut,
     OrderCreate, OrderUpdate, OrderOut,
-    PaymentCreate, PaymentOut, PaymentVerify
+    PaymentCreate, PaymentOut, PaymentVerify ,TableQuickStatus
 )
+
 
 logging.basicConfig(level=logging.DEBUG)
 app = FastAPI()
@@ -181,6 +183,25 @@ async def delete_table(id: int, db: AsyncSession = Depends(get_db)):
     await db.delete(db_table)
     await db.commit()
     return {"detail": "Table deleted"}
+
+@tables_router.patch("/{table_id}/status", response_model=TableOut)
+async def quick_change_table_status(
+    table_id: int,
+    payload: TableQuickStatus,
+    db: AsyncSession = Depends(get_db)
+):
+    """เปลี่ยนสถานะโต๊ะรวดเร็ว (cleaning / maintenance / occupied …)"""
+
+    stmt = select(Table).where(Table.id == table_id)
+    result = await db.execute(stmt)
+    table = result.scalars().first()
+    if not table:
+        raise HTTPException(404, "Table not found")
+
+    table.status = TableStatus(payload.status)
+    await db.commit()
+    await db.refresh(table)
+    return table
 
 ### Rooms Endpoints
 rooms_router = APIRouter(prefix="/rooms", tags=["Rooms"])
@@ -504,6 +525,7 @@ app.include_router(menus_router)
 app.include_router(orders_router)
 app.include_router(payments_router)
 app.include_router(store_router, prefix="/api", tags=["Store"])
+app.include_router(customers_router, prefix="/api", tags=["Customers"])
 app.include_router(file_upload_router.router, prefix="/api", tags=["File Upload"])
 @app.get("/")
 async def root():

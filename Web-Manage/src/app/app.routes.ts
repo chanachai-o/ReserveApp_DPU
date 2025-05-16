@@ -11,13 +11,18 @@ import { LoginComponent } from './authentication/login/login.component';
 import { CoverComponent } from './components/authentication/reset-password/cover/cover.component';
 import { JobsLandingComponent } from './components/pages/jobs-landing/jobs-landing.component';
 import { LandingComponent } from './components/pages/landing/landing.component';
+import { CustomerRegisterComponent } from './DPU/common/customer-register/customer-register.component';
 
 export const App_Route: Route[] = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: '', component: ContentLayoutComponent, children: content},
+  { path: '', component: ContentLayoutComponent, children: content },
   {
     path: 'home',
     component: LandingComponent
+  },
+  {
+    path: 'customer-register',
+    component: CustomerRegisterComponent
   },
   {
     path: 'auth/login',

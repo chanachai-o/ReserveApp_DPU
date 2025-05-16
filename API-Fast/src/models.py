@@ -14,9 +14,11 @@ class UserRole(enum.Enum):
     manager = "manager"
 
 class TableStatus(enum.Enum):
-    available = "available"
-    reserved = "reserved"
-    unavailable = "unavailable"
+    available    = "available"     # ว่าง ลูกค้าจองได้
+    reserved     = "reserved"      # มีการจองล่วงหน้า
+    occupied     = "occupied"      # มีลูกค้านั่งแล้ว
+    cleaning     = "cleaning"      # รอพนักงานเช็ดโต๊ะ
+    maintenance  = "maintenance"   # ปิดปรับปรุง / ซ่อม
 
 class ReservationStatus(enum.Enum):
     pending = "pending"

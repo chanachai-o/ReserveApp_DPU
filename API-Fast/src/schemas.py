@@ -1,6 +1,6 @@
 # schemas.py
-from pydantic import BaseModel, Field, EmailStr
-from typing import Optional, List
+from pydantic import BaseModel, Field, EmailStr, validator
+from typing import Optional, List, Literal
 from datetime import time, datetime
 from decimal import Decimal
 import enum
@@ -218,3 +218,40 @@ class StoreProfileOut(StoreProfileBase):
     id: int
     class Config:
         orm_mode = True
+        
+class ReservationBrief(BaseModel):
+    id: int
+    start_time: datetime
+    end_time: datetime
+    status: str
+    class Config: orm_mode = True
+
+class OrderBrief(BaseModel):
+    id: int
+    created_at: datetime
+    status: str
+    total_amount: float
+    class Config: orm_mode = True
+
+class CustomerHistoryOut(BaseModel):
+    customer_id: int
+    name: str
+    phone: str
+    reservations: List[ReservationBrief]
+    orders: List[OrderBrief]
+
+class CustomerBanUpdate(BaseModel):
+    is_active: bool  # false = ban, true = unban
+    
+AllowedStatus  = Literal["available", "reserved", "occupied",
+                        "cleaning", "maintenance"]
+
+class TableQuickStatus(BaseModel):
+    status: AllowedStatus
+
+    # เผื่อ backend enum ไม่ sync กับข้อความ – ตรวจอีกชั้น
+    @validator("status")
+    def check_status(cls, v):
+        if v not in TableStatus.__members__:
+            raise ValueError("Invalid table status")
+        return v
