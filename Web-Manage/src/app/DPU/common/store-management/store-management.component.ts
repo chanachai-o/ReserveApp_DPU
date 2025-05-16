@@ -149,7 +149,7 @@ export class StoreManagementComponent {
       if (item.isSuccess) {
         const res = JSON.parse(response);
         console.log("res", res);
-        this.storeModel.laylout_picture = res.filename
+        this.storeModel.layout_picture = res.filename
         swal(res.message, "บันทึกสำเร็จ", "success");
 
       } else {
@@ -169,7 +169,7 @@ export class StoreManagementComponent {
 
   public onUploadSuccess(args: any): void {
     console.log('onUploadSuccess:', args);
-    this.storeModel.laylout_picture = args[1].filename
+    this.storeModel.layout_picture = args[1].filename
   }
   getCompanyInfo() {
     this.storeServie.getProfile().subscribe(result => {

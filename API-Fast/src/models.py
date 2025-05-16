@@ -166,7 +166,7 @@ class StoreProfile(Base):
     service_charge_pct = Column(Numeric(5, 2), default=0)
     vat_pct            = Column(Numeric(5, 2), default=0)
     logo_url           = Column(String)
-    laylout_picture    = Column(String)
+    layout_picture    = Column(String)
 
     created_at         = Column(DateTime(timezone=True),
                                  server_default=func.now())

@@ -142,6 +142,18 @@ export class NavService implements OnDestroy {
         },
       ],
     },
+    {
+      title: 'การบริการ',
+      type: 'sub',
+      selected: false,
+      Menusub: true,
+      active: false,
+      children: [
+        { path: '/admin/manage-store', title: 'Walk-In', type: 'link' },
+        { path: '/admin/manage-store', title: 'Reserved', type: 'link' },
+        { path: '/admin/manage-store', title: 'Take-Home', type: 'link' },
+      ],
+    },
       // {
       //   path: '/admin/borrow-management',
       //   title: 'การเบิกคืนอุปกรณ์',

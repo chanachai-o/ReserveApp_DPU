@@ -211,7 +211,7 @@ class StoreProfileBase(BaseModel):
     service_charge_pct: Optional[Decimal]
     vat_pct: Optional[Decimal]
     logo_url: Optional[str]
-    laylout_picture: Optional[str]
+    layout_picture: Optional[str]
 
 class StoreProfileCreate(StoreProfileBase):
     pass                       # ทุก field เหมือน Base
@@ -228,7 +228,7 @@ class StoreProfileUpdate(BaseModel):
     service_charge_pct: Optional[Decimal]
     vat_pct: Optional[Decimal]
     logo_url: Optional[str]
-    laylout_picture: Optional[str]
+    layout_picture: Optional[str]
 
 class StoreProfileOut(StoreProfileBase):
     id: int
