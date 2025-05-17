@@ -78,7 +78,7 @@ export interface Room {
   picture?: string;
 }
 
-export interface Reservation {
+export interface ReservationModel {
   id: number;
   user_id: number;
   table_id?: number;

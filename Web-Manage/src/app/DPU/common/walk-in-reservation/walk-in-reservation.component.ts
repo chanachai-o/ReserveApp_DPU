@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FlatpickrModule, FlatpickrDefaults } from 'angularx-flatpickr';
@@ -19,6 +19,7 @@ import { TablesService } from '../../services/tables.service';
 import { TablesModel } from '../../models/menus.model';
 import { Reservation } from '../../services/reservation.service';
 import swal from 'sweetalert';
+import { ReservationModel } from '../../models/all.model';
 @Component({
   selector: 'app-walk-in-reservation',
   standalone: true,
@@ -30,98 +31,8 @@ import swal from 'sweetalert';
 export class WalkInReservationComponent {
   availableTables: TablesModel[] = [];
   selectedTable?: TablesModel
-  reservationList = [
-    {
-      id: 1,
-      user_id: 101,
-      table_id: 5,
-      room_id: null,
-      start_time: '2025-06-01T18:00:00+07:00',
-      end_time: '2025-06-01T20:00:00+07:00',
-      num_people: 4,
-      status: 'pending',
-      note: 'ลูกค้าโทรจอง'
-    },
-    {
-      id: 2,
-      user_id: 102,
-      table_id: null,
-      room_id: 3,
-      start_time: '2025-06-01T13:00:00+07:00',
-      end_time: '2025-06-01T15:00:00+07:00',
-      num_people: 12,
-      status: 'checked_in',
-      note: 'ประชุมบริษัท'
-    },
-    {
-      id: 3,
-      user_id: 103,
-      table_id: 1,
-      room_id: null,
-      start_time: '2025-06-01T12:00:00+07:00',
-      end_time: '2025-06-01T13:30:00+07:00',
-      num_people: 2,
-      status: 'completed',
-      note: null
-    },
-    {
-      id: 4,
-      user_id: 104,
-      table_id: 7,
-      room_id: null,
-      start_time: '2025-06-02T19:30:00+07:00',
-      end_time: '2025-06-02T21:00:00+07:00',
-      num_people: 5,
-      status: 'cancelled',
-      note: 'ลูกค้าแจ้งยกเลิก'
-    },
-    {
-      id: 5,
-      user_id: 105,
-      table_id: null,
-      room_id: 1,
-      start_time: '2025-06-03T10:00:00+07:00',
-      end_time: '2025-06-03T12:00:00+07:00',
-      num_people: 8,
-      status: 'no_show',
-      note: 'จองห้องแต่ไม่มา'
-    }
-  ];
-  activeTableList: Reservation[] = [
-    {
-      id: 1,
-      user_id: 101,
-      table_id: 5,
-      room_id: null,
-      start_time: '2025-06-01T18:00:00+07:00',
-      end_time: '2025-06-01T20:00:00+07:00',
-      num_people: 4,
-      status: 'pending',
-      note: 'ลูกค้าโทรจอง'
-    },
-    {
-      id: 2,
-      user_id: 102,
-      table_id: null,
-      room_id: 3,
-      start_time: '2025-06-01T13:00:00+07:00',
-      end_time: '2025-06-01T15:00:00+07:00',
-      num_people: 12,
-      status: 'checked_in',
-      note: 'ประชุมบริษัท'
-    },
-    {
-      id: 3,
-      user_id: 103,
-      table_id: 1,
-      room_id: null,
-      start_time: '2025-06-01T12:00:00+07:00',
-      end_time: '2025-06-01T13:30:00+07:00',
-      num_people: 2,
-      status: 'checked_in',
-      note: "Walk-In"
-    },
-  ];
+  reservationList: ReservationModel[] = [];
+  activeTableList: ReservationModel[] =[];
   paymentList: any = [
     {
       id: 31,
@@ -161,7 +72,20 @@ export class WalkInReservationComponent {
 
   ngOnInit(): void {
     this.getTable()
+    this.getReserved()
+    this.getCheckIn()
+  }
 
+  getReserved() {
+    this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations").subscribe(result => {
+      this.reservationList = result.filter(e => e.status == 'pending')
+    })
+  }
+
+  getCheckIn() {
+    this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations").subscribe(result => {
+      this.activeTableList = result.filter(e => e.status == 'checked_in')
+    })
   }
 
   getTable() {
@@ -190,7 +114,7 @@ export class WalkInReservationComponent {
       console.log(result)
       this.tableService.reseave(item.table_id).subscribe(result => {
         swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-        this.getTable()
+        this.ngOnInit()
       })
     })
   }
