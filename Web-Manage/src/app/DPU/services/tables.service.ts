@@ -28,6 +28,14 @@ export class TablesService {
       );
   }
 
+  getActiveList() {
+    return this.http
+      .get<TablesModel[]>(this.apiBaseUrl + "/?status=available")
+      .pipe(
+        map((e) => e.map((e) => new TablesModel(e)))
+      );
+  }
+
   save(body: TablesModel) {
     return this.http.post<{
       "message": string,

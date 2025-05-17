@@ -128,91 +128,12 @@
 <!-- End::add board modal -->
 
 <!-- Start::add task modal -->
-<div id="add-task" class="hs-overlay hidden ti-modal">
-  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
-    <div class="ti-modal-content">
-      <div class="ti-modal-header">
-        <h6 class="modal-title text-[1rem] font-semibold text-default dark:text-defaulttextcolor/70"
-          id="mail-ComposeLabel">Add Task</h6>
-        <button type="button" class="hs-dropdown-toggle !text-[1rem] !font-semibold" data-hs-overlay="#add-task">
-          <span class="sr-only">Close</span>
-          <i class="ri-close-line"></i>
-        </button>
-      </div>
-      <div class="ti-modal-body px-4 !overflow-visible">
-        <div class="grid grid-cols-12 gap-6">
-          <div class="xl:col-span-6 col-span-12">
-            <label for="task-name" class="form-label">Task Name</label>
-            <input type="text" class="form-control w-full !rounded-md" id="task-name2" placeholder="Task Name">
-          </div>
-          <div class="xl:col-span-6 col-span-12">
-            <label for="task-id" class="form-label">Task ID</label>
-            <input type="text" class="form-control w-full !rounded-md" id="task-id" placeholder="Task ID">
-          </div>
-          <div class="xl:col-span-12 col-span-12">
-            <label for="text-area" class="form-label">Task Description</label>
-            <textarea class="form-control w-full !rounded-md" id="text-area" rows="2"
-              placeholder="Write Description"></textarea>
-          </div>
-          <div class="xl:col-span-12 col-span-12">
-            <label for="text-area" class="form-label">Task Images</label>
-            <file-pond #myPond [options]="pondOptions" class="multiple-filepond" [files]="pondFiles"
-              (oninit)="pondHandleInit()" (onaddfile)="pondHandleAddFile($event)"
-              (onactivatefile)="pondHandleActivateFile($event)">
-            </file-pond>
-          </div>
-          <div class="xl:col-span-12 col-span-12">
-            <label class="form-label">Assigned To</label>
-            <ng-select [multiple]="true" [(ngModel)]="selectedNames">
-              @for(name of names; track name.id){
-
-              <ng-option>{{name.name}}</ng-option>
-              }
-            </ng-select>
-
-          </div>
-          <div class="xl:col-span-12 col-span-12">
-            <label class="form-label">Target Date</label>
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-text text-muted !rounded-e-none"> <i class="ri-calendar-line"></i> </div>
-
-                <input type="text" class="form-control" id="endDate" placeholder="Choose date with time" mwlFlatpickr
-                  [enableTime]="true" [convertModelValue]="true" [dateFormat]="'Y-m-d H:i'">
-
-              </div>
-            </div>
-          </div>
-          <div class="xl:col-span-12 col-span-12">
-            <label class="form-label">Tags</label>
-            <ng-select [multiple]="true" [(ngModel)]="selectedTags">
-              @for( tag of tags;track tag.id){
-
-              <ng-option [value]="tag.id">{{tag.name}}</ng-option>
-              }
-            </ng-select>
-
-          </div>
-        </div>
-      </div>
-      <div class="ti-modal-footer">
-        <button type="button" class="hs-dropdown-toggle ti-btn  ti-btn-light align-middle" data-hs-overlay="#add-task">
-          Cancel
-        </button>
-        <button type="button" class="ti-btn bg-primary text-white !font-medium">Create</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- End::add task modal -->
-
-<!-- Start::add task modal -->
 <div id="add-reserve" class="hs-overlay hidden ti-modal">
   <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
     <div class="ti-modal-content">
       <div class="ti-modal-header">
         <h6 class="modal-title text-[1rem] font-semibold text-default dark:text-defaulttextcolor/70"
-          id="mail-ComposeLabel">Add Task</h6>
+          id="mail-ComposeLabel">จอง</h6>
         <button type="button" class="hs-dropdown-toggle !text-[1rem] !font-semibold" data-hs-overlay="#add-reserve">
           <span class="sr-only">Close</span>
           <i class="ri-close-line"></i>

@@ -1,0 +1,43 @@
+export enum TableStatus {
+  available = 'available',      // ว่าง ลูกค้าจองได้
+  reserved = 'reserved',        // มีการจองล่วงหน้า
+  occupied = 'occupied',        // มีลูกค้านั่งแล้ว
+  cleaning = 'cleaning',        // รอพนักงานเช็ดโต๊ะ
+  maintenance = 'maintenance'   // ปิดปรับปรุง / ซ่อม
+}
+
+export enum RoomStatus {
+  available = 'available',
+  reserved = 'reserved',
+  occupied = 'occupied',
+  cleaning = 'cleaning',
+  maintenance = 'maintenance'
+}
+
+export enum ReservationStatus {
+  pending = 'pending',
+  checked_in = 'checked_in',
+  completed = 'completed',
+  cancelled = 'cancelled'
+}
+
+export enum PaymentStatus {
+  pending = 'pending',
+  completed = 'completed',
+  declined = 'declined'
+}
+
+export enum OrderStatus {
+  pending = 'pending',
+  preparing = 'preparing',
+  cooked = 'cooked',
+  served = 'served'
+}
+
+export enum OrderItemStatus {
+  pending = 'PENDING',
+  preparing = 'PREPARING',
+  cooked = 'COOKED',
+  rejected = 'REJECTED',
+  served = 'SERVED'
+}

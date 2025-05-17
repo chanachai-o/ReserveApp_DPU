@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableReservationComponent } from '../../table-reservation/table-reservation.component';
-import { TablesModel } from '../walk-in-reservation.component';
+import { TablesModel } from '../../../models/menus.model';
 
 @Component({
   selector: 'app-available-table-card',
