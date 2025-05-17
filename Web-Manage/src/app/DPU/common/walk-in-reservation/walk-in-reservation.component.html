@@ -36,7 +36,7 @@
     </div>
     <ngx-simplebar id="new-tasks">
       <div class="kanban-tasks mb-4">
-        <app-available-table-card *ngFor="let table of availableTables" [table]="table"></app-available-table-card>
+        <app-available-table-card *ngFor="let table of availableTables" [table]="table" (reserveTable)="handleReserveTable($event)"></app-available-table-card>
       </div>
     </ngx-simplebar>
   </div>
@@ -90,7 +90,8 @@
       </div>
     </div>
     <ngx-simplebar id="new-tasks">
-      <app-payment-card *ngFor="let pay of paymentList" [table]="pay.table" [bill]="pay.bill" [customer]="pay.customer"></app-payment-card>
+      <app-payment-card *ngFor="let pay of paymentList" [table]="pay.table" [bill]="pay.bill"
+        [customer]="pay.customer"></app-payment-card>
     </ngx-simplebar>
   </div>
 </div>
@@ -199,6 +200,26 @@
           Cancel
         </button>
         <button type="button" class="ti-btn bg-primary text-white !font-medium">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End::add task modal -->
+
+<!-- Start::add task modal -->
+<div id="add-reserve" class="hs-overlay hidden ti-modal">
+  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
+    <div class="ti-modal-content">
+      <div class="ti-modal-header">
+        <h6 class="modal-title text-[1rem] font-semibold text-default dark:text-defaulttextcolor/70"
+          id="mail-ComposeLabel">Add Task</h6>
+        <button type="button" class="hs-dropdown-toggle !text-[1rem] !font-semibold" data-hs-overlay="#add-reserve">
+          <span class="sr-only">Close</span>
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+      <div class="ti-modal-body px-4 !overflow-visible">
+        <app-table-reservation [tableId]="selectedTable?.id" (reserve)="reserveTable($event)"></app-table-reservation>
       </div>
     </div>
   </div>

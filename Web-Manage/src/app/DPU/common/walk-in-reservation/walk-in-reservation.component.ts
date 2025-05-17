@@ -14,22 +14,32 @@ import { CommonModule } from '@angular/common';
 import { ReservationCardComponent } from './reservation-card/reservation-card.component';
 import { CustomerCardComponent } from './customer-card/customer-card.component';
 import { PaymentCardComponent } from './payment-card/payment-card.component';
+import { TableReservationComponent } from '../table-reservation/table-reservation.component';
+
+export interface TablesModel {
+  id: number
+  table_number: string;
+  capacity: number;
+  picture: string;
+  status: string;
+}
 @Component({
   selector: 'app-walk-in-reservation',
   standalone: true,
-  imports: [CommonModule, SharedModule, NgSelectModule, FlatpickrModule, MaterialModuleModule, SimplebarAngularModule, FilePondModule, FormsModule, ReactiveFormsModule, AvailableTableCardComponent, ReservationCardComponent, CustomerCardComponent, PaymentCardComponent],
+  imports: [CommonModule, SharedModule, NgSelectModule, FlatpickrModule, MaterialModuleModule, SimplebarAngularModule, FilePondModule, FormsModule, ReactiveFormsModule, AvailableTableCardComponent, ReservationCardComponent, CustomerCardComponent, PaymentCardComponent, TableReservationComponent],
   providers: [FlatpickrDefaults],
   templateUrl: './walk-in-reservation.component.html',
   styleUrl: './walk-in-reservation.component.scss'
 })
 export class WalkInReservationComponent {
-  availableTables = [
-    { id: 1, table_number: 'A1', capacity: 2, picture: 'assets/images/tables/table1.jpg' },
-    { id: 2, table_number: 'A2', capacity: 4, picture: 'assets/images/tables/table2.jpg' },
-    { id: 3, table_number: 'B1', capacity: 6, picture: '' },
-    { id: 4, table_number: 'C3', capacity: 4, picture: 'assets/images/tables/table4.jpg' },
-    { id: 5, table_number: 'VIP', capacity: 10, picture: 'assets/images/tables/vip.jpg' },
+  availableTables: TablesModel[] = [
+    { id: 0 ,table_number: 'A1', capacity: 2, picture: 'assets/images/tables/table1.jpg', status: "" },
+    { id: 1 ,table_number: 'A2', capacity: 4, picture: 'assets/images/tables/table2.jpg', status: "" },
+    { id: 2 ,table_number: 'B1', capacity: 6, picture: '', status: "" },
+    { id: 3 ,table_number: 'C3', capacity: 4, picture: 'assets/images/tables/table4.jpg', status: "" },
+    { id: 4 ,table_number: 'VIP', capacity: 10, picture: 'assets/images/tables/vip.jpg', status: "" },
   ];
+  selectedTable?: TablesModel
   reservationList = [
     {
       id: 11,
@@ -227,8 +237,14 @@ export class WalkInReservationComponent {
     // เรียก API เปิดโต๊ะ/Check-in
   }
 
-  handleReserveTable(id: number) {
-    // เรียก API จองโต๊ะ
+  handleReserveTable(item: TablesModel) {
+    // call API จองโต๊ะ ส่ง reservationData
+    this.selectedTable = item
+    console.log('เลือก', this.selectedTable);
+  }
+
+  reserveTable(item: any) {
+    console.log('API', item);
   }
 
   handleCheckIn(id: number) {

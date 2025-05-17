@@ -1,0 +1,28 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+  <div>
+    <label class="block font-medium mb-1">เริ่มใช้โต๊ะ</label>
+    <input type="datetime-local" formControlName="start_time" class="form-control" />
+  </div>
+  <div>
+    <label class="block font-medium mb-1">สิ้นสุด</label>
+    <input type="datetime-local" formControlName="end_time" class="form-control" />
+  </div>
+  <div>
+    <label class="block font-medium mb-1">จำนวนคน</label>
+    <input type="number" min="1" formControlName="num_people" class="form-control" />
+  </div>
+  <div>
+    <label class="block font-medium mb-1">เบอร์โทรลูกค้า (optional)</label>
+    <input type="text" formControlName="phone" class="form-control" />
+  </div>
+  <!-- ซ่อน user_id กับ table_id ในฟอร์ม -->
+  <input type="hidden" formControlName="user_id" />
+  <input type="hidden" formControlName="table_id" />
+  <input type="hidden" formControlName="status" />
+
+  <div class="flex gap-2">
+    <button class="ti-btn ti-btn-primary" type="submit" [disabled]="!this.form.valid"
+      data-hs-overlay="#add-reserve">ยืนยันจองโต๊ะ</button>
+    <button class="ti-btn ti-btn-light" type="button" (click)="form.reset()">ล้างฟอร์ม</button>
+  </div>
+</form>

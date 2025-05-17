@@ -1,5 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TableReservationComponent } from '../../table-reservation/table-reservation.component';
+import { TablesModel } from '../walk-in-reservation.component';
 
 @Component({
   selector: 'app-available-table-card',
@@ -9,22 +11,27 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./available-table-card.component.scss']
 })
 export class AvailableTableCardComponent {
-  @Input() table!: {
-    id: number;
-    table_number: string;
-    capacity: number;
-    picture?: string;
-    // เพิ่ม field อื่นๆได้
-  };
+  @Input() table!: TablesModel
+  @Output() openTable = new EventEmitter<any>();
+  @Output() reserveTable = new EventEmitter<TablesModel>();
+  modalOpen = false;
+  selectedTable: any = null;
+  openReserveModal(table: any) {
+    console.log(table)
+    this.selectedTable = table;
+    this.modalOpen = true;
+  }
 
-  @Output() openTable = new EventEmitter<number>();
-  @Output() reserveTable = new EventEmitter<number>();
+  closeReserveModal() {
+    this.modalOpen = false;
+    this.selectedTable = null;
+  }
 
   onOpen() {
-    this.openTable.emit(this.table.id);
+    this.openTable.emit(this.table);
   }
 
   onReserve() {
-    this.reserveTable.emit(this.table.id);
+    this.reserveTable.emit(this.table);
   }
 }

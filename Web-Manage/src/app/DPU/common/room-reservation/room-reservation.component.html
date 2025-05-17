@@ -1,0 +1,29 @@
+<form class="grid gap-4" (ngSubmit)="onSubmit()">
+  <div>
+    <label>ชื่อ-สกุลลูกค้า</label>
+    <input type="text" [(ngModel)]="form.customerName" name="customerName" class="form-control" required />
+  </div>
+  <div>
+    <label>เบอร์โทร</label>
+    <input type="text" [(ngModel)]="form.customerPhone" name="customerPhone" class="form-control" required />
+  </div>
+  <div>
+    <label>วันที่</label>
+    <input type="date" [(ngModel)]="form.reservationDate" name="reservationDate" class="form-control" required />
+  </div>
+  <div class="flex gap-2">
+    <div>
+      <label>เวลาเริ่ม</label>
+      <input type="time" [(ngModel)]="form.startTime" name="startTime" class="form-control" required />
+    </div>
+    <div>
+      <label>เวลาสิ้นสุด</label>
+      <input type="time" [(ngModel)]="form.endTime" name="endTime" class="form-control" required />
+    </div>
+  </div>
+  <div>
+    <label>จำนวนคน</label>
+    <input type="number" min="1" max="30" [(ngModel)]="form.numPeople" name="numPeople" class="form-control" required />
+  </div>
+  <button class="ti-btn ti-btn-primary w-full mt-2" type="submit">จองห้อง</button>
+</form>
