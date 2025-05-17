@@ -283,6 +283,7 @@ async def create_reservation(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
+    # 1. หา user_id
     if reservation.phone:
         result = await db.execute(select(User).where(User.phone == reservation.phone))
         user = result.scalars().first()
@@ -294,6 +295,7 @@ async def create_reservation(
     else:
         user_id = current_user.id
 
+    # 2. สร้าง reservation
     new_reservation = Reservation(
         **reservation.dict(exclude={"user_id", "phone"}),
         user_id=user_id
@@ -301,25 +303,22 @@ async def create_reservation(
     db.add(new_reservation)
     await db.commit()
     await db.refresh(new_reservation)
-    
-    manager_or_staff_id = 1  # หรือดึงจาก DB ตาม role
+
+    # 3. ส่ง noti (ดึงชื่อ)
+    manager_or_staff_id = 1  # หรือ logic หา staff จริง
     table_no = f"{new_reservation.table_id or new_reservation.room_id or '-'}"
     if reservation.phone:
         result = await db.execute(select(User).where(User.phone == reservation.phone))
         user = result.scalars().first()
-        if not user:
-            raise HTTPException(404, detail="No user found for this phone number")
-        user_id = user.id
-        customer_name = user.name  # ✅ ได้ชื่อจาก phone
+        customer_name = user.name if user else "ลูกค้า"
     elif reservation.user_id:
         user_id = reservation.user_id
         result = await db.execute(select(User).where(User.id == user_id))
         user = result.scalars().first()
-        customer_name = user.name if user else "ลูกค้า"  # ✅ ได้ชื่อจาก user_id
+        customer_name = user.name if user else "ลูกค้า"
     else:
-        user_id = current_user.id
-        customer_name = current_user.name  # ✅ ชื่อผู้ login
-    
+        customer_name = current_user.name
+
     await trigger_notification(
         db,
         user_id=manager_or_staff_id,
@@ -328,27 +327,36 @@ async def create_reservation(
         type="reservation"
     )
 
-    # ✅ ปลอดภัย: แปลงเป็น Pydantic ก่อน return
-    return ReservationOut.from_orm(new_reservation)
+    # 4. 🔥 Query preload relation (user, table, room, orders) ก่อน return
+    stmt = (
+        select(Reservation)
+        .where(Reservation.id == new_reservation.id)
+        .options(
+            selectinload(Reservation.user),
+            selectinload(Reservation.table),
+            selectinload(Reservation.room),
+            selectinload(Reservation.orders).selectinload(Order.order_items).selectinload(OrderItem.menu),
+        )
+    )
+    result = await db.execute(stmt)
+    reservation_with_rel = result.scalars().first()
+    return ReservationOut.from_orm(reservation_with_rel)
 
 
 @reservations_router.put("/{id}", response_model=ReservationOut)
 async def update_reservation(id: int, reservation: ReservationUpdate, db: AsyncSession = Depends(get_db)):
-    # 1. หา reservation เดิม
+    # หา reservation เดิม
     stmt = select(Reservation).where(Reservation.id == id)
     result = await db.execute(stmt)
     db_reservation = result.scalars().first()
-
     if not db_reservation:
         raise HTTPException(status_code=404, detail="Reservation not found")
-
-    # 2. อัปเดตค่า
     for key, value in reservation.dict(exclude_unset=True).items():
         setattr(db_reservation, key, value)
-
     await db.commit()
+    await db.refresh(db_reservation)
 
-    # 3. reload reservation พร้อม preload relation
+    # QUERY ใหม่ preload relation
     stmt = (
         select(Reservation)
         .where(Reservation.id == id)
@@ -356,12 +364,13 @@ async def update_reservation(id: int, reservation: ReservationUpdate, db: AsyncS
             selectinload(Reservation.user),
             selectinload(Reservation.table),
             selectinload(Reservation.room),
+            selectinload(Reservation.orders).selectinload(Order.order_items).selectinload(OrderItem.menu)
         )
     )
     result = await db.execute(stmt)
     updated_reservation = result.scalars().first()
+    return ReservationOut.from_orm(updated_reservation)
 
-    return updated_reservation  # ✅ preload relation แล้ว Pydantic serialize ได้!
 
 @reservations_router.delete("/{id}")
 async def delete_reservation(id: int, db: AsyncSession = Depends(get_db)):

@@ -24,6 +24,7 @@ export enum RoomStatus {
 export enum ReservationStatus {
   pending = 'pending',
   checked_in = 'checked_in',
+  checked_out = "checked_out",
   completed = 'completed',
   cancelled = 'cancelled'
 }

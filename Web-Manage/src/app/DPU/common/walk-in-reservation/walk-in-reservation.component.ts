@@ -187,7 +187,22 @@ export class WalkInReservationComponent {
   }
 
   onBill(item: any) {
-
+    console.log("bile", item)
+    item.end_time = new Date().toISOString()
+    this.http.post("http://127.0.0.1:8000/reservations/" + item.id + "/checkout", item).subscribe(result => {
+      console.log(result)
+      this.tableService.cancelReseave(item.table_id).subscribe(result => {
+        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+        this.ngOnInit()
+      })
+    })
+    // this.http.post("http://127.0.0.1:8000/payments/orders/" + item.id + "/payment", {
+    //   "amount": 0,
+    //   "slip_url": ""
+    // }).subscribe(result => {
+    //   swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+    //   this.ngOnInit()
+    // })
   }
 
   onOrder(item: any) {

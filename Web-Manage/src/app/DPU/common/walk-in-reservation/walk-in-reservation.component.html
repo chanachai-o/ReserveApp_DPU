@@ -79,7 +79,8 @@
     <ngx-simplebar id="new-tasks">
 
       <div class="kanban-tasks ">
-        <app-customer-card *ngFor="let item of activeTableList" [occupied]="item" (order)="onOrder($event)"></app-customer-card>
+        <app-customer-card *ngFor="let item of activeTableList" [occupied]="item" (order)="onOrder($event)"
+          (bill)="onBill($event)"></app-customer-card>
       </div>
     </ngx-simplebar>
   </div>
