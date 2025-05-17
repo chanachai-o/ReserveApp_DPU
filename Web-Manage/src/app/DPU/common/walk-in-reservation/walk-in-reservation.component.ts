@@ -148,7 +148,7 @@ export class WalkInReservationComponent {
     item.end_time = item.start_time
     delete item.room_id
     console.log(item)
-    this.http.post("http://127.0.0.1:8000/reservations/"+item.id+"/checkin", item).subscribe(result => {
+    this.http.post("http://127.0.0.1:8000/reservations/" + item.id + "/checkin", item).subscribe(result => {
       console.log(result)
       this.tableService.reseave(item.table_id).subscribe(result => {
         swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
@@ -157,8 +157,18 @@ export class WalkInReservationComponent {
     })
   }
 
-  handleCancel(id: number) {
-    console.log(id)
+  handleCancel(item: any) {
+    console.log(item)
+    item.end_time = item.start_time
+    item.status = 'cancelled'
+    console.log(item)
+    this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
+      console.log(result)
+      this.tableService.cancelReseave(item.table_id).subscribe(result => {
+        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+        this.ngOnInit()
+      })
+    })
     // เรียก API ยกเลิกการจอง
   }
 

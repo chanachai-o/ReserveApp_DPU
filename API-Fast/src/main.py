@@ -328,6 +328,7 @@ async def create_reservation(
 
 @reservations_router.put("/{id}", response_model=ReservationOut)
 async def update_reservation(id: int, reservation: ReservationUpdate, db: AsyncSession = Depends(get_db)):
+    # 1. หา reservation เดิม
     stmt = select(Reservation).where(Reservation.id == id)
     result = await db.execute(stmt)
     db_reservation = result.scalars().first()
@@ -335,12 +336,26 @@ async def update_reservation(id: int, reservation: ReservationUpdate, db: AsyncS
     if not db_reservation:
         raise HTTPException(status_code=404, detail="Reservation not found")
 
+    # 2. อัปเดตค่า
     for key, value in reservation.dict(exclude_unset=True).items():
         setattr(db_reservation, key, value)
 
     await db.commit()
-    await db.refresh(db_reservation)
-    return db_reservation
+
+    # 3. reload reservation พร้อม preload relation
+    stmt = (
+        select(Reservation)
+        .where(Reservation.id == id)
+        .options(
+            selectinload(Reservation.user),
+            selectinload(Reservation.table),
+            selectinload(Reservation.room),
+        )
+    )
+    result = await db.execute(stmt)
+    updated_reservation = result.scalars().first()
+
+    return updated_reservation  # ✅ preload relation แล้ว Pydantic serialize ได้!
 
 @reservations_router.delete("/{id}")
 async def delete_reservation(id: int, db: AsyncSession = Depends(get_db)):

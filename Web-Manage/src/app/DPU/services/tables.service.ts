@@ -66,4 +66,13 @@ export class TablesService {
     });
   }
 
+  cancelReseave(tableId: number) {
+    return this.http.patch<{
+      "message": string,
+      "user": TablesModel
+    }>(this.apiBaseUrl + "/" + tableId + "/status", {
+      "status": "available"
+    });
+  }
+
 }
