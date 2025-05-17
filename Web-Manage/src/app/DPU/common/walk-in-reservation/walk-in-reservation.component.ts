@@ -18,6 +18,7 @@ import { TableReservationComponent } from '../table-reservation/table-reservatio
 import { TablesService } from '../../services/tables.service';
 import { TablesModel } from '../../models/menus.model';
 import { Reservation } from '../../services/reservation.service';
+import swal from 'sweetalert';
 @Component({
   selector: 'app-walk-in-reservation',
   standalone: true,
@@ -154,7 +155,7 @@ export class WalkInReservationComponent {
     }
   ];
 
-  constructor(private tableService: TablesService) {
+  constructor(private tableService: TablesService, private http: HttpClient) {
 
   }
 
@@ -183,6 +184,15 @@ export class WalkInReservationComponent {
 
   reserveTable(item: any) {
     console.log('API', item);
+    item.status = 'pending'
+    delete item.room_id
+    this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
+      console.log(result)
+      this.tableService.reseave(item.table_id).subscribe(result => {
+        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+        this.getTable()
+      })
+    })
   }
 
   handleCheckIn(id: number) {

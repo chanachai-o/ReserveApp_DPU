@@ -53,7 +53,7 @@ export class TableReservationComponent {
         num_people: [1, [Validators.required, Validators.min(1)]],
         user_id: [0], // option: สามารถ set จาก parent
         phone: [''],
-        table_id: [0, Validators.required],
+        table_id: [changes['tableId'].currentValue, Validators.required],
         status: ['pending'],
       });
     }
