@@ -20,6 +20,7 @@ import { TablesModel } from '../../models/menus.model';
 import { Reservation } from '../../services/reservation.service';
 import swal from 'sweetalert';
 import { ReservationModel } from '../../models/all.model';
+import { TokenService } from '../../../shared/services/token.service';
 @Component({
   selector: 'app-walk-in-reservation',
   standalone: true,
@@ -32,7 +33,7 @@ export class WalkInReservationComponent {
   availableTables: TablesModel[] = [];
   selectedTable?: TablesModel
   reservationList: ReservationModel[] = [];
-  activeTableList: ReservationModel[] =[];
+  activeTableList: ReservationModel[] = [];
   paymentList: any = [
     {
       id: 31,
@@ -66,7 +67,7 @@ export class WalkInReservationComponent {
     }
   ];
 
-  constructor(private tableService: TablesService, private http: HttpClient) {
+  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService) {
 
   }
 
@@ -96,8 +97,10 @@ export class WalkInReservationComponent {
 
 
 
-  handleOpenTable(id: number) {
-    // เรียก API เปิดโต๊ะ/Check-in
+  handleOpenTable(item: TablesModel) {
+    // เรียก API Check-In/Check-in
+    this.selectedTable = item
+    console.log('เลือก', this.selectedTable);
   }
 
   handleReserveTable(item: TablesModel) {
@@ -109,12 +112,33 @@ export class WalkInReservationComponent {
   reserveTable(item: any) {
     console.log('API', item);
     item.status = 'pending'
+    item.end_time = item.start_time
     delete item.room_id
     this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
       console.log(result)
       this.tableService.reseave(item.table_id).subscribe(result => {
         swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
         this.ngOnInit()
+      })
+    })
+  }
+
+  checkInTable(item: any) {
+    console.log('API', item);
+    item.status = 'checked_in'
+    item.end_time = item.start_time
+    item.user_id = this.tokenService.getUser().id
+    delete item.room_id
+    console.log(item)
+    this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
+      console.log(result)
+      this.tableService.reseave(item.table_id).subscribe(result => {
+        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+        this.ngOnInit()
+        const modal = document.getElementById('add-check-in');
+        if (modal) {
+          modal.classList.add('hidden');
+        }
       })
     })
   }

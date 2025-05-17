@@ -3,10 +3,10 @@
     <label class="block font-medium mb-1">เริ่มใช้โต๊ะ</label>
     <input type="datetime-local" formControlName="start_time" class="form-control" />
   </div>
-  <div>
+  <!-- <div>
     <label class="block font-medium mb-1">สิ้นสุด</label>
     <input type="datetime-local" formControlName="end_time" class="form-control" />
-  </div>
+  </div> -->
   <div>
     <label class="block font-medium mb-1">จำนวนคน</label>
     <input type="number" min="1" formControlName="num_people" class="form-control" />
@@ -21,8 +21,10 @@
   <input type="hidden" formControlName="status" />
 
   <div class="flex gap-2">
-    <button class="ti-btn ti-btn-primary" type="submit" [disabled]="!this.form.valid"
+    <button *ngIf="status!='checked_in'" class="ti-btn ti-btn-primary" type="submit" [disabled]="!this.form.valid"
       data-hs-overlay="#add-reserve">ยืนยันจองโต๊ะ</button>
+    <button *ngIf="status=='checked_in'" class="ti-btn ti-btn-primary" type="submit" [disabled]="!this.form.valid"
+      data-hs-overlay="#add-check-in">ยืนยันลูกค้าเข้า</button>
     <button class="ti-btn ti-btn-light" type="button" (click)="form.reset()">ล้างฟอร์ม</button>
   </div>
 </form>

@@ -1,4 +1,5 @@
 import { environment } from "../../../environments/environment";
+import { TableStatus } from "./all.model";
 
 export class MenuModel {
   name: string;
@@ -36,7 +37,7 @@ export class MenuModel {
 export class TablesModel {
   table_number: string;
   capacity: number;
-  status: string;
+  status: TableStatus;
   id: number;
   picture: string;
 

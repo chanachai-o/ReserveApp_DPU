@@ -1,4 +1,4 @@
-<div class="box kanban-tasks new">
+<div class="box kanban-tasks new" style="margin-bottom: 1rem;">
   <div class="box-body !p-0">
     <div class="p-4 kanban-board-head">
       <div class="flex text-[#8c9097] dark:text-white/50 justify-between mb-1 text-[.75rem] font-semibold">
@@ -9,7 +9,7 @@
         <div class="task-badges"><span
             class="ms-1 badge bg-primary/10 text-primary">นั่งได้ {{ table.capacity }} คน</span></div>
         <div class="flex gap-2">
-          <button class="ti-btn ti-btn-success ti-btn-md" (click)="onOpen()">เปิดโต๊ะ</button>
+          <button class="ti-btn ti-btn-success ti-btn-md" (click)="onOpen()" data-hs-overlay="#add-check-in">เปิดโต๊ะ</button>
           <button class="ti-btn ti-btn-primary ti-btn-md" (click)="onReserve()"
             data-hs-overlay="#add-reserve">จองโต๊ะ</button>
         </div>
