@@ -17,12 +17,12 @@ export class CustomerCardComponent {
   @Output() closeTable = new EventEmitter<number>();
 
   onOrder() {
-    this.order.emit(this.occupied.id);
+    this.order.emit(this.occupied);
   }
   onBill() {
-    this.bill.emit(this.occupied.id);
+    this.bill.emit(this.occupied);
   }
   onClose() {
-    this.closeTable.emit(this.occupied.id);
+    this.closeTable.emit(this.occupied);
   }
 }

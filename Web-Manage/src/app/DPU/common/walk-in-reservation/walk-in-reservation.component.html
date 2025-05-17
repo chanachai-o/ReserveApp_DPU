@@ -37,8 +37,7 @@
     <ngx-simplebar id="new-tasks">
       <div class="kanban-tasks mb-4">
         <app-available-table-card *ngFor="let table of availableTables" [table]="table"
-          (openTable)="handleOpenTable($event)"
-          (reserveTable)="handleReserveTable($event)"></app-available-table-card>
+          (openTable)="handleOpenTable($event)" (reserveTable)="handleReserveTable($event)"></app-available-table-card>
       </div>
     </ngx-simplebar>
   </div>
@@ -80,7 +79,7 @@
     <ngx-simplebar id="new-tasks">
 
       <div class="kanban-tasks ">
-        <app-customer-card *ngFor="let item of activeTableList" [occupied]="item"></app-customer-card>
+        <app-customer-card *ngFor="let item of activeTableList" [occupied]="item" (order)="onOrder($event)"></app-customer-card>
       </div>
     </ngx-simplebar>
   </div>
@@ -99,36 +98,6 @@
   </div>
 </div>
 <!--End::row-2 -->
-
-<!-- Start::add board modal -->
-<div id="add-board" class="hs-overlay hidden ti-modal">
-  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
-    <div class="ti-modal-content">
-      <div class="ti-modal-header">
-        <h6 class="modal-title text-[1rem] !text-default dark:text-defaulttextcolor/70 font-semibold">Add Board</h6>
-        <button type="button" class="hs-dropdown-toggle !text-[1rem] !font-semibold" data-hs-overlay="#add-board">
-          <span class="sr-only">Close</span>
-          <i class="ri-close-line"></i>
-        </button>
-      </div>
-      <div class="ti-modal-body px-6">
-        <div class="grid grid-cols-12 gy-2">
-          <div class="xl:col-span-12 col-span-12">
-            <label for="task-name" class="form-label">Task Name</label>
-            <input type="text" class="form-control w-full !rounded-md" id="task-name" placeholder="Task Name">
-          </div>
-        </div>
-      </div>
-      <div class="ti-modal-footer">
-        <button type="button" class="hs-dropdown-toggle ti-btn  ti-btn-light align-middle" data-hs-overlay="#add-board">
-          Cancel
-        </button>
-        <button type="button" class="ti-btn bg-primary text-white !font-medium">Add Task</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- End::add board modal -->
 
 <!-- Start::add task modal -->
 <div id="add-reserve" class="hs-overlay hidden ti-modal">
@@ -161,7 +130,29 @@
         </button>
       </div>
       <div class="ti-modal-body px-4 !overflow-visible">
-        <app-table-reservation [tableId]="selectedTable?.id" (reserve)="checkInTable($event)" [status]="'checked_in'"></app-table-reservation>
+        <app-table-reservation [tableId]="selectedTable?.id" (reserve)="checkInTable($event)"
+          [status]="'checked_in'"></app-table-reservation>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End::add task modal -->
+
+<div id="add-order" class="hs-overlay hidden ti-modal">
+  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
+    <div class="ti-modal-content">
+      <div class="ti-modal-header">
+        <h6 class="modal-title text-[1rem] font-semibold text-default dark:text-defaulttextcolor/70"
+          id="mail-ComposeLabel">สั่งอาหาร</h6>
+        <button type="button" class="hs-dropdown-toggle !text-[1rem] !font-semibold" data-hs-overlay="#add-order">
+          <span class="sr-only">Close</span>
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+      <div class="ti-modal-body px-4 !overflow-visible">
+        <app-order-food [userId]="reservation?.user_id!" [reservationId]="reservation?.id!" [menuList]="menuList"
+          (submitOrder)="handleOrder($event)">
+        </app-order-food>
       </div>
     </div>
   </div>

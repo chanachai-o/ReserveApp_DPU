@@ -16,15 +16,17 @@ import { CustomerCardComponent } from './customer-card/customer-card.component';
 import { PaymentCardComponent } from './payment-card/payment-card.component';
 import { TableReservationComponent } from '../table-reservation/table-reservation.component';
 import { TablesService } from '../../services/tables.service';
-import { TablesModel } from '../../models/menus.model';
+import { MenuModel, TablesModel } from '../../models/menus.model';
 import { Reservation } from '../../services/reservation.service';
 import swal from 'sweetalert';
 import { ReservationModel } from '../../models/all.model';
 import { TokenService } from '../../../shared/services/token.service';
+import { OrderFoodComponent } from '../order-food/order-food.component';
+import { MenusService } from '../../services/menu.service';
 @Component({
   selector: 'app-walk-in-reservation',
   standalone: true,
-  imports: [CommonModule, SharedModule, NgSelectModule, FlatpickrModule, MaterialModuleModule, SimplebarAngularModule, FilePondModule, FormsModule, ReactiveFormsModule, AvailableTableCardComponent, ReservationCardComponent, CustomerCardComponent, PaymentCardComponent, TableReservationComponent],
+  imports: [CommonModule, SharedModule, NgSelectModule, FlatpickrModule, MaterialModuleModule, SimplebarAngularModule, FilePondModule, FormsModule, ReactiveFormsModule, AvailableTableCardComponent, ReservationCardComponent, CustomerCardComponent, PaymentCardComponent, TableReservationComponent, OrderFoodComponent],
   providers: [FlatpickrDefaults],
   templateUrl: './walk-in-reservation.component.html',
   styleUrl: './walk-in-reservation.component.scss'
@@ -67,14 +69,22 @@ export class WalkInReservationComponent {
     }
   ];
 
-  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService) {
-
+  reservation?: ReservationModel
+  menuList: MenuModel[] = []
+  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private menuService: MenusService) {
+    this.getMenu()
   }
 
   ngOnInit(): void {
     this.getTable()
     this.getReserved()
     this.getCheckIn()
+  }
+
+  getMenu() {
+    this.menuService.getLists().subscribe(result => {
+      this.menuList = result
+    })
   }
 
   getReserved() {
@@ -181,7 +191,16 @@ export class WalkInReservationComponent {
   }
 
   onOrder(item: any) {
+    this.reservation = item
+    console.log("order", item)
+  }
 
+  handleOrder(item: any) {
+    console.log("submitOrderL0", item)
+    this.http.post("http://127.0.0.1:8000/orders", item).subscribe(result => {
+      swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+      this.ngOnInit()
+    })
   }
 
   onVerifyPayment(item: any) {

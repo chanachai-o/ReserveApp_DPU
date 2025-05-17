@@ -10,7 +10,7 @@
         <div class="task-badges"><span class="ms-1 badge bg-primary/10 text-primary">โต๊ะ: #{{ occupied.table_id ||
             occupied.room?.name }}</span></div>
         <div class="flex gap-2">
-          <button class="ti-btn ti-btn-primary ti-btn-xs" (click)="onOrder()">สั่งอาหาร</button>
+          <button class="ti-btn ti-btn-primary ti-btn-xs" (click)="onOrder()" data-hs-overlay="#add-order">สั่งอาหาร</button>
           <button class="ti-btn ti-btn-warning ti-btn-xs" (click)="onBill()">เรียกบิล</button>
         </div>
       </div>
