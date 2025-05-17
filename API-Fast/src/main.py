@@ -260,11 +260,16 @@ reservations_router = APIRouter(prefix="/reservations", tags=["Reservations"])
 
 @reservations_router.get("/", response_model=List[ReservationOut])
 async def get_reservations(user: Optional[int] = None, db: AsyncSession = Depends(get_db)):
-    stmt = select(Reservation)
+    stmt = select(Reservation).options(
+        selectinload(Reservation.user), 
+        selectinload(Reservation.table), 
+        selectinload(Reservation.room)
+    )
     if user:
         stmt = stmt.where(Reservation.user_id == user)
     result = await db.execute(stmt)
-    return result.scalars().all()
+    reservations = result.scalars().all()
+    return reservations
 
 @reservations_router.post("/", response_model=ReservationOut)
 async def create_reservation(

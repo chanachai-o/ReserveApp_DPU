@@ -127,7 +127,9 @@ export class WalkInReservationComponent {
     console.log('API', item);
     item.status = 'checked_in'
     item.end_time = item.start_time
-    item.user_id = this.tokenService.getUser().id
+    if (!item.user_id) {
+      item.user_id = this.tokenService.getUser().id
+    }
     delete item.room_id
     console.log(item)
     this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
@@ -135,24 +137,29 @@ export class WalkInReservationComponent {
       this.tableService.reseave(item.table_id).subscribe(result => {
         swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
         this.ngOnInit()
-        const modal = document.getElementById('add-check-in');
-        if (modal) {
-          modal.classList.add('hidden');
-        }
       })
     })
   }
 
-  handleCheckIn(id: number) {
+  handleCheckIn(item: any) {
+    // console.log("ssssss", id)
     // เรียก API Check-in
+    console.log('API', item);
+    item.end_time = item.start_time
+    delete item.room_id
+    console.log(item)
+    this.http.post("http://127.0.0.1:8000/reservations/"+item.id+"/checkin", item).subscribe(result => {
+      console.log(result)
+      this.tableService.reseave(item.table_id).subscribe(result => {
+        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+        this.ngOnInit()
+      })
+    })
   }
 
   handleCancel(id: number) {
+    console.log(id)
     // เรียก API ยกเลิกการจอง
-  }
-
-  onViewDetail(id: number) {
-    // เรียก API ดูรายละเอียดการจอง
   }
 
   onCloseTable(item: any) {

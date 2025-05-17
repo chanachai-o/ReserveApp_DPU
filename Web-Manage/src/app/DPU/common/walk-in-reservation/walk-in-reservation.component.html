@@ -57,7 +57,8 @@
     </div>
     <ngx-simplebar id="new-tasks">
       <div class="kanban-tasks ">
-        <app-reservation-card *ngFor="let res of reservationList" [reservation]="res"></app-reservation-card>
+        <app-reservation-card *ngFor="let res of reservationList" [reservation]="res" (checkIn)="handleCheckIn($event)"
+          (cancel)="handleCancel($event)"></app-reservation-card>
       </div>
     </ngx-simplebar>
     <!-- <div class="grid me-4 mt-4">

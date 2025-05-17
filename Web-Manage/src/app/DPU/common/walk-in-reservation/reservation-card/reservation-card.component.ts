@@ -14,10 +14,10 @@ export class ReservationCardComponent {
   @Output() view = new EventEmitter<number>();
 
   onCheckIn() {
-    this.checkIn.emit(this.reservation.id);
+    this.checkIn.emit(this.reservation);
   }
   onCancel() {
-    this.cancel.emit(this.reservation.id);
+    this.cancel.emit(this.reservation);
   }
   onView() {
     this.view.emit(this.reservation.id);

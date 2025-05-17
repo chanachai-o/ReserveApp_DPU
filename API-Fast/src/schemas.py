@@ -36,6 +36,8 @@ class UserUpdate(BaseModel):
 
 class UserOut(UserBase):
     id: int
+    name: str
+    phone: str
     is_active: bool
 
     class Config:
@@ -58,7 +60,9 @@ class TableUpdate(BaseModel):
 
 class TableOut(TableBase):
     id: int
-
+    table_number: str
+    capacity: int
+    
     class Config:
         from_attributes = True
 
@@ -81,7 +85,8 @@ class RoomUpdate(BaseModel):
 
 class RoomOut(RoomBase):
     id: int
-
+    name: str
+    capacity: int
     class Config:
         from_attributes = True
 
@@ -112,6 +117,11 @@ class ReservationOut(BaseModel):
     end_time: datetime
     num_people: int
     status: str
+    
+        # เพิ่ม relations
+    user: Optional[UserOut]
+    table: Optional[TableOut]
+    room: Optional[RoomOut]
 
     class Config:
         from_attributes = True  # ✅ สำหรับ Pydantic v2
