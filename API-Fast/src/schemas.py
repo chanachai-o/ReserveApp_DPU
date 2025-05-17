@@ -108,23 +108,6 @@ class ReservationUpdate(ReservationBase):
     room_id: Optional[int]
     status: Optional[ReservationStatus]
 
-class ReservationOut(BaseModel):
-    id: int
-    user_id: int
-    table_id: Optional[int]
-    room_id: Optional[int]
-    start_time: datetime
-    end_time: datetime
-    num_people: int
-    status: str
-    
-        # เพิ่ม relations
-    user: Optional[UserOut]
-    table: Optional[TableOut]
-    room: Optional[RoomOut]
-
-    class Config:
-        from_attributes = True  # ✅ สำหรับ Pydantic v2
 
 # Menu schemas
 class MenuBase(BaseModel):
@@ -165,7 +148,7 @@ class OrderItemOut(BaseModel):
     id: int
     menu_id: int
     quantity: int
-
+    menu: Optional[MenuOut]
     class Config:
         from_attributes = True  # <-- สำคัญสำหรับ Pydantic v2
 
@@ -184,7 +167,6 @@ class OrderOut(BaseModel):
     id: int
     user_id: int
     reservation_id: int | None
-    reservation_id: Optional[int]
     status: str
     total_amount: Decimal
     order_items: List[OrderItemOut]
@@ -338,3 +320,21 @@ class NotificationOut(NotificationCreate):
 
     class Config:
         from_attributes = True
+
+class ReservationOut(BaseModel):
+    id: int
+    user_id: int
+    table_id: Optional[int]
+    room_id: Optional[int]
+    start_time: datetime
+    end_time: datetime
+    num_people: int
+    status: str
+    
+        # เพิ่ม relations
+    user: Optional[UserOut]
+    table: Optional[TableOut]
+    room: Optional[RoomOut]
+    orders: Optional[List[OrderOut]]
+    class Config:
+        from_attributes = True  # ✅ สำหรับ Pydantic v2

@@ -260,10 +260,16 @@ reservations_router = APIRouter(prefix="/reservations", tags=["Reservations"])
 
 @reservations_router.get("/", response_model=List[ReservationOut])
 async def get_reservations(user: Optional[int] = None, db: AsyncSession = Depends(get_db)):
-    stmt = select(Reservation).options(
-        selectinload(Reservation.user), 
-        selectinload(Reservation.table), 
-        selectinload(Reservation.room)
+    stmt = (
+        select(Reservation)
+        .options(
+            selectinload(Reservation.user),
+            selectinload(Reservation.table),
+            selectinload(Reservation.room),
+            selectinload(Reservation.orders)
+                .selectinload(Order.order_items)
+                .selectinload(OrderItem.menu)  # เพิ่มถ้าใน schema มี menu ด้วย
+        )
     )
     if user:
         stmt = stmt.where(Reservation.user_id == user)

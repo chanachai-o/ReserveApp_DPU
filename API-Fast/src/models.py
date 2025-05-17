@@ -88,7 +88,7 @@ class Reservation(Base):
     user = relationship("User", back_populates="reservations")
     table = relationship("Table", back_populates="reservations")
     room = relationship("Room", back_populates="reservations")
-
+    orders = relationship("Order", back_populates="reservation")
 # Menu model
 class Menu(Base):
     __tablename__ = "menus"
@@ -117,8 +117,7 @@ class Order(Base):
 
     user = relationship("User", back_populates="orders")
     order_items = relationship("OrderItem", back_populates="order")
-    reservation = relationship("Reservation")
-
+    reservation = relationship("Reservation", back_populates="orders")
 # OrderItem model
 class OrderItemStatus(enum.Enum):
     pending    = "PENDING"
