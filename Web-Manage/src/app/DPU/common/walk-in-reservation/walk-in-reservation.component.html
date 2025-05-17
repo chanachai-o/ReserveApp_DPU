@@ -93,8 +93,7 @@
       </div>
     </div>
     <ngx-simplebar id="new-tasks">
-      <app-payment-card *ngFor="let pay of paymentList" [table]="pay.table" [bill]="pay.bill"
-        [customer]="pay.customer"></app-payment-card>
+      <app-payment-card *ngFor="let pay of paymentList" [checkout]="pay"></app-payment-card>
     </ngx-simplebar>
   </div>
 </div>

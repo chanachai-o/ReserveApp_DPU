@@ -8,7 +8,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   templateUrl: './payment-card.component.html',
 })
 export class PaymentCardComponent {
-  @Input() table: any;         // ข้อมูลโต๊ะ
+  @Input() checkout: any;         // ข้อมูลโต๊ะ
   @Input() bill: any;          // ข้อมูลบิลหรือ payment ที่ต้องชำระ
   @Input() customer: any;      // ข้อมูลลูกค้า (optional)
 

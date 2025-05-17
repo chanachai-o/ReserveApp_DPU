@@ -36,39 +36,7 @@ export class WalkInReservationComponent {
   selectedTable?: TablesModel
   reservationList: ReservationModel[] = [];
   activeTableList: ReservationModel[] = [];
-  paymentList: any = [
-    {
-      id: 31,
-      table: { id: 21, table_number: 'A4', picture: 'assets/images/tables/table8.jpg' },
-      bill: { id: 101, amount: 880.00, status: 'pending', slip_url: '', },
-      customer: { name: 'นิด', phone: '0814447777' }
-    },
-    {
-      id: 32,
-      table: { id: 22, table_number: 'B4', picture: '' },
-      bill: { id: 102, amount: 1250.00, status: 'pending', slip_url: 'assets/images/slips/slip1.png' },
-      customer: { name: 'Sara', phone: '0891112222' }
-    },
-    {
-      id: 33,
-      table: { id: 23, table_number: 'VIP2', picture: 'assets/images/tables/vip2.jpg' },
-      bill: { id: 103, amount: 2990.00, status: 'completed', slip_url: 'assets/images/slips/slip2.png' },
-      customer: { name: 'คุณหญิง', phone: '0819998888' }
-    },
-    {
-      id: 34,
-      table: { id: 24, table_number: 'C5', picture: '' },
-      bill: { id: 104, amount: 670.00, status: 'pending', slip_url: '' },
-      customer: { name: 'Bob', phone: '0843334444' }
-    },
-    {
-      id: 35,
-      table: { id: 25, table_number: 'B5', picture: 'assets/images/tables/table9.jpg' },
-      bill: { id: 105, amount: 555.00, status: 'pending', slip_url: 'assets/images/slips/slip3.png' },
-      customer: { name: 'Jane', phone: '0855556666' }
-    }
-  ];
-
+  paymentList: ReservationModel[] = [];
   reservation?: ReservationModel
   menuList: MenuModel[] = []
   constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private menuService: MenusService) {
@@ -79,6 +47,7 @@ export class WalkInReservationComponent {
     this.getTable()
     this.getReserved()
     this.getCheckIn()
+    this.getCheckOut()
   }
 
   getMenu() {
@@ -96,6 +65,12 @@ export class WalkInReservationComponent {
   getCheckIn() {
     this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations").subscribe(result => {
       this.activeTableList = result.filter(e => e.status == 'checked_in')
+    })
+  }
+
+  getCheckOut() {
+    this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations").subscribe(result => {
+      this.paymentList = result.filter(e => e.status == 'checked_out')
     })
   }
 
@@ -189,7 +164,9 @@ export class WalkInReservationComponent {
   onBill(item: any) {
     console.log("bile", item)
     item.end_time = new Date().toISOString()
-    this.http.post("http://127.0.0.1:8000/reservations/" + item.id + "/checkout", item).subscribe(result => {
+    item.status = 'checked_out'
+    console.log(item)
+    this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
       console.log(result)
       this.tableService.cancelReseave(item.table_id).subscribe(result => {
         swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");

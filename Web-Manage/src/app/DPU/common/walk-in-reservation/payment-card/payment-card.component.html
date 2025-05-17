@@ -1,22 +1,22 @@
 <div class="box kanban-tasks payment shadow rounded-lg p-4 mb-4" style="margin-bottom: 1rem;">
   <div class="flex items-center justify-between">
     <div>
-      <span class="badge bg-warning/10 text-warning mr-2">โต๊ะ {{ table?.table_number || '-' }}</span>
-      <span class="text-sm text-gray-500" *ngIf="customer">ลูกค้า: {{ customer.name || customer.phone }}</span>
+      <span class="badge bg-warning/10 text-warning mr-2">โต๊ะ {{ checkout.table?.table_number || '-' }}</span>
+      <span class="text-sm text-gray-500" *ngIf="customer">ลูกค้า: {{ checkout.user.name || checkout.user.phone }}</span>
     </div>
     <div class="flex gap-2">
       <button class="ti-btn ti-btn-primary ti-btn-xs" (click)="onViewBill()">ดูบิล</button>
-      <button class="ti-btn ti-btn-success ti-btn-xs" (click)="onVerify()" *ngIf="bill.status !== 'completed'">ยืนยันรับเงิน</button>
+      <button class="ti-btn ti-btn-success ti-btn-xs" (click)="onVerify()" *ngIf="checkout.status !== 'completed'">ยืนยันรับเงิน</button>
     </div>
   </div>
   <div class="mt-2 text-xs flex flex-col gap-1">
-    <div>จำนวนเงิน: <span class="font-semibold text-lg text-green-600">{{ bill.amount | number:'1.2-2' }} ฿</span></div>
+    <div>จำนวนเงิน: <span class="font-semibold text-lg text-green-600">{{ checkout.orders[0].total_amount | number:'1.2-2' }} ฿</span></div>
     <div>สถานะ: <span class="font-semibold" [ngClass]="{
-      'text-green-600': bill.status === 'completed',
-      'text-yellow-500': bill.status !== 'completed'
-    }">{{ bill.status === 'completed' ? 'ชำระแล้ว' : 'รอชำระ' }}</span></div>
-    <div *ngIf="bill.slip_url">
-      <a [href]="bill.slip_url" target="_blank" class="underline text-blue-500">ดูสลิป</a>
+      'text-green-600': checkout.status === 'completed',
+      'text-yellow-500': checkout.status !== 'completed'
+    }">{{ checkout.status === 'completed' ? 'ชำระแล้ว' : 'รอชำระ' }}</span></div>
+    <div *ngIf="checkout.slip_url">
+      <a [href]="checkout.slip_url" target="_blank" class="underline text-blue-500">ดูสลิป</a>
     </div>
   </div>
 </div>
