@@ -16,10 +16,10 @@ export class PaymentCardComponent {
   @Output() viewBill = new EventEmitter<number>();
 
   onVerify() {
-    this.verifyPayment.emit(this.bill.id);
+    this.verifyPayment.emit(this.checkout);
   }
 
   onViewBill() {
-    this.viewBill.emit(this.bill.id);
+    this.viewBill.emit(this.checkout);
   }
 }

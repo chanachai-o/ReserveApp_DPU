@@ -88,6 +88,7 @@ export interface ReservationModel {
   end_time: string;
   num_people: number;
   status: ReservationStatus;
+  orders: Order[]
 }
 
 export interface Menu {

@@ -70,7 +70,7 @@ export class WalkInReservationComponent {
 
   getCheckOut() {
     this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations").subscribe(result => {
-      this.paymentList = result.filter(e => e.status == 'checked_out')
+      this.paymentList = result.filter(e => (e.status == 'checked_out' || e.status == 'completed') && e.orders.length>0)
     })
   }
 
@@ -196,11 +196,28 @@ export class WalkInReservationComponent {
   }
 
   onVerifyPayment(item: any) {
-
+    console.log(item)
+    item.status = 'completed'
+    console.log(item)
+    this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
+      console.log(result)
+      this.tableService.cancelReseave(item.table_id).subscribe(result => {
+        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+        this.ngOnInit()
+      })
+    })
   }
 
   onViewBill(item: any) {
-
+    item.status = 'completed'
+    console.log(item)
+    this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
+      console.log(result)
+      this.tableService.cancelReseave(item.table_id).subscribe(result => {
+        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+        this.ngOnInit()
+      })
+    })
   }
 
 }
