@@ -1,0 +1,25 @@
+import { CommonModule } from '@angular/common';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-payment-card',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './payment-card.component.html',
+})
+export class PaymentCardComponent {
+  @Input() table: any;         // ข้อมูลโต๊ะ
+  @Input() bill: any;          // ข้อมูลบิลหรือ payment ที่ต้องชำระ
+  @Input() customer: any;      // ข้อมูลลูกค้า (optional)
+
+  @Output() verifyPayment = new EventEmitter<number>();
+  @Output() viewBill = new EventEmitter<number>();
+
+  onVerify() {
+    this.verifyPayment.emit(this.bill.id);
+  }
+
+  onViewBill() {
+    this.viewBill.emit(this.bill.id);
+  }
+}

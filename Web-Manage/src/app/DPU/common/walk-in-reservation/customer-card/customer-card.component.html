@@ -1,7 +1,7 @@
 <div class="box kanban-tasks active shadow rounded-lg p-4 mb-4" style="margin-bottom: 1rem">
   <div class="flex items-center justify-between">
     <div>
-      <span class="badge bg-success/10 text-success mr-2">โต๊ะ {{ table.table_number }}</span>
+      <span class="badge bg-success/10 text-success mr-2">โต๊ะ {{ occupied.table_number }}</span>
       <span class="text-sm text-gray-500" *ngIf="customer">ลูกค้า: {{ customer.name || customer.phone }}</span>
     </div>
     <div class="flex gap-2">
@@ -15,8 +15,8 @@
     <div *ngIf="currentOrder">
       <span>ออเดอร์ล่าสุด: #{{ currentOrder.id }} | สถานะ: {{ currentOrder.status }}</span>
     </div>
-    <div *ngIf="table.picture">
-      <img [src]="table.picture" alt="โต๊ะ" class="rounded-md w-24 h-16 object-cover border mt-2"/>
+    <div *ngIf="occupied.picture">
+      <img [src]="occupied.picture" alt="โต๊ะ" class="rounded-md w-24 h-16 object-cover border mt-2"/>
     </div>
   </div>
 </div>

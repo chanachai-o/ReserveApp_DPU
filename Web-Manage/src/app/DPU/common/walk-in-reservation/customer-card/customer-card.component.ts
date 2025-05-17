@@ -8,7 +8,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   templateUrl: './customer-card.component.html',
 })
 export class CustomerCardComponent {
-  @Input() table: any; // หรือใช้ interface ที่เหมาะสม
+  @Input() occupied: any; // หรือใช้ interface ที่เหมาะสม
   @Input() customer: any; // ข้อมูลลูกค้า หรือ null
   @Input() currentOrder: any; // ข้อมูลออเดอร์ปัจจุบัน (optional)
 
@@ -17,12 +17,12 @@ export class CustomerCardComponent {
   @Output() closeTable = new EventEmitter<number>();
 
   onOrder() {
-    this.order.emit(this.table.id);
+    this.order.emit(this.occupied.id);
   }
   onBill() {
-    this.bill.emit(this.table.id);
+    this.bill.emit(this.occupied.id);
   }
   onClose() {
-    this.closeTable.emit(this.table.id);
+    this.closeTable.emit(this.occupied.id);
   }
 }
