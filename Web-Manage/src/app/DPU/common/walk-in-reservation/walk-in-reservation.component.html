@@ -38,6 +38,8 @@
       <div class="kanban-tasks mb-4">
         <app-available-table-card *ngFor="let table of availableTables" [table]="table"
           (openTable)="handleOpenTable($event)" (reserveTable)="handleReserveTable($event)"></app-available-table-card>
+        <!-- <app-available-table-card *ngFor="let table of availableRooms" [table]="table"
+          (openTable)="handleOpenTable($event)" (reserveTable)="handleReserveTable($event)"></app-available-table-card> -->
       </div>
     </ngx-simplebar>
   </div>
@@ -93,7 +95,8 @@
       </div>
     </div>
     <ngx-simplebar id="new-tasks">
-      <app-payment-card *ngFor="let pay of paymentList" [checkout]="pay" (viewBill)="onViewBill($event)" (verifyPayment)="onVerifyPayment($event)"></app-payment-card>
+      <app-payment-card *ngFor="let pay of paymentList" [checkout]="pay" (viewBill)="onViewBill($event)"
+        (verifyPayment)="onVerifyPayment($event)"></app-payment-card>
     </ngx-simplebar>
   </div>
 </div>

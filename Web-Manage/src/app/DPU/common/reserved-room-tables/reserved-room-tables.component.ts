@@ -13,6 +13,8 @@ import { TablesService } from '../../services/tables.service';
 
 import swal from 'sweetalert';
 import { TablesModel } from '../../models/menus.model';
+import { StoreProfile, StoreProfileService } from '../../services/store-profile.service';
+import { TableReservationComponent } from '../table-reservation/table-reservation.component';
 @Component({
   selector: 'app-reserved-room-tables',
   standalone: true,
@@ -23,7 +25,8 @@ import { TablesModel } from '../../models/menus.model';
     NgSelectModule,
     FormsModule,
     MatPaginator,
-    FileUploadModule
+    FileUploadModule,
+    TableReservationComponent
   ],
   templateUrl: './reserved-room-tables.component.html',
   styleUrl: './reserved-room-tables.component.scss'
@@ -56,8 +59,10 @@ export class ReservedRoomTablesComponent {
   }
   projectId = ""
   _searchTerm = "";
+  selectedTable?: TablesModel
   isEdit = false;
-  constructor(private http: HttpClient, private tableService: TablesService, public translate: TranslateService, private tokenService: TokenService) {
+  storeModel: StoreProfile
+  constructor(private http: HttpClient, private tableService: TablesService, public translate: TranslateService, private tokenService: TokenService, private storeService: StoreProfileService) {
     this.uploadConfig()
     this.projectId = this.tokenService.getSelectCompany().projectId!;
   }
@@ -123,7 +128,12 @@ export class ReservedRoomTablesComponent {
   }
 
   ngOnInit(): void {
-    this.tableService.getLists().subscribe(result => {
+    this.storeService.getProfile().subscribe(result => {
+      ;
+      this.storeModel = result
+      console.log("storeModel", this.storeModel)
+    })
+    this.tableService.getActiveList().subscribe(result => {
       this.itemsList = result
       this.updatePagedItems()
     })
@@ -234,5 +244,19 @@ export class ReservedRoomTablesComponent {
     const endIndex = startIndex + 10;
     // this.filterList = this.itemsList.slice(startIndex, endIndex);
     this.filterList = this.itemsList
+  }
+
+  reserveTable(item: any) {
+    console.log('API', item);
+    item.status = 'pending'
+    item.end_time = item.start_time
+    delete item.room_id
+    this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
+      console.log(result)
+      this.tableService.reseave(item.table_id).subscribe(result => {
+        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+        this.ngOnInit()
+      })
+    })
   }
 }

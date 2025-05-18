@@ -16,13 +16,14 @@ import { CustomerCardComponent } from './customer-card/customer-card.component';
 import { PaymentCardComponent } from './payment-card/payment-card.component';
 import { TableReservationComponent } from '../table-reservation/table-reservation.component';
 import { TablesService } from '../../services/tables.service';
-import { MenuModel, TablesModel } from '../../models/menus.model';
+import { MenuModel, RoomModel, TablesModel } from '../../models/menus.model';
 import { Reservation } from '../../services/reservation.service';
 import swal from 'sweetalert';
 import { ReservationModel } from '../../models/all.model';
 import { TokenService } from '../../../shared/services/token.service';
 import { OrderFoodComponent } from '../order-food/order-food.component';
 import { MenusService } from '../../services/menu.service';
+import { RoomService } from '../../services/room.service';
 @Component({
   selector: 'app-walk-in-reservation',
   standalone: true,
@@ -33,13 +34,14 @@ import { MenusService } from '../../services/menu.service';
 })
 export class WalkInReservationComponent {
   availableTables: TablesModel[] = [];
+  availableRooms: RoomModel[] = [];
   selectedTable?: TablesModel
   reservationList: ReservationModel[] = [];
   activeTableList: ReservationModel[] = [];
   paymentList: ReservationModel[] = [];
   reservation?: ReservationModel
   menuList: MenuModel[] = []
-  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private menuService: MenusService) {
+  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private menuService: MenusService, private roomService: RoomService) {
     this.getMenu()
   }
 
@@ -70,13 +72,16 @@ export class WalkInReservationComponent {
 
   getCheckOut() {
     this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations").subscribe(result => {
-      this.paymentList = result.filter(e => (e.status == 'checked_out' || e.status == 'completed') && e.orders.length>0)
+      this.paymentList = result.filter(e => (e.status == 'checked_out' || e.status == 'completed') && e.orders.length > 0)
     })
   }
 
   getTable() {
     this.tableService.getActiveList().subscribe(result => {
       this.availableTables = result
+    })
+    this.roomService.getLists().subscribe(result => {
+      this.availableRooms = result
     })
   }
 
