@@ -125,12 +125,12 @@ export class UserSettingComponent {
   }
 
   filter(v: string) {
-    return this.itemsList?.filter(
-      (x) =>
-        x.id?.toString().toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
-        x.name?.toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
-        x.phone?.toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
-        x.role?.toLowerCase().indexOf(v.toLowerCase()) !== -1
+    const lowerV = v.toLowerCase().trim();
+    return this.itemsList.filter(x =>
+      (x.id?.toString().toLowerCase().includes(lowerV)) ||
+      (x.name?.toLowerCase().includes(lowerV)) ||
+      (x.phone?.toLowerCase().includes(lowerV)) ||
+      (x.role?.toLowerCase().includes(lowerV))
     );
   }
 

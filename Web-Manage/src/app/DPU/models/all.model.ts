@@ -53,7 +53,7 @@ export enum PaymentStatus {
 }
 
 
-export interface User {
+export interface UserProfileModel {
   id: number;
   name: string;
   phone: string;
@@ -115,21 +115,32 @@ export interface Payment {
   status: PaymentStatus;
 }
 
-export interface StoreProfile {
-  id: number;
+export interface StoreProfileModel {
+  id?: number;
   name: string;
-  address?: string;
-  phone?: string;
+  address: string;
+  phone: string;
   email?: string;
-  open_time?: string;   // 'HH:mm:ss'
-  close_time?: string;
-  tax_id?: string;
-  service_charge_pct?: number;
-  vat_pct?: number;
+  open_time: string;      // “HH:mm”
+  close_time: string;     // “HH:mm”
   logo_url?: string;
   layout_picture?: string;
-  created_at?: string;
-  updated_at?: string;
+}
+
+export class StoreProfile implements StoreProfileModel {
+  id?: number | undefined;
+  name: string;
+  address: string;
+  phone: string;
+  email?: string | undefined;
+  open_time: string;
+  close_time: string;
+  logo_url?: string | undefined;
+  layout_picture?: string | undefined;
+  // ...implement methods for getPicture(), getLayout() as fallback
+  getPicture(): string { return this.logo_url || 'assets/img/no-image.png'; }
+  getLayout(): string { return this.layout_picture || 'assets/img/layout-placeholder.png'; }
+  // etc.
 }
 
 export interface Notification {
@@ -154,7 +165,7 @@ export interface ReservationModel {
   note?: string | null;
 
   // Relations (optional for display/detail)
-  user?: User;
+  user?: UserProfileModel ;
   table?: Table;
   room?: Room;
   orders?: Order[];
