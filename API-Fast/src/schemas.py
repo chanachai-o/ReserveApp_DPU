@@ -114,7 +114,7 @@ class ReservationCreate(ReservationBase):
 class ReservationUpdate(ReservationBase):
     table_id: Optional[int]
     room_id: Optional[int]
-    status: Optional[ReservationStatus]
+    status: Optional[Literal["pending", "checked_in", "completed", "cancelled", "checked_out", "no_show"]]
 
 
 # Menu schemas

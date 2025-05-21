@@ -1,64 +1,65 @@
 export enum UserRole {
-  customer = 'customer',
-  staff = 'staff',
-  chef = 'chef',
-  manager = 'manager'
+  Customer = 'customer',
+  Staff = 'staff',
+  Chef = 'chef',
+  Manager = 'manager',
 }
 
 export enum TableStatus {
-  available = 'available',      // ว่าง ลูกค้าจองได้
-  reserved = 'reserved',        // มีการจองล่วงหน้า
-  occupied = 'occupied',        // มีลูกค้านั่งแล้ว
-  cleaning = 'cleaning',        // รอพนักงานเช็ดโต๊ะ
-  maintenance = 'maintenance'   // ปิดปรับปรุง / ซ่อม
+  Available = 'available',
+  Reserved = 'reserved',
+  Occupied = 'occupied',
+  Cleaning = 'cleaning',
+  Maintenance = 'maintenance',
 }
 
 export enum RoomStatus {
-  available = 'available',
-  reserved = 'reserved',
-  occupied = 'occupied',
-  cleaning = 'cleaning',
-  maintenance = 'maintenance'
+  Available = 'available',
+  Reserved = 'reserved',
+  Occupied = 'occupied',
+  Cleaning = 'cleaning',
+  Maintenance = 'maintenance',
 }
 
 export enum ReservationStatus {
-  pending = 'pending',
-  checked_in = 'checked_in',
-  checked_out = "checked_out",
-  completed = 'completed',
-  cancelled = 'cancelled'
-}
-
-export enum PaymentStatus {
-  pending = 'pending',
-  completed = 'completed',
-  declined = 'declined'
+  Pending = 'pending',
+  CheckedIn = 'checked_in',
+  CheckedOut = 'checked_out',
+  Completed = 'completed',
+  Cancelled = 'cancelled',
+  NoShow = 'no_show',
 }
 
 export enum OrderStatus {
-  pending = 'pending',
-  preparing = 'preparing',
-  cooked = 'cooked',
-  served = 'served'
+  Pending = 'pending',
+  Preparing = 'preparing',
+  Cooked = 'cooked',
+  Served = 'served',
+  Rejected = 'rejected',
 }
 
 export enum OrderItemStatus {
-  pending = 'PENDING',
-  preparing = 'PREPARING',
-  cooked = 'COOKED',
-  rejected = 'REJECTED',
-  served = 'SERVED'
+  Pending = 'pending',
+  Preparing = 'preparing',
+  Cooked = 'cooked',
+  Served = 'served',
+  Rejected = 'rejected',
+}
+
+export enum PaymentStatus {
+  Pending = 'pending',
+  Completed = 'completed',
+  Declined = 'declined',
 }
 
 
 export interface User {
   id: number;
-  phone: string;
-  hashed_password?: string;
   name: string;
+  phone: string;
   role: UserRole;
   is_active: boolean;
-  picture?: string;
+  picture?: string | null;
 }
 
 export interface Table {
@@ -66,64 +67,51 @@ export interface Table {
   table_number: string;
   capacity: number;
   status: TableStatus;
-  picture?: string;
+  picture?: string | null;
 }
-
 
 export interface Room {
   id: number;
   name: string;
   capacity: number;
-  equipment?: string;
+  equipment?: string | null;
   status: RoomStatus;
-  picture?: string;
-}
-
-export interface ReservationModel {
-  id: number;
-  user_id: number;
-  table_id?: number;
-  room_id?: number;
-  start_time: string;   // ISO8601 string
-  end_time: string;
-  num_people: number;
-  status: ReservationStatus;
-  orders: Order[]
+  picture?: string | null;
 }
 
 export interface Menu {
   id: number;
   name: string;
-  description?: string;
-  category?: string;
+  description?: string | null;
+  category?: string | null;
   price: number;
   is_active: boolean;
-  picture?: string;
+  picture?: string | null;
+}
+
+export interface OrderItem {
+  id: number;
+  menu_id: number;
+  quantity: number;
+  status: OrderItemStatus;
+  menu?: Menu;
+  note?: string | null;
 }
 
 export interface Order {
   id: number;
   user_id: number;
-  reservation_id?: number;
+  reservation_id?: number | null;
   status: OrderStatus;
   total_amount: number;
-  order_items?: OrderItem[]; // Optional, may need to import OrderItem
-}
-
-export interface OrderItem {
-  id: number;
-  order_id: number;
-  menu_id: number;
-  quantity: number;
-  status: OrderItemStatus;
-  menu?: Menu; // Optional, for display with menu info
+  order_items: OrderItem[];
 }
 
 export interface Payment {
   id: number;
   order_id: number;
   amount: number;
-  slip_url: string;
+  slip_url?: string | null;
   status: PaymentStatus;
 }
 
@@ -152,4 +140,23 @@ export interface Notification {
   type?: string;
   is_read: boolean;
   created_at: string;
+}
+
+export interface Reservation {
+  id: number;
+  user_id: number;
+  table_id?: number | null;
+  room_id?: number | null;
+  start_time: string;     // ISO 8601 (Date)
+  end_time: string;
+  num_people: number;
+  status: ReservationStatus;
+  note?: string | null;
+
+  // Relations (optional for display/detail)
+  user?: User;
+  table?: Table;
+  room?: Room;
+  orders?: Order[];
+  payments?: Payment[];
 }

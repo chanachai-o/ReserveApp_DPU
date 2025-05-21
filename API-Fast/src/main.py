@@ -266,13 +266,11 @@ async def get_reservations(user: Optional[int] = None, db: AsyncSession = Depend
             selectinload(Reservation.user),
             selectinload(Reservation.table),
             selectinload(Reservation.room),
-            selectinload(Reservation.orders)
-                .selectinload(Order.order_items)
-                .selectinload(OrderItem.menu)  # เพิ่มถ้าใน schema มี menu ด้วย
+            selectinload(Reservation.orders).selectinload(Order.order_items).selectinload(OrderItem.menu),
+            selectinload(Reservation.orders).selectinload(Order.payments),
         )
+        # ... (where condition)
     )
-    if user:
-        stmt = stmt.where(Reservation.user_id == user)
     result = await db.execute(stmt)
     reservations = result.scalars().all()
     return reservations
@@ -284,6 +282,8 @@ async def create_reservation(
     current_user: User = Depends(get_current_active_user)
 ):
     # 1. หา user_id
+    if not reservation.table_id and not reservation.room_id:
+        raise HTTPException(400, detail="ต้องเลือกอย่างน้อย 1 ระหว่างโต๊ะหรือห้อง")
     if reservation.phone:
         result = await db.execute(select(User).where(User.phone == reservation.phone))
         user = result.scalars().first()
