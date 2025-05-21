@@ -30,9 +30,10 @@ class RoomStatus(enum.Enum):
 class ReservationStatus(enum.Enum):
     pending = "pending"
     checked_in = "checked_in"
-    checked_out = "checked_out"
     completed = "completed"
     cancelled = "cancelled"
+    checked_out = "checked_out"  # เพิ่ม
+    no_show = "no_show"  # เพิ่มถ้ามี
 
 class PaymentStatus(enum.Enum):
     pending = "pending"
@@ -103,10 +104,11 @@ class Menu(Base):
 
 # Order model
 class OrderStatus(enum.Enum):
-    pending    = "pending"
-    preparing  = "preparing"
-    cooked     = "cooked"
-    served     = "served"        # 🆕 บิลเสิร์ฟครบ
+    pending = "pending"
+    preparing = "preparing"
+    cooked = "cooked"
+    served = "served"
+    rejected = "rejected"
     
 class Order(Base):
     __tablename__ = "orders"
@@ -121,11 +123,11 @@ class Order(Base):
     reservation = relationship("Reservation", back_populates="orders")
 # OrderItem model
 class OrderItemStatus(enum.Enum):
-    pending    = "PENDING"
-    preparing  = "PREPARING"
-    cooked     = "COOKED"
-    rejected   = "REJECTED"
-    served     = "SERVED"        # 🆕 เสิร์ฟแล้ว
+    pending = "pending"
+    preparing = "preparing"
+    cooked = "cooked"
+    served = "served"
+    rejected = "rejected"
 
 class OrderItem(Base):
     __tablename__ = "order_items"

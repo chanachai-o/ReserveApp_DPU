@@ -19,15 +19,16 @@ import { TablesService } from '../../services/tables.service';
 import { MenuModel, RoomModel, TablesModel } from '../../models/menus.model';
 import { Reservation } from '../../services/reservation.service';
 import swal from 'sweetalert';
-import { ReservationModel } from '../../models/all.model';
+import { Order, ReservationModel } from '../../models/all.model';
 import { TokenService } from '../../../shared/services/token.service';
 import { OrderFoodComponent } from '../order-food/order-food.component';
 import { MenusService } from '../../services/menu.service';
 import { RoomService } from '../../services/room.service';
+import { ViewBillComponent } from '../view-bill/view-bill.component';
 @Component({
   selector: 'app-walk-in-reservation',
   standalone: true,
-  imports: [CommonModule, SharedModule, NgSelectModule, FlatpickrModule, MaterialModuleModule, SimplebarAngularModule, FilePondModule, FormsModule, ReactiveFormsModule, AvailableTableCardComponent, ReservationCardComponent, CustomerCardComponent, PaymentCardComponent, TableReservationComponent, OrderFoodComponent],
+  imports: [CommonModule, SharedModule, NgSelectModule, FlatpickrModule, MaterialModuleModule, SimplebarAngularModule, FilePondModule, FormsModule, ReactiveFormsModule, AvailableTableCardComponent, ReservationCardComponent, CustomerCardComponent, PaymentCardComponent, TableReservationComponent, OrderFoodComponent, ViewBillComponent],
   providers: [FlatpickrDefaults],
   templateUrl: './walk-in-reservation.component.html',
   styleUrl: './walk-in-reservation.component.scss'
@@ -41,6 +42,7 @@ export class WalkInReservationComponent {
   paymentList: ReservationModel[] = [];
   reservation?: ReservationModel
   menuList: MenuModel[] = []
+  selectedOrder: Order
   constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private menuService: MenusService, private roomService: RoomService) {
     this.getMenu()
   }
@@ -214,15 +216,17 @@ export class WalkInReservationComponent {
   }
 
   onViewBill(item: any) {
-    item.status = 'completed'
     console.log(item)
-    this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
-      console.log(result)
-      this.tableService.cancelReseave(item.table_id).subscribe(result => {
-        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-        this.ngOnInit()
-      })
-    })
+    this.selectedOrder = item
+    // item.status = 'completed'
+    // console.log(item)
+    // this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
+    //   console.log(result)
+    //   this.tableService.cancelReseave(item.table_id).subscribe(result => {
+    //     swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+    //     this.ngOnInit()
+    //   })
+    // })
   }
 
 }

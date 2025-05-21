@@ -4,7 +4,8 @@ from typing import Optional, List, Literal
 from datetime import time, datetime
 from decimal import Decimal
 import enum
-from src.models import TableStatus, ReservationStatus
+from src.models import TableStatus, ReservationStatus, OrderStatus, RoomStatus,\
+    OrderItemStatus
 
 # Enum definitions (สามารถอ้างอิงจาก models ได้เหมือนกัน)
 class UserRole(str, enum.Enum):
@@ -38,8 +39,10 @@ class UserOut(UserBase):
     id: int
     name: str
     phone: str
+    role: UserRole
     is_active: bool
-
+    picture: Optional[str]
+    
     class Config:
         from_attributes = True
 
@@ -62,7 +65,8 @@ class TableOut(TableBase):
     id: int
     table_number: str
     capacity: int
-    
+    status: TableStatus
+    picture: Optional[str]
     class Config:
         from_attributes = True
 
@@ -87,6 +91,10 @@ class RoomOut(RoomBase):
     id: int
     name: str
     capacity: int
+    equipment: Optional[str]
+    status: RoomStatus
+    picture: Optional[str]
+    
     class Config:
         from_attributes = True
 
@@ -130,6 +138,11 @@ class MenuUpdate(BaseModel):
 
 class MenuOut(MenuBase):
     id: int
+    name: str
+    description: Optional[str]
+    category: Optional[str]
+    price: Decimal
+    picture: Optional[str]
     is_active: bool
 
     class Config:
@@ -148,7 +161,9 @@ class OrderItemOut(BaseModel):
     id: int
     menu_id: int
     quantity: int
-    menu: Optional[MenuOut]
+    status: OrderItemStatus
+    menu: Optional[MenuOut] = None
+    note: Optional[str] = None
     class Config:
         from_attributes = True  # <-- สำคัญสำหรับ Pydantic v2
 
@@ -166,8 +181,8 @@ class OrderUpdate(BaseModel):
 class OrderOut(BaseModel):
     id: int
     user_id: int
-    reservation_id: int | None
-    status: str
+    reservation_id: Optional[int]
+    status: OrderStatus
     total_amount: Decimal
     order_items: List[OrderItemOut]
 
@@ -184,6 +199,9 @@ class PaymentCreate(PaymentBase):
 
 class PaymentOut(PaymentBase):
     id: int
+    order_id: int
+    amount: Decimal
+    slip_url: Optional[str]
     status: PaymentStatus
 
     class Config:
@@ -329,12 +347,13 @@ class ReservationOut(BaseModel):
     start_time: datetime
     end_time: datetime
     num_people: int
-    status: str
-    
-        # เพิ่ม relations
+    status: ReservationStatus
+    note: Optional[str] = None
+
     user: Optional[UserOut]
     table: Optional[TableOut]
     room: Optional[RoomOut]
-    orders: Optional[List[OrderOut]]
+    orders: Optional[List[OrderOut]] = None
+    payments: Optional[List[PaymentOut]] = None
     class Config:
         from_attributes = True  # ✅ สำหรับ Pydantic v2

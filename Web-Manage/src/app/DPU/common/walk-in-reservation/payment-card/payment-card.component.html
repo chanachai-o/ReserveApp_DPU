@@ -5,7 +5,7 @@
       <span class="text-sm text-gray-500" *ngIf="customer">ลูกค้า: {{ checkout.user.name || checkout.user.phone }}</span>
     </div>
     <div class="flex gap-2">
-      <button class="ti-btn ti-btn-primary ti-btn-xs" (click)="onViewBill()">ดูบิล</button>
+      <button class="ti-btn ti-btn-primary ti-btn-xs" (click)="onViewBill()"  data-hs-overlay="#view-bill">ดูบิล</button>
       <button class="ti-btn ti-btn-success ti-btn-xs" (click)="onVerify()" *ngIf="checkout.status !== 'completed'">ยืนยันรับเงิน</button>
     </div>
   </div>
