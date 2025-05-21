@@ -121,6 +121,8 @@ class Order(Base):
     user = relationship("User", back_populates="orders")
     order_items = relationship("OrderItem", back_populates="order")
     reservation = relationship("Reservation", back_populates="orders")
+    payments = relationship("Payment", back_populates="order", uselist=False)  # ต้องมีแบบนี้
+    
 # OrderItem model
 class OrderItemStatus(enum.Enum):
     pending = "pending"
@@ -150,6 +152,7 @@ class Payment(Base):
     # picture = Column(String)
     slip_url = Column(String, nullable=False)  # URL สำหรับสลิปการโอน
     status = Column(Enum(PaymentStatus), default=PaymentStatus.pending)
+    order = relationship("Order", back_populates="payments")
 
 class StoreProfile(Base):
     """

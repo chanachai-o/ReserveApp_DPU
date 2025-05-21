@@ -142,7 +142,7 @@ export interface Notification {
   created_at: string;
 }
 
-export interface Reservation {
+export interface ReservationModel {
   id: number;
   user_id: number;
   table_id?: number | null;

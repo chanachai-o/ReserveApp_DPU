@@ -74,7 +74,7 @@ export class WalkInReservationComponent {
 
   getCheckOut() {
     this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations").subscribe(result => {
-      this.paymentList = result.filter(e => (e.status == 'checked_out' || e.status == 'completed') && e.orders.length > 0)
+      this.paymentList = result.filter(e => (e.status == 'checked_out' || e.status == 'completed'))
     })
   }
 
