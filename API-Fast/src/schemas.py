@@ -57,6 +57,7 @@ class TableCreate(TableBase):
     pass
 
 class TableUpdate(BaseModel):
+    table_number: Optional[str]
     capacity: Optional[int]
     status: Optional[str]
     picture: Optional[str] = None
@@ -82,6 +83,7 @@ class RoomCreate(RoomBase):
     pass
 
 class RoomUpdate(BaseModel):
+    name: Optional[str]
     capacity: Optional[int]
     equipment: Optional[str]
     status: Optional[str]

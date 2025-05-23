@@ -6,39 +6,30 @@
 <div class="grid grid-cols-12 gap-x-6">
   <div class="col-span-12">
     <div class="box mt-6 shadow rounded-lg bg-white">
- <div class="box-header justify-between">
-        <div class="box-title">
-          {{ 'All List' | translate}} <span
-            class="badge bg-light text-default rounded-full ms-1 text-[0.75rem] align-middle">{{itemsList.length}}</span>
+      <div class="box-header flex flex-wrap justify-between items-center border-b pb-3">
+        <div class="box-title text-lg font-bold tracking-tight">
+          {{ 'All List' | translate }}
+          <span class="badge bg-light text-default rounded-full ms-2 text-xs align-middle">{{ itemsList.length }}</span>
         </div>
-        <div class="flex flex-wrap gap-2">
-          <a href="javascript:void(0);" class="hs-dropdown-toggle ti-btn ti-btn-primary-full me-2" (click)="new()"
-            data-hs-overlay="#modal-detail"><i class="ri-add-line font-semibold align-middle"></i>{{ 'เพิ่ม' |
-            translate}}
-          </a>
-          <div>
-            <input [(ngModel)]='searchTerm' class="form-control" type="text"
-              placeholder="{{ 'ค้นหาเมนู' | translate}}" aria-label=".form-control-sm example">
-
-          </div>
-          <div>
-            <ng-select class="form-control" data-trigger name="choices-single-default"
-              id="choices-single-default" placeholder="ประเภท" [(ngModel)]="categorySelected" (change)="changeCategoly()">
-              <ng-option value="all">ทั้งหมด</ng-option>
-              <ng-option value="food" >อาหาร</ng-option>
-              <ng-option value="drink">เครื่องดื่ม</ng-option>
-              <ng-option value="dessert">ขนมของกินเล่น</ng-option>
-            </ng-select>
-          </div>
-          <!-- <a href="javascript:void(0);" class="ti-btn ti-btn-primary-full !py-1 !px-2" aria-expanded="false">
-            ประเภท<i class="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
-          </a>
-          <ul class="hs-dropdown-menu ti-dropdown-menu hidden" role="menu">
-            <li><a class="ti-dropdown-item" (click)="changeCategoly('all')">ทั้งหมด</a></li>
-            <li><a class="ti-dropdown-item" (click)="changeCategoly('food')">อาหาร</a></li>
-            <li><a class="ti-dropdown-item" (click)="changeCategoly('drink')">เครื่องดื่ม</a></li>
-            <li><a class="ti-dropdown-item" (click)="changeCategoly('dessert')">ขนมของกินเล่น</a></li>
-          </ul> -->
+        <div class="flex flex-wrap gap-2 items-center">
+          <button class="ti-btn ti-btn-primary-full flex items-center" (click)="new()" data-hs-overlay="#modal-detail">
+            <i class="ri-add-line font-semibold mr-1"></i> {{ 'เพิ่ม' | translate }}
+          </button>
+          <input [(ngModel)]='searchTerm'
+                 class="form-control w-40"
+                 type="text"
+                 placeholder="{{ 'ค้นหาเมนู' | translate }}"
+                 aria-label="ค้นหาเมนู" />
+          <ng-select class="form-control w-36"
+                     name="category"
+                     placeholder="ประเภท"
+                     [(ngModel)]="categorySelected"
+                     (change)="changeCategoly()">
+            <ng-option value="all">ทั้งหมด</ng-option>
+            <ng-option value="food">อาหาร</ng-option>
+            <ng-option value="drink">เครื่องดื่ม</ng-option>
+            <ng-option value="dessert">ขนมของกินเล่น</ng-option>
+          </ng-select>
         </div>
       </div>
     </div>
