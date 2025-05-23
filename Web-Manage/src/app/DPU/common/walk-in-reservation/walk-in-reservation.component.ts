@@ -38,7 +38,7 @@ export class WalkInReservationComponent {
   availableTables: AvailableItem[] = [];
   availableRooms: AvailableItem[] = [];
   filteredAvailable: AvailableItem[] = []
-  selectedTable?: TablesModel
+  selectedTable?: AvailableItem
   reservationList: ReservationModel[] = [];
   activeTableList: ReservationModel[] = [];
   paymentList: ReservationModel[] = [];
@@ -91,13 +91,13 @@ export class WalkInReservationComponent {
       });
   }
 
-  handleOpenTable(item: TablesModel) {
+  handleOpenTable(item: AvailableItem) {
     // เรียก API Check-In/Check-in
     this.selectedTable = item
     console.log('เลือก', this.selectedTable);
   }
 
-  handleReserveTable(item: TablesModel) {
+  handleReserveTable(item: AvailableItem) {
     // call API จองโต๊ะ ส่ง reservationData
     this.selectedTable = item
     console.log('เลือก', this.selectedTable);
@@ -107,13 +107,20 @@ export class WalkInReservationComponent {
     console.log('API', item);
     item.status = 'pending'
     item.end_time = item.start_time
-    delete item.room_id
     this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
       console.log(result)
-      this.tableService.reseave(item.table_id).subscribe(result => {
-        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-        this.ngOnInit()
-      })
+      if (item['table_id']) {
+        this.tableService.reseave(item.table_id).subscribe(result => {
+          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+          this.ngOnInit()
+        })
+      }
+      else {
+        this.roomService.reseave(item.table_id).subscribe(result => {
+          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+          this.ngOnInit()
+        })
+      }
     })
   }
 

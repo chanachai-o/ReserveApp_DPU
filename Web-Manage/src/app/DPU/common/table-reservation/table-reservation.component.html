@@ -1,30 +1,50 @@
-<form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
-  <div>
-    <label class="block font-medium mb-1">เริ่มใช้โต๊ะ</label>
-    <input type="datetime-local" formControlName="start_time" class="form-control" />
+<form [formGroup]="form" (ngSubmit)="submit()"
+  class="space-y-5 p-2 md:p-4 rounded-xl bg-white dark:bg-neutral-900 shadow-md w-full max-w-md mx-auto">
+  <div class="flex flex-col gap-2">
+    <label class="block font-semibold text-gray-700 dark:text-gray-200">เริ่มใช้{{ type==='room' ? 'ห้อง' : 'โต๊ะ'
+      }}</label>
+    <input type="datetime-local" formControlName="start_time"
+      class="form-control !rounded-md !bg-gray-50 dark:!bg-neutral-800"
+      [ngClass]="{'border-red-500': form.get('start_time')?.invalid && form.get('start_time')?.touched}" required />
+    <div *ngIf="form.get('start_time')?.invalid && form.get('start_time')?.touched" class="text-xs text-red-500">
+      กรุณากรอกเวลาเริ่มใช้
+    </div>
   </div>
-  <!-- <div>
-    <label class="block font-medium mb-1">สิ้นสุด</label>
-    <input type="datetime-local" formControlName="end_time" class="form-control" />
-  </div> -->
-  <div>
-    <label class="block font-medium mb-1">จำนวนคน</label>
-    <input type="number" min="1" formControlName="num_people" class="form-control" />
+
+  <div class="flex flex-col gap-2">
+    <label class="block font-semibold text-gray-700 dark:text-gray-200">จำนวนคน</label>
+    <input type="number" min="1" formControlName="num_people"
+      class="form-control !rounded-md !bg-gray-50 dark:!bg-neutral-800"
+      [ngClass]="{'border-red-500': form.get('num_people')?.invalid && form.get('num_people')?.touched}" required
+      placeholder="ระบุจำนวนคนที่มาใช้บริการ" />
+    <div *ngIf="form.get('num_people')?.invalid && form.get('num_people')?.touched" class="text-xs text-red-500">
+      กรุณาระบุจำนวนคน
+    </div>
   </div>
-  <div>
-    <label class="block font-medium mb-1">เบอร์โทรลูกค้า (optional)</label>
-    <input type="text" formControlName="phone" class="form-control" />
+
+  <div class="flex flex-col gap-2">
+    <label class="block font-semibold text-gray-700 dark:text-gray-200">เบอร์โทรลูกค้า <span
+        class="text-xs text-gray-400">(ถ้ามี)</span></label>
+    <input type="text" formControlName="phone" class="form-control !rounded-md !bg-gray-50 dark:!bg-neutral-800"
+      placeholder="เช่น 089-xxx-xxxx" autocomplete="tel" />
   </div>
-  <!-- ซ่อน user_id กับ table_id ในฟอร์ม -->
+
+  <!-- ฟิลด์ซ่อน สำหรับข้อมูลจำเป็นตาม Model -->
   <input type="hidden" formControlName="user_id" />
   <input type="hidden" formControlName="table_id" />
+  <input type="hidden" formControlName="room_id" />
   <input type="hidden" formControlName="status" />
 
-  <div class="flex gap-2">
-    <button *ngIf="status!='checked_in'" class="ti-btn ti-btn-primary" type="submit" [disabled]="!this.form.valid"
-      data-hs-overlay="#add-reserve">ยืนยันจองโต๊ะ</button>
-    <button *ngIf="status=='checked_in'" class="ti-btn ti-btn-primary" type="submit" [disabled]="!this.form.valid"
-      data-hs-overlay="#add-check-in">ยืนยันลูกค้าเข้า</button>
-    <button class="ti-btn ti-btn-light" type="button" (click)="form.reset()">ล้างฟอร์ม</button>
+  <div class="flex flex-wrap gap-2 mt-3 justify-end">
+    <!-- ปุ่มในฟอร์ม -->
+    <button *ngIf="status != 'checked_in'" class="ti-btn ti-btn-primary" type="submit" [disabled]="!form.valid">
+      ยืนยันจอง{{ form.value.room_id ? 'ห้อง' : 'โต๊ะ' }}
+    </button>
+    <button *ngIf="status == 'checked_in'" class="ti-btn ti-btn-success" type="submit" [disabled]="!form.valid">
+      ยืนยันลูกค้าเข้า{{ form.value.room_id ? 'ห้อง' : 'โต๊ะ' }}
+    </button>
+    <button class="ti-btn ti-btn-light font-semibold !rounded-md px-5 py-2" type="button" (click)="form.reset()">
+      <i class="ri-refresh-line mr-1"></i> ล้างฟอร์ม
+    </button>
   </div>
 </form>

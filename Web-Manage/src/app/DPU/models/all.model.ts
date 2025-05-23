@@ -207,7 +207,7 @@ export interface Notification {
 
 export interface ReservationModel {
   id: number;
-  user_id: number;
+  user_id?: number | null;
   table_id?: number | null;
   room_id?: number | null;
   start_time: string;     // ISO 8601 (Date)

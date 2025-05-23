@@ -73,7 +73,8 @@
         </button>
       </div>
       <div class="ti-modal-body px-4 !overflow-visible">
-        <app-table-reservation [tableId]="selectedTable?.id" (reserve)="reserveTable($event)"></app-table-reservation>
+        <app-table-reservation [tableId]="selectedTable?.id" [roomId]="selectedTable?.id"
+          (reserve)="reserveTable($event)" [type]="selectedTable?.type"></app-table-reservation>
       </div>
     </div>
   </div>
@@ -91,8 +92,8 @@
         </button>
       </div>
       <div class="ti-modal-body px-4 !overflow-visible">
-        <app-table-reservation [tableId]="selectedTable?.id" (reserve)="checkInTable($event)"
-          [status]="'checked_in'"></app-table-reservation>
+        <app-table-reservation [tableId]="selectedTable?.id" [roomId]="selectedTable?.id"
+          (reserve)="reserveTable($event)" [type]="selectedTable?.type" [status]="'checked_in'"></app-table-reservation>
       </div>
     </div>
   </div>
