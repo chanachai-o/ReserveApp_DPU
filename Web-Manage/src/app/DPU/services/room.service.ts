@@ -69,4 +69,13 @@ export class RoomService {
     }>(this.apiBaseUrl + "/" + body.id);
   }
 
+  cancelReseave(roomId: number) {
+    return this.http.patch<{
+      "message": string,
+      "user": RoomModel
+    }>(this.apiBaseUrl + "/" + roomId + "/status", {
+      "status": "available"
+    });
+  }
+
 }

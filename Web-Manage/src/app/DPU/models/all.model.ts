@@ -217,9 +217,9 @@ export interface ReservationModel {
   note?: string | null;
 
   // Relations (optional for display/detail)
-  user?: UserProfileModel;
+  user: UserProfileModel;
   table?: Table;
   room?: Room;
-  orders?: Order[];
+  orders: Order[];
   payments?: Payment[];
 }

@@ -143,34 +143,55 @@ export class WalkInReservationComponent {
   }
 
   handleCheckIn(item: any) {
-    // console.log("ssssss", id)
-    // เรียก API Check-in
     console.log('API', item);
-    item.end_time = item.start_time
-    delete item.room_id
-    console.log(item)
-    this.http.post("http://127.0.0.1:8000/reservations/" + item.id + "/checkin", item).subscribe(result => {
-      console.log(result)
-      this.tableService.reseave(item.table_id).subscribe(result => {
-        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-        this.ngOnInit()
-      })
-    })
+    item.end_time = item.start_time;
+
+    // เช็คว่าเป็นการจองห้องหรือโต๊ะ
+    if (item.table_id) {
+      // โต๊ะ
+      this.http.post("http://127.0.0.1:8000/reservations/" + item.id + "/checkin", item).subscribe(result => {
+        console.log(result);
+        this.tableService.reseave(item.table_id).subscribe(_ => {
+          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+          this.ngOnInit();
+        });
+      });
+    } else if (item.room_id) {
+      // ห้องประชุม
+      this.http.post("http://127.0.0.1:8000/reservations/" + item.id + "/checkin", item).subscribe(result => {
+        console.log(result);
+        this.roomService.reseave(item.room_id).subscribe(_ => {
+          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+          this.ngOnInit();
+        });
+      });
+    } else {
+      swal("Error", "ไม่พบข้อมูลโต๊ะหรือห้อง", "error");
+    }
   }
 
   handleCancel(item: any) {
-    console.log(item)
-    item.end_time = item.start_time
-    item.status = 'cancelled'
-    console.log(item)
+    console.log(item);
+    item.end_time = item.start_time;
+    item.status = 'cancelled';
+
     this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
-      console.log(result)
-      this.tableService.cancelReseave(item.table_id).subscribe(result => {
-        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-        this.ngOnInit()
-      })
-    })
-    // เรียก API ยกเลิกการจอง
+      console.log(result);
+      // เช็คว่าเป็นการจองโต๊ะหรือห้อง เพื่อยกเลิกสถานะ
+      if (item.table_id) {
+        this.tableService.cancelReseave(item.table_id).subscribe(_ => {
+          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+          this.ngOnInit();
+        });
+      } else if (item.room_id) {
+        this.roomService.cancelReseave(item.room_id).subscribe(_ => {
+          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+          this.ngOnInit();
+        });
+      } else {
+        swal("Error", "ไม่พบข้อมูลโต๊ะหรือห้อง", "error");
+      }
+    });
   }
 
   onCloseTable(item: any) {

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, Pipe } from '@angular/core';
+import { ReservationModel } from '../../../models/all.model';
 
 @Component({
   selector: 'app-reservation-card',
@@ -8,18 +9,18 @@ import { Component, Input, Output, EventEmitter, Pipe } from '@angular/core';
   templateUrl: './reservation-card.component.html',
 })
 export class ReservationCardComponent {
-  @Input() reservation: any; // กำหนด type/interface ภายหลังได้
-  @Output() checkIn = new EventEmitter<number>();
-  @Output() cancel = new EventEmitter<number>();
+ @Input() reservation!: ReservationModel; // ใช้ interface ที่ประกาศไว้
+  @Output() checkIn = new EventEmitter<ReservationModel>();
+  @Output() cancel = new EventEmitter<ReservationModel>();
   @Output() view = new EventEmitter<number>();
 
   onCheckIn() {
-    this.checkIn.emit(this.reservation);
+    this.checkIn.emit(this.reservation);  // ส่ง ReservationModel กลับไป
   }
   onCancel() {
-    this.cancel.emit(this.reservation);
+    this.cancel.emit(this.reservation);   // ส่ง ReservationModel กลับไป
   }
   onView() {
-    this.view.emit(this.reservation.id);
+    this.view.emit(this.reservation.id);  // ส่งแค่ id กรณีดูรายละเอียด
   }
 }
