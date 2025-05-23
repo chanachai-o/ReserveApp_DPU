@@ -38,6 +38,15 @@ export class RoomService {
       );
   }
 
+  reseave(roomId: number) {
+    return this.http.patch<{
+      "message": string,
+      "user": RoomModel
+    }>(this.apiBaseUrl + "/" + roomId + "/status", {
+      "status": "reserved"
+    });
+  }
+
 
   save(body: RoomModel) {
     return this.http.post<{

@@ -28,6 +28,8 @@ from .schemas import (
     OrderCreate, OrderUpdate, OrderOut,
     PaymentCreate, PaymentOut, PaymentVerify ,TableQuickStatus
 )
+from src.schemas import RoomQuickStatus
+from src.models import RoomStatus
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -254,6 +256,26 @@ async def delete_room(id: int, db: AsyncSession = Depends(get_db)):
     await db.delete(db_room)
     await db.commit()
     return {"detail": "Room deleted"}
+
+@rooms_router.patch("/{room_id}/status", response_model=RoomOut)
+async def quick_change_room_status(
+    room_id: int,
+    payload: RoomQuickStatus,
+    db: AsyncSession = Depends(get_db)
+):
+    """เปลี่ยนสถานะห้องรวดเร็ว (cleaning / maintenance / occupied …)"""
+
+    stmt = select(Room).where(Room.id == room_id)
+    result = await db.execute(stmt)
+    room = result.scalars().first()
+    if not room:
+        raise HTTPException(404, "Room not found")
+
+    room.status = RoomStatus(payload.status)
+    await db.commit()
+    await db.refresh(room)
+    return room
+
 
 ### Reservations Endpoints
 reservations_router = APIRouter(prefix="/reservations", tags=["Reservations"])

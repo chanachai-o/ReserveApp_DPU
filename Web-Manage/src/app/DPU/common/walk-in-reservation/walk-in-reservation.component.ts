@@ -116,7 +116,7 @@ export class WalkInReservationComponent {
         })
       }
       else {
-        this.roomService.reseave(item.table_id).subscribe(result => {
+        this.roomService.reseave(item.room_id).subscribe(result => {
           swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
           this.ngOnInit()
         })
