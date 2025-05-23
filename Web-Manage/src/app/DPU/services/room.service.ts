@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, tap, switchMap, filter, reduce } from "rxjs/operators";
 import { RoomModel } from '../models/menus.model';
+import { AvailableItem } from '../models/all.model';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +28,16 @@ export class RoomService {
         map((e) => e.map((e) => new RoomModel(e)))
       );
   }
+
+
+  getActiveList() {
+    return this.http
+      .get<RoomModel[]>(this.apiBaseUrl + "/?status=available")
+      .pipe(
+        map((e) => e.map((e) => new AvailableItem(e)))
+      );
+  }
+
 
   save(body: RoomModel) {
     return this.http.post<{

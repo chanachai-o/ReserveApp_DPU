@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TablesModel } from '../models/menus.model';
 import { map, tap, switchMap, filter, reduce } from "rxjs/operators";
+import { AvailableItem } from '../models/all.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class TablesService {
     return this.http
       .get<TablesModel[]>(this.apiBaseUrl + "/?status=available")
       .pipe(
-        map((e) => e.map((e) => new TablesModel(e)))
+        map((e) => e.map((e) => new AvailableItem(e)))
       );
   }
 

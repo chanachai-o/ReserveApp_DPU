@@ -1,3 +1,5 @@
+import { environment } from "../../../environments/environment";
+
 export enum UserRole {
   Customer = 'customer',
   Staff = 'staff',
@@ -78,6 +80,56 @@ export interface Room {
   status: RoomStatus;
   picture?: string | null;
 }
+
+export class AvailableItem {
+  id: number;
+  type: 'table' | 'room';
+  table_number?: string;
+  room_number?: string;
+  name?: string;
+  capacity: number;
+  picture?: string;
+  description?: string;
+  status?: string;
+
+  constructor(data: Partial<AvailableItem> = {}) {
+    this.id = data.id ?? 0;
+    this.type = data.table_number ? 'table' : 'room';
+    this.table_number = data.table_number ?? '';
+    this.room_number = data.room_number ?? '';
+    this.name = data.name ?? '';
+    this.capacity = data.capacity ?? 0;
+    this.picture = data.picture ?? '';
+    this.description = data.description ?? '';
+    this.status = data.status
+  }
+
+  getPicture(): string {
+    return this.picture ? environment.baseUrl + '/images/' + this.picture : (this.type === 'room'
+        ? './assets/images/faces/333.png'
+        : './assets/images/faces/222.png')
+  }
+
+  getLabel(): string {
+    // คืนชื่อที่เหมาะสม (เช่น โต๊ะ 1, ห้อง A)
+    if (this.type === 'table') return `โต๊ะ ${this.table_number || this.id}`;
+    if (this.type === 'room') return `ห้อง ${this.name || this.room_number || this.id}`;
+    return this.name || '';
+  }
+
+
+  getStatus(): string {
+    // # available, reserved, unavailable
+    if (this.status == 'available') {
+      return 'เปิดบริการ'
+    } else if (this.status == 'reserved') {
+      return 'จอง'
+    } {
+      return 'ไม่เปิดให้บริการ'
+    }
+  }
+}
+
 
 export interface Menu {
   id: number;
@@ -165,7 +217,7 @@ export interface ReservationModel {
   note?: string | null;
 
   // Relations (optional for display/detail)
-  user?: UserProfileModel ;
+  user?: UserProfileModel;
   table?: Table;
   room?: Room;
   orders?: Order[];

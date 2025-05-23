@@ -1,53 +1,54 @@
-<div class="box kanban-tasks new" style="margin-bottom: 1rem;">
+<div class="box kanban-tasks new shadow-md rounded-xl border border-gray-200 dark:border-neutral-700 mb-4 bg-white dark:bg-neutral-900 transition-all duration-150 hover:scale-[1.015]" style="min-height: 350px;">
   <div class="box-body !p-0">
+    <!-- Header -->
     <div class="p-4 kanban-board-head">
-      <div class="flex text-[#8c9097] dark:text-white/50 justify-between mb-1 text-[.75rem] font-semibold">
-        <div class="inline-flex">#No - {{ table.table_number}}</div>
-        <!-- <div class="text-success"><i class="ri-check-fill me-1 align-middle"></i>Done</div> -->
+      <div class="flex justify-between items-center mb-1 text-[.95rem] font-semibold">
+        <div class="inline-flex items-center gap-2">
+          <!-- Icon แยกสี -->
+          <span *ngIf="item.type === 'table'" class="text-blue-500 text-lg"><i class="ri-table-fill"></i></span>
+          <span *ngIf="item.type === 'room'" class="text-amber-500 text-lg"><i class="ri-door-lock-fill"></i></span>
+          <span class="badge rounded px-2 font-medium"
+                [ngClass]="item.type === 'table' ? 'bg-blue-50 text-blue-600' : 'bg-yellow-50 text-yellow-700'">
+            {{ item.type === 'table' ? 'โต๊ะ' : 'ห้องประชุม' }}
+          </span>
+          <span class="text-gray-500 dark:text-gray-400">#{{ item.table_number || item.room_number || item.id }}</span>
+        </div>
       </div>
-      <div class="flex items-center justify-between">
-        <div class="task-badges"><span
-            class="ms-1 badge bg-primary/10 text-primary">นั่งได้ {{ table.capacity }} คน</span></div>
+      <!-- Capacity & Actions -->
+      <div class="flex items-center justify-between mt-2">
+        <span class="badge bg-info/10 text-info rounded-md py-1 px-2 font-medium flex items-center gap-1">
+          <i class="ri-user-fill"></i>
+          {{ item.capacity || '-' }} คน
+        </span>
         <div class="flex gap-2">
-          <button class="ti-btn ti-btn-success ti-btn-md" (click)="onOpen()" data-hs-overlay="#add-check-in">เปิดโต๊ะ</button>
-          <button class="ti-btn ti-btn-primary ti-btn-md" (click)="onReserve()"
-            data-hs-overlay="#add-reserve">จองโต๊ะ</button>
+          <button class="ti-btn ti-btn-success ti-btn-xs !rounded-md shadow-sm" (click)="onOpen()" data-hs-overlay="#add-check-in">
+            <i class="ri-login-circle-line mr-1"></i>
+            {{ item.type === 'room' ? 'เปิดห้อง' : 'เปิดโต๊ะ' }}
+          </button>
+          <button class="ti-btn ti-btn-primary ti-btn-xs !rounded-md shadow-sm" (click)="onReserve()" data-hs-overlay="#add-reserve">
+            <i class="ri-reserved-line mr-1"></i>
+            {{ item.type === 'room' ? 'จองห้อง' : 'จองโต๊ะ' }}
+          </button>
         </div>
       </div>
-      <div class="kanban-content mt-2">
-        <div class="task-image mt-2">
-          <img src="{{table.getPicture()}}" class="img-fluid rounded kanban-image bg-light" alt="">
+      <!-- รูปภาพ -->
+      <div class="kanban-content mt-4">
+        <div class="flex justify-center items-center h-40 bg-gray-100 dark:bg-neutral-800 rounded-lg overflow-hidden border border-dashed border-gray-300">
+          <img [src]="item.getPicture ? item.getPicture() : 'assets/images/placeholder-room.png'"
+               alt="cover"
+               class="object-cover w-full h-full max-h-40 transition duration-200 hover:scale-105" />
         </div>
-        <!-- <h6 class="font-semibold mb-0 mt-2">Project discussion with client.</h6> -->
+        <h6 class="font-semibold text-center mt-3 truncate text-base" style="max-width: 190px;">
+          {{ item.name || item.table_number || item.room_number }}
+        </h6>
       </div>
     </div>
-    <div class="p-4 border-t dark:border-defaultborder/10 border-dashed">
-      <!-- <div class="flex items-center justify-between">
-        <div class="inline-flex items-center">
-          <a href="javascript:void(0);" class="inline-flex items-center me-2 text-primary">
-            <span class="me-1"><i class="ri-thumb-up-fill align-middle font-normal"></i></span><span
-              class="font-semibold text-[.75rem]">11</span>
-          </a>
-          <a href="javascript:void(0);" class="inline-flex items-center text-[#8c9097] dark:text-white/50">
-            <span class="me-1"><i class="ri-message-2-line align-middle font-normal"></i></span><span
-              class="font-semibold text-[.75rem]">05</span>
-          </a>
-        </div>
-        <div class="avatar-list-stacked">
-          <span class="avatar avatar-sm avatar-rounded">
-            <img src="./assets/images/faces/4.jpg" alt="img">
-          </span>
-        </div>
-      </div> -->
+    <!-- Description -->
+    <div class="p-4 border-t dark:border-defaultborder/10 border-dashed bg-gray-50 dark:bg-neutral-800 rounded-b-xl">
+      <span class="text-gray-500 text-xs truncate block" [title]="item.description">
+        <i class="ri-information-line text-xs mr-1"></i>
+        {{ item.description || '-' }}
+      </span>
     </div>
   </div>
 </div>
-<!-- Start:: Create Contact -->
-<!-- <div id="modal-reserve" class="hs-overlay hidden ti-modal [--overlay-backdrop:static]">
-  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
-    <div class="ti-modal-content">
-     <app-table-reservation [tableId]="selectedTable?.id" (reserve)="handleReserve($event)"></app-table-reservation>
-    </div>
-  </div>
-</div> -->
-<!-- End:: Create Contact -->

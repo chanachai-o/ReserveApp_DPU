@@ -19,12 +19,13 @@ import { TablesService } from '../../services/tables.service';
 import { MenuModel, RoomModel, TablesModel } from '../../models/menus.model';
 import { Reservation } from '../../services/reservation.service';
 import swal from 'sweetalert';
-import { Order, ReservationModel } from '../../models/all.model';
+import { AvailableItem, Order, ReservationModel } from '../../models/all.model';
 import { TokenService } from '../../../shared/services/token.service';
 import { OrderFoodComponent } from '../order-food/order-food.component';
 import { MenusService } from '../../services/menu.service';
 import { RoomService } from '../../services/room.service';
 import { ViewBillComponent } from '../view-bill/view-bill.component';
+import { forkJoin } from 'rxjs';
 @Component({
   selector: 'app-walk-in-reservation',
   standalone: true,
@@ -34,8 +35,9 @@ import { ViewBillComponent } from '../view-bill/view-bill.component';
   styleUrl: './walk-in-reservation.component.scss'
 })
 export class WalkInReservationComponent {
-  availableTables: TablesModel[] = [];
-  availableRooms: RoomModel[] = [];
+  availableTables: AvailableItem[] = [];
+  availableRooms: AvailableItem[] = [];
+  filteredAvailable: AvailableItem[] = []
   selectedTable?: TablesModel
   reservationList: ReservationModel[] = [];
   activeTableList: ReservationModel[] = [];
@@ -43,15 +45,16 @@ export class WalkInReservationComponent {
   reservation?: ReservationModel
   menuList: MenuModel[] = []
   selectedOrder: Order
+  isLoading = false;
+  errorMsg = '';
+  tableType = '';
   constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private menuService: MenusService, private roomService: RoomService) {
     this.getMenu()
   }
 
   ngOnInit(): void {
-    this.getTable()
-    this.getReserved()
-    this.getCheckIn()
-    this.getCheckOut()
+    this.getTable();
+    this.getReservations();
   }
 
   getMenu() {
@@ -60,34 +63,33 @@ export class WalkInReservationComponent {
     })
   }
 
-  getReserved() {
-    this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations").subscribe(result => {
-      this.reservationList = result.filter(e => e.status == 'pending')
-    })
-  }
-
-  getCheckIn() {
-    this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations").subscribe(result => {
-      this.activeTableList = result.filter(e => e.status == 'checked_in')
-    })
-  }
-
-  getCheckOut() {
-    this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations").subscribe(result => {
-      this.paymentList = result.filter(e => (e.status == 'checked_out' || e.status == 'completed'))
-    })
-  }
-
   getTable() {
-    this.tableService.getActiveList().subscribe(result => {
-      this.availableTables = result
-    })
-    this.roomService.getLists().subscribe(result => {
-      this.availableRooms = result
-    })
+    forkJoin({
+      tables: this.tableService.getActiveList(),
+      rooms: this.roomService.getActiveList()
+    }).subscribe(({ tables, rooms }) => {
+      this.availableTables = tables;
+      this.availableRooms = rooms;
+      this.onTypeChange(); // เรียกครั้งเดียวหลังข้อมูลครบ
+    });
   }
 
-
+  getReservations() {
+    this.isLoading = true;
+    this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations")
+      .subscribe({
+        next: (result) => {
+          this.reservationList = result.filter(e => e.status === 'pending');
+          this.activeTableList = result.filter(e => e.status === 'checked_in');
+          this.paymentList = result.filter(e => ['checked_out', 'completed'].includes(e.status));
+          this.isLoading = false;
+        },
+        error: () => {
+          this.errorMsg = "โหลดข้อมูลไม่สำเร็จ";
+          this.isLoading = false;
+        }
+      });
+  }
 
   handleOpenTable(item: TablesModel) {
     // เรียก API Check-In/Check-in
@@ -227,6 +229,17 @@ export class WalkInReservationComponent {
     //     this.ngOnInit()
     //   })
     // })
+  }
+
+  onTypeChange() {
+    if (this.tableType === 'tables') {
+      this.filteredAvailable = [...this.availableTables];
+    } else if (this.tableType === 'room') {
+      this.filteredAvailable = [...this.availableRooms];
+    } else {
+      this.filteredAvailable = [...this.availableTables, ...this.availableRooms];
+    }
+    console.log("filter", this.filteredAvailable)
   }
 
 }

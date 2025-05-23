@@ -1,106 +1,64 @@
 <app-page-header [title]="'บริการหน้าร้าน'" [activeTitle]="'พนักงานเสิร์ฟ'"
   [title1]="'บริการหน้าร้าน'"></app-page-header>
 
-<!-- Start:: row-1 -->
-<div class="grid grid-cols-12 gap-x-6">
-  <div class="xl:col-span-12 col-span-12">
-    <div class="box">
-      <div class="box-body p-4">
-        <div class="md:flex items-center justify-between flex-wrap gap-4">
-          <div class="grid grid-cols-12 gap-2 md:w-[30%]">
+<!-- ฟิลเตอร์แถบบน -->
+<div class="box mb-6">
+  <div class="box-body p-4 flex flex-wrap gap-4 items-center">
+    <ng-select class="w-52 !rounded-md" [(ngModel)]="tableType" placeholder="ประเภท" (change)="onTypeChange()">
+      <ng-option value="">ทั้งหมด</ng-option>
+      <ng-option value="tables">โต๊ะ</ng-option>
+      <ng-option value="room">ห้องประชุม</ng-option>
+    </ng-select>
+  </div>
+</div>
 
-            <div class="xl:col-span-7 col-span-12">
-              <ng-select class="w-full !rounded-md" data-trigger name="choices-single-default"
-                id="choices-single-default" placeholder="ประเภท">
-                <ng-option value="">ทั้งหมด</ng-option>
-                <ng-option value="tables">โต๊ะ</ng-option>
-                <ng-option value="room">ห้องประชุม</ng-option>
-              </ng-select>
-            </div>
-          </div>
-
-        </div>
-      </div>
+<!-- Kanban Board -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+  <!-- ว่าง -->
+  <div class="kanban-tasks-type bg-gray-50 dark:bg-black/10 p-3 rounded-lg shadow-md">
+    <div class="flex justify-between items-center mb-2">
+      <span class="font-bold text-primary">ว่าง ({{ filteredAvailable.length }})</span>
+    </div>
+    <div class="space-y-4 max-h-[65vh] overflow-y-auto">
+      <app-available-table-card *ngFor="let available of filteredAvailable" [item]="available"
+        (openTable)="handleOpenTable($event)" (reserveTable)="handleReserveTable($event)">
+      </app-available-table-card>
+    </div>
+  </div>
+  <!-- มีการจอง -->
+  <div class="kanban-tasks-type bg-yellow-50 dark:bg-yellow-900/10 p-3 rounded-lg shadow-md">
+    <div class="flex justify-between items-center mb-2">
+      <span class="font-bold text-warning">มีการจอง ({{ reservationList.length }})</span>
+    </div>
+    <div class="space-y-4 max-h-[65vh] overflow-y-auto">
+      <app-reservation-card *ngFor="let res of reservationList" [reservation]="res" (checkIn)="handleCheckIn($event)"
+        (cancel)="handleCancel($event)"></app-reservation-card>
+    </div>
+  </div>
+  <!-- มีลูกค้า -->
+  <div class="kanban-tasks-type bg-blue-50 dark:bg-blue-900/10 p-3 rounded-lg shadow-md">
+    <div class="flex justify-between items-center mb-2">
+      <span class="font-bold text-info">มีลูกค้า ({{ activeTableList.length }})</span>
+    </div>
+    <div class="space-y-4 max-h-[65vh] overflow-y-auto">
+      <app-customer-card *ngFor="let item of activeTableList" [occupied]="item" (order)="onOrder($event)"
+        (bill)="onBill($event)">
+      </app-customer-card>
+    </div>
+  </div>
+  <!-- ชำระเงิน -->
+  <div class="kanban-tasks-type bg-green-50 dark:bg-green-900/10 p-3 rounded-lg shadow-md">
+    <div class="flex justify-between items-center mb-2">
+      <span class="font-bold text-success">ชำระเงิน ({{ paymentList.length }})</span>
+    </div>
+    <div class="space-y-4 max-h-[65vh] overflow-y-auto">
+      <!-- <app-payment-card *ngFor="let pay of paymentList" [checkout]="pay" (viewBill)="onViewBill($event)"
+        (verifyPayment)="onVerifyPayment($event)">
+      </app-payment-card> -->
     </div>
   </div>
 </div>
-<!-- End:: row-1 -->
 
-<!-- Start::row-2 -->
-<div class="ynex-kanban-board text-defaulttextcolor dark:text-defaulttextcolor/70 text-defaultsize">
-  <div class="kanban-tasks-type new">
-    <div class="mb-4">
-      <div class="flex justify-between items-center">
-        <span class="block font-semibold text-[.9375rem]">ว่าง - {{availableTables.length}}</span>
-      </div>
-    </div>
-    <ngx-simplebar id="new-tasks">
-      <div class="kanban-tasks mb-4">
-        <app-available-table-card *ngFor="let table of availableTables" [table]="table"
-          (openTable)="handleOpenTable($event)" (reserveTable)="handleReserveTable($event)"></app-available-table-card>
-        <!-- <app-available-table-card *ngFor="let table of availableRooms" [table]="table"
-          (openTable)="handleOpenTable($event)" (reserveTable)="handleReserveTable($event)"></app-available-table-card> -->
-      </div>
-    </ngx-simplebar>
-  </div>
-
-  <div class="kanban-tasks-type new">
-    <div class="mb-4">
-      <div class="flex justify-between items-center">
-        <span class="block font-semibold text-[.9375rem]">มีการจอง - {{reservationList.length}}</span>
-        <!-- <div>
-          <a href="javascript:void(0);"
-            class="hs-dropdown-toggle  ti-btn !py-1 !px-2 !font-medium !text-[0.75rem] bg-white dark:bg-bodybg text-default border-0"
-            data-hs-overlay="#add-task"><i class="ri-add-line"></i>จองโต๊ะ/ห้องประชุม
-          </a>
-        </div> -->
-      </div>
-    </div>
-    <ngx-simplebar id="new-tasks">
-      <div class="kanban-tasks ">
-        <app-reservation-card *ngFor="let res of reservationList" [reservation]="res" (checkIn)="handleCheckIn($event)"
-          (cancel)="handleCancel($event)"></app-reservation-card>
-      </div>
-    </ngx-simplebar>
-    <!-- <div class="grid me-4 mt-4">
-                            <button type="button" class="ti-btn ti-btn-primary">View More</button>
-                        </div> -->
-  </div>
-  <div class="kanban-tasks-type new">
-    <div class="mb-4">
-      <div class="flex justify-between items-center">
-        <span class="block font-semibold text-[.9375rem]">มีลูกค้า - {{activeTableList.length}}</span>
-        <!-- <div>
-          <a href="javascript:void(0);"
-            class="hs-dropdown-toggle  ti-btn !py-1 !px-2 !font-medium !text-[0.75rem] bg-white dark:bg-bodybg text-default border-0"
-            data-hs-overlay="#add-task"><i class="ri-add-line"></i>Check-In
-          </a>
-        </div> -->
-      </div>
-    </div>
-    <ngx-simplebar id="new-tasks">
-
-      <div class="kanban-tasks ">
-        <app-customer-card *ngFor="let item of activeTableList" [occupied]="item" (order)="onOrder($event)"
-          (bill)="onBill($event)"></app-customer-card>
-      </div>
-    </ngx-simplebar>
-  </div>
-
-  <div class="kanban-tasks-type new">
-    <div class="mb-4">
-      <div class="flex justify-between items-center">
-        <span class="block font-semibold text-[.9375rem]">ชำระเงิน - {{paymentList.length}}</span>
-
-      </div>
-    </div>
-    <ngx-simplebar id="new-tasks">
-      <app-payment-card *ngFor="let pay of paymentList" [checkout]="pay" (viewBill)="onViewBill($event)"
-        (verifyPayment)="onVerifyPayment($event)"></app-payment-card>
-    </ngx-simplebar>
-  </div>
-</div>
-<!--End::row-2 -->
 
 <!-- Start::add task modal -->
 <div id="add-reserve" class="hs-overlay hidden ti-modal">

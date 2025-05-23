@@ -12,9 +12,10 @@ import { SharedModule } from '../../../shared/shared.module';
 import { TablesService } from '../../services/tables.service';
 
 import swal from 'sweetalert';
-import { TablesModel } from '../../models/menus.model';
+import { RoomModel, TablesModel } from '../../models/menus.model';
 import { StoreProfile, StoreProfileService } from '../../services/store-profile.service';
 import { TableReservationComponent } from '../table-reservation/table-reservation.component';
+import { AvailableItem } from '../../models/all.model';
 @Component({
   selector: 'app-reserved-room-tables',
   standalone: true,
@@ -39,9 +40,9 @@ export class ReservedRoomTablesComponent {
   someSelected = false;
   uploaderProfile: FileUploader | undefined;
   uploadErrorMsg: string = "";
-  itemsList: TablesModel[] = []
-  filterList: TablesModel[] = []
-  selectModel: TablesModel = new TablesModel()
+  itemsList: AvailableItem[] = []
+  filterList: AvailableItem[] = []
+  selectModel: any
   selectedItems = new Map<string, boolean>();
   pageIndex = 0;
   get searchTerm(): string {
@@ -59,7 +60,7 @@ export class ReservedRoomTablesComponent {
   }
   projectId = ""
   _searchTerm = "";
-  selectedTable?: TablesModel
+  selectedTable?: any
   isEdit = false;
   storeModel: StoreProfile
   constructor(private http: HttpClient, private tableService: TablesService, public translate: TranslateService, private tokenService: TokenService, private storeService: StoreProfileService) {
@@ -141,10 +142,15 @@ export class ReservedRoomTablesComponent {
 
   filter(v: string) {
     this.pageIndex = 0;
-    return this.itemsList?.filter(
-      (x) =>
-        x.table_number.toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
-        x.status?.toLowerCase().indexOf(v.toLowerCase()) !== -1
+    const search = v.trim().toLowerCase();
+    return this.itemsList?.filter(x =>
+      // โต๊ะ: ค้นหาเลขโต๊ะ, สถานะ, ชื่อ
+      (x.table_number?.toLowerCase().includes(search)) ||
+      // ห้อง: ค้นหาเลขห้อง, ชื่อห้อง
+      (x.room_number?.toLowerCase().includes(search)) ||
+      (x.name?.toLowerCase().includes(search)) ||
+      (x.status?.toLowerCase().includes(search)) ||
+      (x.description?.toLowerCase().includes(search))
     );
   }
 
