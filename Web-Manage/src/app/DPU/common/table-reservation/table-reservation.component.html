@@ -37,10 +37,10 @@
 
   <div class="flex flex-wrap gap-2 mt-3 justify-end">
     <!-- ปุ่มในฟอร์ม -->
-    <button *ngIf="status != 'checked_in'" class="ti-btn ti-btn-primary" type="submit" [disabled]="!form.valid">
+    <button *ngIf="status != 'checked_in'" class="ti-btn ti-btn-primary" type="submit" [disabled]="!form.valid"  data-hs-overlay="#add-reserve">
       ยืนยันจอง{{ form.value.room_id ? 'ห้อง' : 'โต๊ะ' }}
     </button>
-    <button *ngIf="status == 'checked_in'" class="ti-btn ti-btn-success" type="submit" [disabled]="!form.valid">
+    <button *ngIf="status == 'checked_in'" class="ti-btn ti-btn-success" type="submit" [disabled]="!form.valid"  data-hs-overlay="#add-check-in">
       ยืนยันลูกค้าเข้า{{ form.value.room_id ? 'ห้อง' : 'โต๊ะ' }}
     </button>
     <button class="ti-btn ti-btn-light font-semibold !rounded-md px-5 py-2" type="button" (click)="form.reset()">
