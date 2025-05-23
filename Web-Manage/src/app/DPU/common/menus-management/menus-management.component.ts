@@ -74,7 +74,7 @@ export class MenusManagementComponent {
   checkMatch = false;
   memberId = ""
   isFaceDetected = false; // Flag to determine if a face is detected
-
+  categorySelected = 'all'
 
   uploadConfig() {
     this.uploaderProfile = new FileUploader({
@@ -239,5 +239,14 @@ export class MenusManagementComponent {
     const endIndex = startIndex + 10;
     // this.filterList = this.itemsList.slice(startIndex, endIndex);
     this.filterList = this.itemsList
+  }
+
+  changeCategoly() {
+    console.log(this.categorySelected)
+    if (this.categorySelected != 'all') {
+      this.filterList = this.itemsList.filter(e => e.category == this.categorySelected)
+    } else {
+      this.filterList = this.itemsList
+    }
   }
 }

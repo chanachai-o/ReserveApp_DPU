@@ -14,19 +14,27 @@
             translate}}
           </a>
           <div>
-            <input [(ngModel)]='searchTerm' class="form-control form-control" type="text"
+            <input [(ngModel)]='searchTerm' class="form-control" type="text"
               placeholder="{{ 'ค้นหาเมนู' | translate}}" aria-label=".form-control-sm example">
+
+          </div>
+          <div>
+            <ng-select class="form-control" data-trigger name="choices-single-default"
+              id="choices-single-default" placeholder="ประเภท" [(ngModel)]="categorySelected" (change)="changeCategoly()">
+              <ng-option value="all">ทั้งหมด</ng-option>
+              <ng-option value="food" >อาหาร</ng-option>
+              <ng-option value="drink">เครื่องดื่ม</ng-option>
+              <ng-option value="dessert">ขนมของกินเล่น</ng-option>
+            </ng-select>
           </div>
           <!-- <a href="javascript:void(0);" class="ti-btn ti-btn-primary-full !py-1 !px-2" aria-expanded="false">
-            เรียงตาม<i class="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
+            ประเภท<i class="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
           </a>
           <ul class="hs-dropdown-menu ti-dropdown-menu hidden" role="menu">
-            <li><a class="ti-dropdown-item" href="javascript:void(0);">Posted Date</a></li>
-            <li><a class="ti-dropdown-item" href="javascript:void(0);">Status</a></li>
-            <li><a class="ti-dropdown-item" href="javascript:void(0);">Department</a></li>
-            <li><a class="ti-dropdown-item" href="javascript:void(0);">Job Type</a></li>
-            <li><a class="ti-dropdown-item" href="javascript:void(0);">Newest</a></li>
-            <li><a class="ti-dropdown-item" href="javascript:void(0);">Oldest</a></li>
+            <li><a class="ti-dropdown-item" (click)="changeCategoly('all')">ทั้งหมด</a></li>
+            <li><a class="ti-dropdown-item" (click)="changeCategoly('food')">อาหาร</a></li>
+            <li><a class="ti-dropdown-item" (click)="changeCategoly('drink')">เครื่องดื่ม</a></li>
+            <li><a class="ti-dropdown-item" (click)="changeCategoly('dessert')">ขนมของกินเล่น</a></li>
           </ul> -->
         </div>
       </div>
