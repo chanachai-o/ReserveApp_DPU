@@ -14,13 +14,13 @@
 <!-- Kanban Board -->
 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
   <!-- 1. ว่าง -->
-  <div class="board-column shadow-xl rounded-2xl border border-primary/20 dark:border-neutral-700 bg-white dark:bg-neutral-900 overflow-hidden transition-all">
+  <div class=" border-primary/20 dark:border-neutral-700 bg-white dark:bg-neutral-900 overflow-hidden transition-all">
     <div class="p-4 bg-gradient-to-r from-primary/10 via-white/80 to-white/80 dark:from-primary/15 dark:to-neutral-900 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl flex justify-between items-center">
       <span class="font-bold text-primary flex items-center gap-2">
         <i class="ri-checkbox-blank-circle-fill text-blue-300"></i> ว่าง ({{ filteredAvailable.length }})
       </span>
     </div>
-    <div class="p-4 space-y-4 max-h-[65vh] overflow-y-auto">
+    <div class="p-2 space-y-4 max-h-[65vh] overflow-y-auto">
       <app-available-table-card
         *ngFor="let available of filteredAvailable"
         [item]="available"
@@ -31,13 +31,13 @@
     </div>
   </div>
   <!-- 2. มีการจอง -->
-  <div class="board-column shadow-xl rounded-2xl border border-rose/20 dark:border-rose-700 bg-white dark:bg-neutral-900 overflow-hidden transition-all">
+  <div class=" border-rose/20 dark:border-rose-700 bg-white dark:bg-neutral-900 overflow-hidden transition-all">
     <div class="p-4 bg-gradient-to-r from-rose-100/80 to-white/80 dark:from-rose-900/10 dark:to-black/5 border-b border-rose-100 dark:border-rose-800 rounded-t-2xl flex justify-between items-center">
       <span class="font-bold text-rose-600 flex items-center gap-2">
         <i class="ri-reserved-line"></i> มีการจอง ({{ reservationList.length }})
       </span>
     </div>
-    <div class="p-4 space-y-4 max-h-[65vh] overflow-y-auto">
+    <div class="p-2 space-y-4 max-h-[65vh] overflow-y-auto">
       <app-reservation-card
         *ngFor="let res of reservationList"
         [reservation]="res"
@@ -48,13 +48,13 @@
     </div>
   </div>
   <!-- 3. มีลูกค้า -->
-  <div class="board-column shadow-xl rounded-2xl border border-warning/20 dark:border-warning-700 bg-white dark:bg-neutral-900 overflow-hidden transition-all">
+  <div class=" border-warning/20 dark:border-warning-700 bg-white dark:bg-neutral-900 overflow-hidden transition-all">
     <div class="p-4 bg-gradient-to-r from-warning/10 via-white/80 to-white/80 dark:from-warning-900/15 dark:to-neutral-900 border-b border-warning-100 dark:border-warning-800 rounded-t-2xl flex justify-between items-center">
       <span class="font-bold text-warning-600 flex items-center gap-2">
         <i class="ri-login-circle-line"></i> มีลูกค้า ({{ activeTableList.length }})
       </span>
     </div>
-    <div class="p-4 space-y-4 max-h-[65vh] overflow-y-auto">
+    <div class="p-2 space-y-4 max-h-[65vh] overflow-y-auto">
       <app-customer-card
         *ngFor="let item of activeTableList"
         [occupied]="item"
@@ -65,13 +65,13 @@
     </div>
   </div>
   <!-- 4. ชำระเงิน -->
-  <div class="board-column shadow-xl rounded-2xl border border-green/20 dark:border-green-700 bg-white dark:bg-neutral-900 overflow-hidden transition-all">
+  <div class=" border-green/20 dark:border-green-700 bg-white dark:bg-neutral-900 overflow-hidden transition-all">
     <div class="p-4 bg-gradient-to-r from-green/10 via-white/80 to-white/80 dark:from-green-900/15 dark:to-neutral-900 border-b border-green-100 dark:border-green-800 rounded-t-2xl flex justify-between items-center">
       <span class="font-bold text-green-700 flex items-center gap-2">
         <i class="ri-exchange-dollar-line"></i> ชำระเงิน ({{ paymentList.length }})
       </span>
     </div>
-    <div class="p-4 space-y-4 max-h-[65vh] overflow-y-auto">
+    <div class="p-2 space-y-4 max-h-[65vh] overflow-y-auto">
       <app-payment-card
         *ngFor="let pay of paymentList"
         [checkout]="pay"
