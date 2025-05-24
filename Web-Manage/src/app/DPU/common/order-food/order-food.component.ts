@@ -14,7 +14,7 @@ export class OrderFoodComponent implements OnInit, OnChanges {
   @Input() userId!: number;
   @Input() reservationId!: number;
   @Input() menuList: MenusModel[] = [];
-  @Input() orderItems: OrderItem[] = []; // <-- เพิ่ม input ตรงนี้
+  @Input() orderItems?: OrderItem[] = []; // <-- เพิ่ม input ตรงนี้
   @Output() submitOrder = new EventEmitter<any>();
 
   form!: FormGroup;
@@ -35,6 +35,9 @@ export class OrderFoodComponent implements OnInit, OnChanges {
       }
       if (changes['menuList'] && changes['menuList'].currentValue !== changes['menuList'].previousValue) {
         this.menuList = changes['menuList'].currentValue
+      }
+      if (changes['orderItems'] && changes['orderItems'].currentValue !== changes['orderItems'].previousValue) {
+        this.orderItems = changes['orderItems'].currentValue
       }
       if (changes['reservationId'] || changes['orderItems']) {
         this.initForm();
@@ -67,7 +70,8 @@ export class OrderFoodComponent implements OnInit, OnChanges {
   createItem(item?: OrderItem): FormGroup {
     return this.fb.group({
       menu_id: [item?.menu_id ?? null, Validators.required],
-      quantity: [item?.quantity ?? 1, [Validators.required, Validators.min(1)]]
+      quantity: [item?.quantity ?? 1, [Validators.required, Validators.min(1)]],
+      status: [item?.status ?? 'pending', Validators.required] // เพิ่มสถานะอาหารแต่ละรายการ
     });
   }
 

@@ -56,6 +56,15 @@
             <i class="ri-delete-bin-6-line"></i>
           </button>
         </div>
+ <div class="flex flex-col items-center gap-1 min-w-[110px]">
+      <label class="text-xs font-medium text-gray-500">สถานะอาหาร</label>
+      <select formControlName="status" class="form-control w-28 text-xs py-1 px-1">
+        <option value="pending">รอดำเนินการ</option>
+        <option value="preparing">กำลังทำ</option>
+        <option value="cooked">ปรุงเสร็จ</option>
+        <option value="served">เสิร์ฟแล้ว</option>
+      </select>
+    </div>
       </div>
     </div>
     <button type="button" class="ti-btn ti-btn-primary ti-btn-xs mt-3" (click)="addItem()">

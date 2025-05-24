@@ -148,7 +148,7 @@
       </div>
       <div class="ti-modal-body px-6 py-6 !overflow-visible">
         <app-order-food [userId]="reservation?.user_id!" [reservationId]="reservation?.id!" [menuList]="menuList"
-          [orderItems]="reservation?.orders![0].order_items"
+          [orderItems]="reservation?.orders?.length ? (reservation?.orders![0].order_items || []) : []"
           (submitOrder)="handleOrder($event)">
         </app-order-food>
 

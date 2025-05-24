@@ -536,20 +536,23 @@ async def create_or_update_order(
         if not menu:
             raise HTTPException(status_code=404, detail=f"Menu ID {item.menu_id} not found")
         total_amount += menu.price * item.quantity
-        order_items_data.append((item.menu_id, item.quantity))
+        order_items_data.append((item.menu_id, item.quantity, getattr(item, "status", "pending")))
 
     if existing_order:
-        # 3.1 มี order เดิม: ลบ order_items เก่า แล้วสร้างใหม่ (หรือจะอัปเดตทีละอันก็ได้)
         await db.execute(delete(OrderItem).where(OrderItem.order_id == existing_order.id))
-        for menu_id, quantity in order_items_data:
-            db.add(OrderItem(order_id=existing_order.id, menu_id=menu_id, quantity=quantity))
+        for menu_id, quantity, status in order_items_data:
+            db.add(OrderItem(
+                order_id=existing_order.id,
+                menu_id=menu_id,
+                quantity=quantity,
+                status=status  # เพิ่ม status
+            ))
         existing_order.total_amount = total_amount
         existing_order.status = order.status if hasattr(order, "status") else "pending"
         await db.commit()
         await db.refresh(existing_order)
         order_obj = existing_order
     else:
-        # 3.2 ไม่มี order เดิม: สร้างใหม่
         new_order = Order(
             user_id=target_user_id,
             reservation_id=order.reservation_id,
@@ -559,8 +562,13 @@ async def create_or_update_order(
         db.add(new_order)
         await db.commit()
         await db.refresh(new_order)
-        for menu_id, quantity in order_items_data:
-            db.add(OrderItem(order_id=new_order.id, menu_id=menu_id, quantity=quantity))
+        for menu_id, quantity, status in order_items_data:
+            db.add(OrderItem(
+                order_id=new_order.id,
+                menu_id=menu_id,
+                quantity=quantity,
+                status=status  # เพิ่ม status
+            ))
         await db.commit()
         order_obj = new_order
 

@@ -158,7 +158,7 @@ class OrderItemSchema(BaseModel):
 class OrderItemCreate(BaseModel):
     menu_id: int
     quantity: int
-    
+    status: str = "pending"
 class OrderItemOut(BaseModel):
     id: int
     menu_id: int

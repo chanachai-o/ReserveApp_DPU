@@ -185,7 +185,7 @@ export interface Order {
   reservation_id?: number | null;
   status: OrderStatus;
   total_amount: number;
-  order_items: OrderItem[] | [];
+  order_items: OrderItem[];
 }
 
 export interface Payment {
