@@ -22,4 +22,11 @@ export class PaymentCardComponent {
   onViewBill() {
     this.viewBill.emit(this.checkout);
   }
+
+  // รวมยอดเงินทั้งหมดของ orders ใน checkout
+  getTotalAmount(orders: any[]): number {
+    if (!orders) return 0;
+    return orders.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
+  }
+
 }

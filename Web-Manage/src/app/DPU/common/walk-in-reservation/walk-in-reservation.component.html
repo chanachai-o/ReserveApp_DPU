@@ -23,6 +23,9 @@
       <app-available-table-card *ngFor="let available of filteredAvailable" [item]="available"
         (openTable)="handleOpenTable($event)" (reserveTable)="handleReserveTable($event)">
       </app-available-table-card>
+      <div *ngIf="filteredAvailable.length === 0" class="text-center text-gray-400 text-sm py-6">ไม่มีโต๊ะ/ห้องว่าง
+      </div>
+
     </div>
   </div>
   <!-- มีการจอง -->
@@ -53,66 +56,87 @@
       <span class="font-bold text-success">ชำระเงิน ({{ paymentList.length }})</span>
     </div>
     <div class="space-y-4 max-h-[65vh] overflow-y-auto">
-      <!-- <app-payment-card *ngFor="let pay of paymentList" [checkout]="pay" (viewBill)="onViewBill($event)"
+      <app-payment-card *ngFor="let pay of paymentList" [checkout]="pay" (viewBill)="onViewBill($event)"
         (verifyPayment)="onVerifyPayment($event)">
-      </app-payment-card> -->
+      </app-payment-card>
     </div>
   </div>
 </div>
 
-
-<!-- Start::add task modal -->
-<div id="add-reserve" class="hs-overlay hidden ti-modal">
-  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
+<!-- Start:: Reserve/Check-in Modal -->
+<div id="add-reserve" class="hs-overlay hidden ti-modal z-50">
+  <div
+    class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out rounded-2xl shadow-2xl max-w-md w-full mx-auto bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800">
     <div class="ti-modal-content">
-      <div class="ti-modal-header">
-        <h6 class="modal-title text-[1rem] font-semibold text-default dark:text-defaulttextcolor/70"
-          id="mail-ComposeLabel">จอง</h6>
-        <button type="button" class="hs-dropdown-toggle !text-[1rem] !font-semibold" data-hs-overlay="#add-reserve">
-          <span class="sr-only">Close</span>
-          <i class="ri-close-line"></i>
+      <!-- Header -->
+      <div
+        class="ti-modal-header flex justify-between items-center p-6 pb-2 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl bg-gradient-to-r from-blue-100/60 via-white/80 to-white/80 dark:from-neutral-800 dark:to-neutral-900">
+        <h6 class="modal-title text-lg font-bold text-primary dark:text-white tracking-wide" id="mail-ComposeLabel">
+          <i class="ri-calendar-check-line mr-2 text-blue-400"></i>
+          จอง/Check-in
+        </h6>
+        <button type="button" class="hover:bg-gray-200 dark:hover:bg-neutral-800 rounded-full p-2 ml-2 transition"
+          data-hs-overlay="#add-reserve">
+          <i class="ri-close-line text-2xl text-gray-500 dark:text-white"></i>
         </button>
       </div>
-      <div class="ti-modal-body px-4 !overflow-visible">
-        <app-table-reservation [tableId]="selectedTable?.id" [roomId]="selectedTable?.id"
-          (reserve)="reserveTable($event)" [type]="selectedTable?.type"></app-table-reservation>
+      <!-- Body -->
+      <div class="ti-modal-body px-6 py-6 !overflow-visible">
+        <app-table-reservation [tableId]="selectedTable?.type === 'table' ? selectedTable?.id : 0"
+          [roomId]="selectedTable?.type === 'room' ? selectedTable?.id : 0" [type]="selectedTable?.type"
+          (reserve)="reserveTable($event)">
+        </app-table-reservation>
       </div>
     </div>
   </div>
 </div>
 
-<div id="add-check-in" class="hs-overlay hidden ti-modal">
-  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
+<div id="add-check-in" class="hs-overlay hidden ti-modal z-50">
+  <div
+    class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out rounded-2xl shadow-2xl max-w-md w-full mx-auto bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800">
     <div class="ti-modal-content">
-      <div class="ti-modal-header">
-        <h6 class="modal-title text-[1rem] font-semibold text-default dark:text-defaulttextcolor/70"
-          id="mail-ComposeLabel">Check-In</h6>
-        <button type="button" class="hs-dropdown-toggle !text-[1rem] !font-semibold" data-hs-overlay="#add-check-in">
-          <span class="sr-only">Close</span>
-          <i class="ri-close-line"></i>
+      <!-- Header -->
+      <div
+        class="ti-modal-header flex justify-between items-center p-6 pb-2 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl bg-gradient-to-r from-green-100/60 via-white/80 to-white/80 dark:from-neutral-800 dark:to-neutral-900">
+        <h6 class="modal-title text-lg font-bold text-green-600 dark:text-white tracking-wide" id="mail-ComposeLabel">
+          <i class="ri-login-circle-line mr-2 text-green-400"></i>
+          Check-In
+        </h6>
+        <button type="button" class="hover:bg-gray-200 dark:hover:bg-neutral-800 rounded-full p-2 ml-2 transition"
+          data-hs-overlay="#add-check-in">
+          <i class="ri-close-line text-2xl text-gray-500 dark:text-white"></i>
         </button>
       </div>
-      <div class="ti-modal-body px-4 !overflow-visible">
-        <app-table-reservation [tableId]="selectedTable?.id" [roomId]="selectedTable?.id"
-          (reserve)="reserveTable($event)" [type]="selectedTable?.type" [status]="'checked_in'"></app-table-reservation>
+      <!-- Body -->
+      <div class="ti-modal-body px-6 py-6 !overflow-visible">
+        <app-table-reservation [tableId]="selectedTable?.type === 'table' ? selectedTable?.id : 0"
+          [roomId]="selectedTable?.type === 'room' ? selectedTable?.id : 0" [type]="selectedTable?.type"
+          [status]="'checked_in'" (reserve)="reserveTable($event)">
+        </app-table-reservation>
       </div>
     </div>
   </div>
 </div>
-<!-- End::add task modal -->
 
-<div id="add-order" class="hs-overlay hidden ti-modal">
-  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
+<!-- Start:: Order Modal -->
+<div id="add-order" class="hs-overlay hidden ti-modal z-50">
+  <div
+    class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out rounded-2xl shadow-2xl max-w-lg w-full mx-auto bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800">
     <div class="ti-modal-content">
-      <div class="ti-modal-header">
-        <h6 class="modal-title text-[1rem] font-semibold text-default dark:text-defaulttextcolor/70"
-          id="mail-ComposeLabel">สั่งอาหาร</h6>
-        <button type="button" class="hs-dropdown-toggle !text-[1rem] !font-semibold" data-hs-overlay="#add-order">
-          <span class="sr-only">Close</span>
-          <i class="ri-close-line"></i>
+      <!-- Header -->
+      <div
+        class="ti-modal-header flex justify-between items-center p-6 pb-2 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl bg-gradient-to-r from-pink-100/60 via-white/80 to-white/80 dark:from-neutral-800 dark:to-neutral-900">
+        <h6 class="modal-title text-lg font-bold text-pink-600 dark:text-white" id="mail-ComposeLabel">
+          <i class="ri-restaurant-2-line mr-2 text-pink-400"></i>
+          สั่งอาหาร
+        </h6>
+        <button type="button" class="hover:bg-gray-200 dark:hover:bg-neutral-800 rounded-full p-2 ml-2 transition"
+          data-hs-overlay="#add-order">
+          <i class="ri-close-line text-2xl text-gray-500 dark:text-white"></i>
         </button>
       </div>
-      <div class="ti-modal-body px-4 !overflow-visible">
+      <!-- Body -->
+      <div class="ti-modal-body px-6 py-6 !overflow-visible">
         <app-order-food [userId]="reservation?.user_id!" [reservationId]="reservation?.id!" [menuList]="menuList"
           (submitOrder)="handleOrder($event)">
         </app-order-food>
@@ -120,23 +144,27 @@
     </div>
   </div>
 </div>
-<!-- End::add task modal -->
 
-<div id="view-bill" class="hs-overlay hidden ti-modal">
-  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
+<!-- Start:: Bill Modal -->
+<div id="view-bill" class="hs-overlay hidden ti-modal z-50">
+  <div
+    class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out rounded-2xl shadow-2xl max-w-lg w-full mx-auto bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800">
     <div class="ti-modal-content">
-      <div class="ti-modal-header">
-        <h6 class="modal-title text-[1rem] font-semibold text-default dark:text-defaulttextcolor/70"
-          id="mail-ComposeLabel">ดูบิล</h6>
-        <button type="button" class="hs-dropdown-toggle !text-[1rem] !font-semibold" data-hs-overlay="#add-order">
-          <span class="sr-only">Close</span>
-          <i class="ri-close-line"></i>
+      <div
+        class="ti-modal-header flex justify-between items-center p-6 pb-2 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl bg-gradient-to-r from-teal-100/60 via-white/80 to-white/80 dark:from-neutral-800 dark:to-neutral-900">
+        <h6 class="modal-title text-lg font-bold text-teal-600 dark:text-white" id="mail-ComposeLabel">
+          <i class="ri-bill-line mr-2 text-teal-400"></i>
+          ดูบิล
+        </h6>
+        <button type="button" class="hover:bg-gray-200 dark:hover:bg-neutral-800 rounded-full p-2 ml-2 transition"
+          data-hs-overlay="#add-order">
+          <i class="ri-close-line text-2xl text-gray-500 dark:text-white"></i>
         </button>
       </div>
-      <div class="ti-modal-body px-4 !overflow-visible">
+      <div class="ti-modal-body px-6 py-6 !overflow-visible">
         <!-- <app-view-bill [order]="selectedOrder"></app-view-bill> -->
+        <div class="text-center text-gray-400 dark:text-gray-500">ยังไม่เปิดใช้งาน</div>
       </div>
     </div>
   </div>
 </div>
-<!-- End::add task modal -->

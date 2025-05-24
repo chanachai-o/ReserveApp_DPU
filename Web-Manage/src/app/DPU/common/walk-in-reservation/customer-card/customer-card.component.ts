@@ -25,4 +25,16 @@ export class CustomerCardComponent {
   onClose() {
     this.closeTable.emit(this.occupied);
   }
+
+  getStayDuration(startTime: string): string {
+    if (!startTime) return '-';
+    const start = new Date(startTime).getTime();
+    const now = Date.now();
+    const diffMs = now - start;
+    if (diffMs < 0) return '-';
+    const mins = Math.floor(diffMs / 60000) % 60;
+    const hrs = Math.floor(diffMs / 3600000);
+    return hrs ? `${hrs} ชม. ${mins} นาที` : `${mins} นาที`;
+  }
+
 }

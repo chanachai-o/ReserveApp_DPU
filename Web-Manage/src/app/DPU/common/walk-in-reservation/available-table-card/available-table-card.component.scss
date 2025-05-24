@@ -1,5 +1,17 @@
-.kanban-tasks .kanban-content img {
-  min-width: 120px;
+.kanban-tasks .box-body {
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.kanban-content img {
+  max-height: 140px;
   min-height: 80px;
-  background: #f8fafc;
+}
+
+.kanban-content h6 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
