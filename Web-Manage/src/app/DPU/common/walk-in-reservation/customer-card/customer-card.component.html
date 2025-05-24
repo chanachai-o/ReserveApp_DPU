@@ -1,11 +1,8 @@
-<div
-  class="box kanban-tasks active shadow-lg rounded-xl border-2 border-yellow-300 mb-5 bg-white dark:bg-neutral-900 transition-all duration-150 hover:scale-[1.01]"
-  style="min-width:280px;">
-
+<!-- มีลูกค้าเข้า -->
+<div class="box kanban-tasks active shadow-lg rounded-xl border-2 border-warning-300 mb-5 bg-white dark:bg-neutral-900 transition-all duration-150 hover:scale-[1.01]" style="min-width:280px;">
   <div class="box-body !p-0">
-    <!-- Header -->
-    <div class="p-4 kanban-board-head bg-gradient-to-r from-yellow-50/70 to-white/80 dark:from-yellow-900/20 dark:to-black/5 rounded-t-xl">
-      <div class="flex justify-between items-center mb-1 text-xs font-semibold text-yellow-600">
+    <div class="p-4 bg-gradient-to-r from-warning/10 to-white/80 dark:from-warning-900/20 dark:to-black/5 rounded-t-xl">
+      <div class="flex justify-between items-center mb-1 text-base font-semibold text-warning-600">
         <div class="inline-flex items-center gap-1">
           <i class="ri-login-circle-line mr-1"></i>
           <span>
@@ -18,7 +15,6 @@
           {{ getStayDuration(occupied.start_time) }}
         </span>
       </div>
-
       <div class="flex items-center justify-between mt-2">
         <span class="badge bg-info/10 text-info rounded px-3 py-1 font-medium">
           <i [ngClass]="occupied.room ? 'ri-door-lock-fill text-amber-400' : 'ri-table-fill text-blue-400'"></i>
@@ -33,11 +29,9 @@
           </button>
         </div>
       </div>
-      <!-- ลูกค้า -->
       <div class="flex items-center gap-3 mt-4">
         <span class="avatar avatar-md avatar-rounded bg-gray-100 dark:bg-neutral-700">
-          <img *ngIf="occupied.user?.picture" [src]="occupied.user?.picture" class="object-cover w-10 h-10 rounded-full"
-            alt="user" />
+          <img *ngIf="occupied.user?.picture" [src]="occupied.user?.picture" class="object-cover w-10 h-10 rounded-full" alt="user" />
           <i *ngIf="!occupied.user?.picture" class="ri-user-3-line text-gray-400 text-2xl"></i>
         </span>
         <div>
@@ -45,8 +39,6 @@
           <span class="block text-xs text-gray-500">จำนวน: <b>{{ occupied.num_people }}</b> คน</span>
         </div>
       </div>
-
-      <!-- รายการอาหารล่าสุด -->
       <div class="mt-4">
         <span class="block text-xs text-gray-400 mb-1">อาหารล่าสุด:</span>
         <div class="flex flex-wrap gap-1">
@@ -66,7 +58,6 @@
         </div>
       </div>
     </div>
-    <!-- Footer -->
     <div class="p-4 border-t border-dashed dark:border-defaultborder/10 rounded-b-xl bg-gray-50 dark:bg-neutral-800 text-xs text-gray-500 flex justify-between items-center">
       <span>เข้าใช้ถึง {{ occupied.end_time | date: 'shortTime' }}</span>
       <span *ngIf="occupied.note" class="italic text-rose-400 truncate" [title]="occupied.note">

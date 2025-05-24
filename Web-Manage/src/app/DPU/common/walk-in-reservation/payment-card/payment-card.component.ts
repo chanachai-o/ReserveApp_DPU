@@ -6,6 +6,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './payment-card.component.html',
+  styleUrls: ['./payment-card.component.scss']
 })
 export class PaymentCardComponent {
   @Input() checkout: any;         // ข้อมูลโต๊ะ

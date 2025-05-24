@@ -6,6 +6,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './customer-card.component.html',
+  styleUrls: ['./customer-card.component.scss']
 })
 export class CustomerCardComponent {
   @Input() occupied: any; // หรือใช้ interface ที่เหมาะสม

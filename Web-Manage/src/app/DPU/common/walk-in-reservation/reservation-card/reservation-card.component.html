@@ -1,8 +1,8 @@
-<div class="box kanban-tasks todo shadow-md rounded-xl border-2 border-rose-400 mb-4 transition-all duration-150 hover:scale-[1.015] bg-white dark:bg-neutral-900" style="min-width:270px;">
+<!-- มีการจอง -->
+<div class="box kanban-tasks todo shadow-md rounded-xl border-2 border-rose-400 mb-4 bg-white dark:bg-neutral-900 transition-all duration-150 hover:scale-[1.015]" style="min-width:270px;">
   <div class="box-body !p-0">
-    <!-- Header -->
-    <div class="p-4 kanban-board-head bg-gradient-to-r from-rose-100/80 to-white/80 dark:from-rose-900/10 dark:to-black/5 rounded-t-xl">
-      <div class="flex justify-between items-center mb-1 text-xs font-semibold text-rose-500">
+    <div class="p-4 bg-gradient-to-r from-rose-100/80 to-white/80 dark:from-rose-900/10 dark:to-black/5 rounded-t-xl">
+      <div class="flex justify-between items-center mb-1 text-base font-semibold text-rose-500">
         <span class="inline-flex items-center gap-1">
           <i class="ri-calendar-check-line mr-1"></i>
           {{ reservation.start_time | date: 'short' }}
@@ -14,8 +14,6 @@
           {{ reservation.table ? 'โต๊ะ #' + reservation.table.table_number : 'ห้อง: ' + (reservation.room?.name || '-') }}
         </span>
       </div>
-
-      <!-- Actions -->
       <div class="flex items-center justify-between mt-2 mb-1">
         <span class="badge bg-blue-50 text-blue-600 px-3 py-1 rounded-md font-medium flex items-center gap-1">
           <i class="ri-user-fill"></i>
@@ -30,8 +28,6 @@
           </button>
         </div>
       </div>
-
-      <!-- Customer Info -->
       <div class="flex items-center mt-3 gap-2">
         <i class="ri-user-3-line text-gray-400"></i>
         <span class="font-semibold text-gray-800 dark:text-white">
@@ -39,8 +35,6 @@
         </span>
         <span *ngIf="reservation.user?.phone" class="ml-1 text-gray-400">({{ reservation.user.phone }})</span>
       </div>
-
-      <!-- Table/Room Details -->
       <div *ngIf="reservation.table || reservation.room" class="mt-1 text-xs text-gray-500 dark:text-gray-300 flex gap-2">
         <ng-container *ngIf="reservation.table">
           <i class="ri-table-2 text-blue-400"></i>
@@ -51,14 +45,10 @@
           <span>ขนาด {{ reservation.room.capacity }} คน</span>
         </ng-container>
       </div>
-
-      <!-- Notes & Details -->
       <div class="mt-2 flex flex-col gap-1 text-xs text-gray-500 dark:text-gray-300">
         <div *ngIf="reservation.note" class="italic bg-gray-100 dark:bg-neutral-800 px-2 py-1 rounded">หมายเหตุ: {{ reservation.note }}</div>
       </div>
     </div>
-
-    <!-- Footer: แสดง Order หรือ Payment เพิ่มเติมได้ -->
     <div class="p-4 border-t border-dashed dark:border-defaultborder/10 rounded-b-xl bg-gray-50 dark:bg-neutral-800">
       <div *ngIf="reservation.orders.length > 0" class="mb-2">
         <div class="font-semibold text-xs text-gray-700 dark:text-gray-200 mb-1">รายการอาหารที่จอง:</div>

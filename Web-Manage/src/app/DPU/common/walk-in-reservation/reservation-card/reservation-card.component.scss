@@ -1,5 +1,117 @@
-.kanban-tasks .kanban-content img {
-  min-width: 120px;
-  min-height: 80px;
-  background: #f8fafc;
+// เพิ่มลง global styles.scss หรือเฉพาะ component ก็ได้
+
+.kanban-tasks {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  transition: box-shadow .2s, transform .15s;
+
+  &:hover {
+    box-shadow: 0 6px 20px 0 rgba(80,80,120,0.06), 0 1.5px 6px 0 rgba(80,80,120,0.03);
+    transform: translateY(-2px) scale(1.015);
+    z-index: 1;
+  }
+
+  .box-body {
+    padding: 0;
+    border-radius: 1rem;
+  }
+
+  .kanban-board-head {
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    min-height: 60px;
+    padding-bottom: 1rem;
+    padding-top: 1.25rem;
+  }
+}
+
+// ปุ่มเล็ก เนี๊ยบขึ้น
+.ti-btn-xs {
+  font-size: .82rem;
+  padding: .32rem .9rem;
+  border-radius: .5rem;
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.04);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+// Badge, Shadow, Rounded
+.badge {
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.89em;
+  box-shadow: 0 1px 3px 0 rgba(50,60,80,0.03);
+}
+
+.box {
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 2px 24px 0 rgba(70,100,180,0.07);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.dark .box {
+  background: #18181c;
+  border-color: #313142;
+}
+
+.bg-gradient-to-r {
+  background-size: 200% 200%;
+  animation: gradientmove 4s ease-in-out infinite;
+}
+
+@keyframes gradientmove {
+  0% { background-position: 0 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+// Card hover effect
+.kanban-tasks:hover {
+  box-shadow: 0 4px 28px 0 rgba(52, 144, 220, 0.11), 0 1.5px 10px 0 rgba(0,0,0,0.04);
+}
+
+// Responsive
+@media (max-width: 700px) {
+  .kanban-tasks, .box {
+    min-width: 94vw !important;
+    margin: 0 auto 1rem auto;
+  }
+  .kanban-content img {
+    max-height: 120px !important;
+  }
+}
+
+// สำหรับ Text truncate
+.truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// Avatar
+.avatar.avatar-md {
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ececec;
+}
+
+// สีแบบ Soft BG
+.bg-info\/10 { background: rgba(24, 170, 255, 0.10) !important; }
+.bg-success\/10 { background: rgba(52, 211, 153, 0.12) !important; }
+.bg-warning\/10 { background: rgba(252, 211, 77, 0.12) !important; }
+.bg-secondary\/10 { background: rgba(100, 116, 139, 0.11) !important; }
+
+.dark .badge { color: #f3f3f3; }
+
+// For Icon placement
+.ri-table-fill, .ri-door-lock-fill, .ri-calendar-check-line, .ri-login-circle-line, .ri-restaurant-2-line, .ri-bill-line, .ri-file-list-3-line, .ri-check-double-line {
+  vertical-align: middle;
+  margin-right: 2px;
 }
