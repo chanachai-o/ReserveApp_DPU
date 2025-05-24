@@ -106,8 +106,8 @@ export class AvailableItem {
 
   getPicture(): string {
     return this.picture ? environment.baseUrl + '/images/' + this.picture : (this.type === 'room'
-        ? './assets/images/faces/333.png'
-        : './assets/images/faces/222.png')
+      ? './assets/images/faces/333.png'
+      : './assets/images/faces/222.png')
   }
 
   getLabel(): string {
@@ -131,7 +131,7 @@ export class AvailableItem {
 }
 
 
-export interface Menu {
+export interface Menus {
   id: number;
   name: string;
   description?: string | null;
@@ -141,12 +141,41 @@ export interface Menu {
   picture?: string | null;
 }
 
+export class MenusModel implements Menus {
+  id: number;
+  name: string;
+  description?: string | null;
+  category?: string | null;
+  price: number;
+  is_active: boolean;
+  picture?: string | null;
+
+  constructor(data: Partial<Menus> = {}) {
+    this.id = data.id ?? 0;
+    this.name = data.name ?? '';
+    this.description = data.description ?? '';
+    this.category = data.category ?? '';
+    this.price = data.price ?? 0;
+    this.is_active = data.is_active ?? false;
+    this.picture = data.picture ?? null;
+  }
+
+  getPicture(): string {
+    return this.picture
+      ? `${environment.baseUrl}/images/${this.picture}`
+      : './assets/images/faces/111.jpg';
+  }
+
+  getStatus(): string {
+    return this.is_active ? 'เปิดบริการ' : 'ปิดการให้บริการ';
+  }
+}
 export interface OrderItem {
   id: number;
   menu_id: number;
   quantity: number;
   status: OrderItemStatus;
-  menu?: Menu;
+  menu?: Menus;
   note?: string | null;
 }
 
@@ -156,7 +185,7 @@ export interface Order {
   reservation_id?: number | null;
   status: OrderStatus;
   total_amount: number;
-  order_items: OrderItem[];
+  order_items: OrderItem[] | [];
 }
 
 export interface Payment {

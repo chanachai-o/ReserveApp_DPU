@@ -11,10 +11,9 @@ from .routes.waiter import waiter_router
 # Import AsyncSession จาก sqlalchemy.ext.asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from sqlalchemy.future import select  # สำหรับใช้กับ await db.execute(select(...))
 from fastapi.middleware.cors import CORSMiddleware
 from .utils.notifier import trigger_notification
-
+from sqlalchemy import select, delete
 # สมมติว่าใน config.database มีการสร้าง engine และ get_db แบบ async
 from src.config.database import engine, get_db
 
@@ -512,55 +511,67 @@ async def get_order(id: int, db: AsyncSession = Depends(get_db)):
     return OrderOut.from_orm(order)  # ✅ ปลอดภัยสำหรับ Pydantic
 
 @orders_router.post("/", response_model=OrderOut)
-async def create_order(
+async def create_or_update_order(
     order: OrderCreate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
-    # 👇 ใช้ user_id ที่ส่งมา (ถ้ามี) หรือ fallback เป็น current_user
     target_user_id = order.user_id or current_user.id
 
-    # ✅ คำนวณยอดรวมจากรายการอาหาร
-    total_amount = 0
-    for item in order.items:
-        stmt_menu = select(Menu).where(Menu.id == item.menu_id)
-        result_menu = await db.execute(stmt_menu)
-        menu_item = result_menu.scalars().first()
-        if not menu_item:
-            raise HTTPException(status_code=404, detail=f"Menu ID {item.menu_id} not found")
-        total_amount += menu_item.price * item.quantity
-
-    # ✅ สร้างออเดอร์
-    new_order = Order(
-        user_id=target_user_id,
-        reservation_id=order.reservation_id,
-        status="pending",
-        total_amount=total_amount
-    )
-    db.add(new_order)
-    await db.commit()
-    await db.refresh(new_order)
-
-    # ✅ สร้างรายการ OrderItem
-    for item in order.items:
-        order_item = OrderItem(
-            order_id=new_order.id,
-            menu_id=item.menu_id,
-            quantity=item.quantity
-        )
-        db.add(order_item)
-
-    await db.commit()
-
-    # ✅ ดึงออเดอร์พร้อม preload ความสัมพันธ์ order_items เพื่อให้ from_orm ใช้ได้
+    # 1. หา Order เดิมใน reservation_id นี้ (ยังไม่จบ หรือสถานะ 'pending', 'preparing' อะไรก็ว่าไป)
     stmt = (
         select(Order)
+        .where(Order.reservation_id == order.reservation_id)
         .options(selectinload(Order.order_items))
-        .where(Order.id == new_order.id)
+    )
+    result = await db.execute(stmt)
+    existing_order = result.scalars().first()
+
+    total_amount = 0
+    order_items_data = []
+
+    # 2. คำนวณยอดรวมใหม่จาก order.items
+    for item in order.items:
+        menu = (await db.execute(select(Menu).where(Menu.id == item.menu_id))).scalars().first()
+        if not menu:
+            raise HTTPException(status_code=404, detail=f"Menu ID {item.menu_id} not found")
+        total_amount += menu.price * item.quantity
+        order_items_data.append((item.menu_id, item.quantity))
+
+    if existing_order:
+        # 3.1 มี order เดิม: ลบ order_items เก่า แล้วสร้างใหม่ (หรือจะอัปเดตทีละอันก็ได้)
+        await db.execute(delete(OrderItem).where(OrderItem.order_id == existing_order.id))
+        for menu_id, quantity in order_items_data:
+            db.add(OrderItem(order_id=existing_order.id, menu_id=menu_id, quantity=quantity))
+        existing_order.total_amount = total_amount
+        existing_order.status = order.status if hasattr(order, "status") else "pending"
+        await db.commit()
+        await db.refresh(existing_order)
+        order_obj = existing_order
+    else:
+        # 3.2 ไม่มี order เดิม: สร้างใหม่
+        new_order = Order(
+            user_id=target_user_id,
+            reservation_id=order.reservation_id,
+            status="pending",
+            total_amount=total_amount
+        )
+        db.add(new_order)
+        await db.commit()
+        await db.refresh(new_order)
+        for menu_id, quantity in order_items_data:
+            db.add(OrderItem(order_id=new_order.id, menu_id=menu_id, quantity=quantity))
+        await db.commit()
+        order_obj = new_order
+
+    # 4. preload order_items สำหรับ response
+    stmt = (
+        select(Order)
+        .where(Order.id == order_obj.id)
+        .options(selectinload(Order.order_items).selectinload(OrderItem.menu))
     )
     result = await db.execute(stmt)
     order_with_items = result.scalars().first()
-
     return OrderOut.from_orm(order_with_items)
 
 

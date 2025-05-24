@@ -15,7 +15,7 @@ import { environment } from "../../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import { MenuService } from "ngx-editor/lib/modules/menu/menu.service";
 import { MenusService } from "../../services/menu.service";
-import { MenuModel } from "../../models/menus.model";
+import { MenusModel } from "../../models/all.model";
 
 
 @Component({
@@ -41,9 +41,9 @@ export class MenusManagementComponent {
   someSelected = false;
   uploaderProfile: FileUploader | undefined;
   uploadErrorMsg: string = "";
-  itemsList: MenuModel[] = []
-  filterList: MenuModel[] = []
-  selectModel: MenuModel = new MenuModel()
+  itemsList: MenusModel[] = []
+  filterList: MenusModel[] = []
+  selectModel: MenusModel = new MenusModel()
   selectedItems = new Map<string, boolean>();
   pageIndex = 0;
   get searchTerm(): string {
@@ -143,7 +143,7 @@ export class MenusManagementComponent {
     );
   }
 
-  delete(item: MenuModel) {
+  delete(item: MenusModel) {
     swal({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -165,10 +165,10 @@ export class MenusManagementComponent {
 
   new() {
     this.isEdit = false
-    this.selectModel = new MenuModel()
+    this.selectModel = new MenusModel()
   }
 
-  view(item: MenuModel) {
+  view(item: MenusModel) {
     console.log(item)
     this.isEdit = true;
     this.selectModel = item

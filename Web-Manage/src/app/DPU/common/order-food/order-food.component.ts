@@ -1,18 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, SimpleChanges, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MenuModel } from '../../models/menus.model';
+import { MenusModel, Order, OrderItem } from '../../models/all.model';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-order-food',
   standalone: true,
   templateUrl: './order-food.component.html',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule]
 })
-export class OrderFoodComponent implements OnInit {
+export class OrderFoodComponent implements OnInit, OnChanges {
   @Input() userId!: number;
   @Input() reservationId!: number;
-  @Input() menuList: MenuModel[] = [];
+  @Input() menuList: MenusModel[] = [];
+  @Input() orderItems: OrderItem[] = []; // <-- เพิ่ม input ตรงนี้
   @Output() submitOrder = new EventEmitter<any>();
 
   form!: FormGroup;
@@ -20,43 +22,57 @@ export class OrderFoodComponent implements OnInit {
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
+    this.initForm();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.form) {
+      if (changes['reservationId'] && changes['reservationId'].currentValue !== changes['reservationId'].previousValue) {
+        this.form.patchValue({ reservation_id: changes['reservationId'].currentValue });
+      }
+      if (changes['userId'] && changes['userId'].currentValue !== changes['userId'].previousValue) {
+        this.form.patchValue({ user_id: changes['userId'].currentValue });
+      }
+      if (changes['menuList'] && changes['menuList'].currentValue !== changes['menuList'].previousValue) {
+        this.menuList = changes['menuList'].currentValue
+      }
+      if (changes['reservationId'] || changes['orderItems']) {
+        this.initForm();
+      }
+    }
+  }
+
+  initForm() {
     this.form = this.fb.group({
       status: ['pending', Validators.required],
       user_id: [this.userId, Validators.required],
       reservation_id: [this.reservationId, Validators.required],
-      items: this.fb.array([this.createItem()])
+      items: this.fb.array([])
     });
-  }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes)
-    if (changes['reservationId'].currentValue) {
-      this.reservationId = changes['reservationId'].currentValue
-      this.form = this.fb.group({
-        status: ['pending', Validators.required],
-        user_id: [this.userId, Validators.required],
-        reservation_id: [this.reservationId, Validators.required],
-        items: this.fb.array([this.createItem()])
+    // ถ้ามี orderItems เดิม preload เข้า FormArray
+    if (this.orderItems && this.orderItems.length) {
+      this.orderItems.forEach(item => {
+        this.items.push(this.createItem(item));
       });
+    } else {
+      this.items.push(this.createItem());
     }
-    //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
-    //Add '${implements OnChanges}' to the class.
-
   }
 
   get items(): FormArray {
     return this.form.get('items') as FormArray;
   }
 
-  createItem(): FormGroup {
+  createItem(item?: OrderItem): FormGroup {
     return this.fb.group({
-      menu_id: [null, Validators.required],
-      quantity: [1, [Validators.required, Validators.min(1)]]
+      menu_id: [item?.menu_id ?? null, Validators.required],
+      quantity: [item?.quantity ?? 1, [Validators.required, Validators.min(1)]]
     });
   }
 
-  addItem() {
-    this.items.push(this.createItem());
+  addItem(item?: any) {
+    this.items.push(this.createItem(item));
   }
 
   removeItem(i: number) {
@@ -65,10 +81,25 @@ export class OrderFoodComponent implements OnInit {
     }
   }
 
+  menuById(id: number): MenusModel | undefined {
+    return this.menuList.find(m => m.id === id);
+  }
+
+  // รวมยอดเงินอัตโนมัติ
+  getTotal(): number {
+    return this.items.controls.reduce((sum, ctrl) => {
+      const menuId = ctrl.value.menu_id;
+      const qty = ctrl.value.quantity || 1;
+      const menu = this.menuById(menuId);
+      return sum + ((menu?.price || 0) * qty);
+    }, 0);
+  }
+
   onSubmit() {
-    console.log(this.form.value)
     if (this.form.valid) {
       this.submitOrder.emit(this.form.value);
+    } else {
+      this.form.markAllAsTouched();
     }
   }
 }

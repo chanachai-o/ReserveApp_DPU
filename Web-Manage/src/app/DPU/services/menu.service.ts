@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MenuModel } from '../models/menus.model';
 import { map, tap, switchMap, filter, reduce } from "rxjs/operators";
+import { MenusModel } from '../models/all.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,36 +16,36 @@ export class MenusService {
 
   getById(id: string) {
     return this.http
-      .get<MenuModel>(this.apiBaseUrl + "/" + id)
-      .pipe(map((e) => new MenuModel(e)));
+      .get<MenusModel>(this.apiBaseUrl + "/" + id)
+      .pipe(map((e) => new MenusModel(e)));
   }
 
   getLists() {
     return this.http
-      .get<MenuModel[]>(this.apiBaseUrl)
+      .get<MenusModel[]>(this.apiBaseUrl)
       .pipe(
-        map((e) => e.map((e) => new MenuModel(e)))
+        map((e) => e.map((e) => new MenusModel(e)))
       );
   }
 
-  save(body: MenuModel) {
+  save(body: MenusModel) {
     return this.http.post<{
       "message": string,
-      "user": MenuModel
-    }>(this.apiBaseUrl, new MenuModel(body));
+      "user": MenusModel
+    }>(this.apiBaseUrl, new MenusModel(body));
   }
 
-  update(body: MenuModel) {
+  update(body: MenusModel) {
     return this.http.put<{
       "message": string,
-      "user": MenuModel
-    }>(this.apiBaseUrl + "/" + body.id, new MenuModel(body));
+      "user": MenusModel
+    }>(this.apiBaseUrl + "/" + body.id, new MenusModel(body));
   }
 
-  delete(body: MenuModel) {
+  delete(body: MenusModel) {
     return this.http.delete<{
       "message": string,
-      "user": MenuModel
+      "user": MenusModel
     }>(this.apiBaseUrl + "/" + body.id);
   }
 

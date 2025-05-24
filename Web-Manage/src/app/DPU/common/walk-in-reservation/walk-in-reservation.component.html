@@ -1,9 +1,11 @@
-<app-page-header [title]="'บริการหน้าร้าน'" [activeTitle]="'พนักงานเสิร์ฟ'" [title1]="'บริการหน้าร้าน'"></app-page-header>
+<app-page-header [title]="'บริการหน้าร้าน'" [activeTitle]="'พนักงานเสิร์ฟ'"
+  [title1]="'บริการหน้าร้าน'"></app-page-header>
 
 <!-- Filter Bar -->
 <div class="box mb-6 rounded-2xl shadow border border-gray-100 dark:border-neutral-800">
   <div class="box-body p-4 flex flex-wrap gap-4 items-center">
-    <ng-select class="w-52 !rounded-xl !shadow !border-gray-200" [(ngModel)]="tableType" placeholder="ประเภท" (change)="onTypeChange()">
+    <ng-select class="w-52 !rounded-xl !shadow !border-gray-200" [(ngModel)]="tableType" placeholder="ประเภท"
+      (change)="onTypeChange()">
       <ng-option value="">ทั้งหมด</ng-option>
       <ng-option value="tables">โต๊ะ</ng-option>
       <ng-option value="room">ห้องประชุม</ng-option>
@@ -15,33 +17,30 @@
 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
   <!-- 1. ว่าง -->
   <div class=" border-primary/20 dark:border-neutral-700 bg-white dark:bg-neutral-900 overflow-hidden transition-all">
-    <div class="p-4 bg-gradient-to-r from-primary/10 via-white/80 to-white/80 dark:from-primary/15 dark:to-neutral-900 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl flex justify-between items-center">
+    <div
+      class="p-4 bg-gradient-to-r from-primary/10 via-white/80 to-white/80 dark:from-primary/15 dark:to-neutral-900 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl flex justify-between items-center">
       <span class="font-bold text-primary flex items-center gap-2">
         <i class="ri-checkbox-blank-circle-fill text-blue-300"></i> ว่าง ({{ filteredAvailable.length }})
       </span>
     </div>
     <div class="p-2 space-y-4 max-h-[65vh] overflow-y-auto">
-      <app-available-table-card
-        *ngFor="let available of filteredAvailable"
-        [item]="available"
-        (openTable)="handleOpenTable($event)"
-        (reserveTable)="handleReserveTable($event)">
+      <app-available-table-card *ngFor="let available of filteredAvailable" [item]="available"
+        (openTable)="handleOpenTable($event)" (reserveTable)="handleReserveTable($event)">
       </app-available-table-card>
-      <div *ngIf="filteredAvailable.length === 0" class="text-center text-gray-400 text-sm py-6">ไม่มีโต๊ะ/ห้องว่าง</div>
+      <div *ngIf="filteredAvailable.length === 0" class="text-center text-gray-400 text-sm py-6">ไม่มีโต๊ะ/ห้องว่าง
+      </div>
     </div>
   </div>
   <!-- 2. มีการจอง -->
   <div class=" border-rose/20 dark:border-rose-700 bg-white dark:bg-neutral-900 overflow-hidden transition-all">
-    <div class="p-4 bg-gradient-to-r from-rose-100/80 to-white/80 dark:from-rose-900/10 dark:to-black/5 border-b border-rose-100 dark:border-rose-800 rounded-t-2xl flex justify-between items-center">
+    <div
+      class="p-4 bg-gradient-to-r from-rose-100/80 to-white/80 dark:from-rose-900/10 dark:to-black/5 border-b border-rose-100 dark:border-rose-800 rounded-t-2xl flex justify-between items-center">
       <span class="font-bold text-rose-600 flex items-center gap-2">
         <i class="ri-reserved-line"></i> มีการจอง ({{ reservationList.length }})
       </span>
     </div>
     <div class="p-2 space-y-4 max-h-[65vh] overflow-y-auto">
-      <app-reservation-card
-        *ngFor="let res of reservationList"
-        [reservation]="res"
-        (checkIn)="handleCheckIn($event)"
+      <app-reservation-card *ngFor="let res of reservationList" [reservation]="res" (checkIn)="handleCheckIn($event)"
         (cancel)="handleCancel($event)">
       </app-reservation-card>
       <div *ngIf="reservationList.length === 0" class="text-center text-gray-400 text-sm py-6">ไม่มีการจอง</div>
@@ -49,16 +48,14 @@
   </div>
   <!-- 3. มีลูกค้า -->
   <div class=" border-warning/20 dark:border-warning-700 bg-white dark:bg-neutral-900 overflow-hidden transition-all">
-    <div class="p-4 bg-gradient-to-r from-warning/10 via-white/80 to-white/80 dark:from-warning-900/15 dark:to-neutral-900 border-b border-warning-100 dark:border-warning-800 rounded-t-2xl flex justify-between items-center">
+    <div
+      class="p-4 bg-gradient-to-r from-warning/10 via-white/80 to-white/80 dark:from-warning-900/15 dark:to-neutral-900 border-b border-warning-100 dark:border-warning-800 rounded-t-2xl flex justify-between items-center">
       <span class="font-bold text-warning-600 flex items-center gap-2">
         <i class="ri-login-circle-line"></i> มีลูกค้า ({{ activeTableList.length }})
       </span>
     </div>
     <div class="p-2 space-y-4 max-h-[65vh] overflow-y-auto">
-      <app-customer-card
-        *ngFor="let item of activeTableList"
-        [occupied]="item"
-        (order)="onOrder($event)"
+      <app-customer-card *ngFor="let item of activeTableList" [occupied]="item" (order)="onOrder($event)"
         (bill)="onBill($event)">
       </app-customer-card>
       <div *ngIf="activeTableList.length === 0" class="text-center text-gray-400 text-sm py-6">ไม่มีลูกค้าเข้าใช้</div>
@@ -66,19 +63,18 @@
   </div>
   <!-- 4. ชำระเงิน -->
   <div class=" border-green/20 dark:border-green-700 bg-white dark:bg-neutral-900 overflow-hidden transition-all">
-    <div class="p-4 bg-gradient-to-r from-green/10 via-white/80 to-white/80 dark:from-green-900/15 dark:to-neutral-900 border-b border-green-100 dark:border-green-800 rounded-t-2xl flex justify-between items-center">
+    <div
+      class="p-4 bg-gradient-to-r from-green/10 via-white/80 to-white/80 dark:from-green-900/15 dark:to-neutral-900 border-b border-green-100 dark:border-green-800 rounded-t-2xl flex justify-between items-center">
       <span class="font-bold text-green-700 flex items-center gap-2">
         <i class="ri-exchange-dollar-line"></i> ชำระเงิน ({{ paymentList.length }})
       </span>
     </div>
     <div class="p-2 space-y-4 max-h-[65vh] overflow-y-auto">
-      <app-payment-card
-        *ngFor="let pay of paymentList"
-        [checkout]="pay"
-        (viewBill)="onViewBill($event)"
+      <app-payment-card *ngFor="let pay of paymentList" [checkout]="pay" (viewBill)="onViewBill($event)"
         (verifyPayment)="onVerifyPayment($event)">
       </app-payment-card>
-      <div *ngIf="paymentList.length === 0" class="text-center text-gray-400 text-sm py-6">ยังไม่มีโต๊ะ/ห้องที่รอชำระ</div>
+      <div *ngIf="paymentList.length === 0" class="text-center text-gray-400 text-sm py-6">ยังไม่มีโต๊ะ/ห้องที่รอชำระ
+      </div>
     </div>
   </div>
 </div>
@@ -86,14 +82,17 @@
 <!-- ==== MODALS ==== -->
 <!-- Reserve/Check-in Modal -->
 <div id="add-reserve" class="hs-overlay hidden ti-modal z-50">
-  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out rounded-2xl shadow-2xl max-w-md w-full mx-auto bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800">
+  <div
+    class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out rounded-2xl shadow-2xl max-w-md w-full mx-auto bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800">
     <div class="ti-modal-content">
-      <div class="ti-modal-header flex justify-between items-center p-6 pb-2 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl bg-gradient-to-r from-blue-100/60 via-white/80 to-white/80 dark:from-neutral-800 dark:to-neutral-900">
+      <div
+        class="ti-modal-header flex justify-between items-center p-6 pb-2 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl bg-gradient-to-r from-blue-100/60 via-white/80 to-white/80 dark:from-neutral-800 dark:to-neutral-900">
         <h6 class="modal-title text-lg font-bold text-primary dark:text-white tracking-wide" id="mail-ComposeLabel">
           <i class="ri-calendar-check-line mr-2 text-blue-400"></i>
           จอง/Check-in
         </h6>
-        <button type="button" class="hover:bg-gray/90 dark:hover:bg-neutral-800 rounded-full p-2 ml-2 transition" data-hs-overlay="#add-reserve">
+        <button type="button" class="hover:bg-gray/90 dark:hover:bg-neutral-800 rounded-full p-2 ml-2 transition"
+          data-hs-overlay="#add-reserve">
           <i class="ri-close-line text-2xl text-gray-500 dark:text-white"></i>
         </button>
       </div>
@@ -108,14 +107,17 @@
 </div>
 <!-- Check-in Modal -->
 <div id="add-check-in" class="hs-overlay hidden ti-modal z-50">
-  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out rounded-2xl shadow-2xl max-w-md w-full mx-auto bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800">
+  <div
+    class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out rounded-2xl shadow-2xl max-w-md w-full mx-auto bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800">
     <div class="ti-modal-content">
-      <div class="ti-modal-header flex justify-between items-center p-6 pb-2 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl bg-gradient-to-r from-green-100/60 via-white/80 to-white/80 dark:from-neutral-800 dark:to-neutral-900">
+      <div
+        class="ti-modal-header flex justify-between items-center p-6 pb-2 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl bg-gradient-to-r from-green-100/60 via-white/80 to-white/80 dark:from-neutral-800 dark:to-neutral-900">
         <h6 class="modal-title text-lg font-bold text-green-600 dark:text-white tracking-wide" id="mail-ComposeLabel">
           <i class="ri-login-circle-line mr-2 text-green-400"></i>
           Check-In
         </h6>
-        <button type="button" class="hover:bg-gray/90 dark:hover:bg-neutral-800 rounded-full p-2 ml-2 transition" data-hs-overlay="#add-check-in">
+        <button type="button" class="hover:bg-gray/90 dark:hover:bg-neutral-800 rounded-full p-2 ml-2 transition"
+          data-hs-overlay="#add-check-in">
           <i class="ri-close-line text-2xl text-gray-500 dark:text-white"></i>
         </button>
       </div>
@@ -130,35 +132,43 @@
 </div>
 <!-- Order Modal -->
 <div id="add-order" class="hs-overlay hidden ti-modal z-50">
-  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out rounded-2xl shadow-2xl max-w-lg w-full mx-auto bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800">
+  <div
+    class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out lg:!max-w-4xl lg:w-full m-3 lg:!mx-auto border border-gray-100">
     <div class="ti-modal-content">
-      <div class="ti-modal-header flex justify-between items-center p-6 pb-2 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl bg-gradient-to-r from-pink-100/60 via-white/80 to-white/80 dark:from-neutral-800 dark:to-neutral-900">
+      <div
+        class="ti-modal-header flex justify-between items-center p-6 pb-2 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl bg-gradient-to-r from-pink-100/60 via-white/80 to-white/80 dark:from-neutral-800 dark:to-neutral-900">
         <h6 class="modal-title text-lg font-bold text-pink-600 dark:text-white" id="mail-ComposeLabel">
           <i class="ri-restaurant-2-line mr-2 text-pink-400"></i>
           สั่งอาหาร
         </h6>
-        <button type="button" class="hover:bg-gray-200 dark:hover:bg-neutral-800 rounded-full p-2 ml-2 transition" data-hs-overlay="#add-order">
+        <button type="button" class="hover:bg-gray-200 dark:hover:bg-neutral-800 rounded-full p-2 ml-2 transition"
+          data-hs-overlay="#add-order">
           <i class="ri-close-line text-2xl text-gray-500 dark:text-white"></i>
         </button>
       </div>
       <div class="ti-modal-body px-6 py-6 !overflow-visible">
         <app-order-food [userId]="reservation?.user_id!" [reservationId]="reservation?.id!" [menuList]="menuList"
+          [orderItems]="reservation?.orders![0].order_items"
           (submitOrder)="handleOrder($event)">
         </app-order-food>
+
       </div>
     </div>
   </div>
 </div>
 <!-- Bill Modal -->
 <div id="view-bill" class="hs-overlay hidden ti-modal z-50">
-  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out rounded-2xl shadow-2xl max-w-lg w-full mx-auto bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800">
+  <div
+    class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out rounded-2xl shadow-2xl max-w-lg w-full mx-auto bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800">
     <div class="ti-modal-content">
-      <div class="ti-modal-header flex justify-between items-center p-6 pb-2 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl bg-gradient-to-r from-teal-100/60 via-white/80 to-white/80 dark:from-neutral-800 dark:to-neutral-900">
+      <div
+        class="ti-modal-header flex justify-between items-center p-6 pb-2 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl bg-gradient-to-r from-teal-100/60 via-white/80 to-white/80 dark:from-neutral-800 dark:to-neutral-900">
         <h6 class="modal-title text-lg font-bold text-teal-600 dark:text-white" id="mail-ComposeLabel">
           <i class="ri-bill-line mr-2 text-teal-400"></i>
           ดูบิล
         </h6>
-        <button type="button" class="hover:bg-gray-200 dark:hover:bg-neutral-800 rounded-full p-2 ml-2 transition" data-hs-overlay="#add-order">
+        <button type="button" class="hover:bg-gray-200 dark:hover:bg-neutral-800 rounded-full p-2 ml-2 transition"
+          data-hs-overlay="#add-order">
           <i class="ri-close-line text-2xl text-gray-500 dark:text-white"></i>
         </button>
       </div>

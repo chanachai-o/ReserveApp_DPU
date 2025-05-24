@@ -7,9 +7,10 @@ import { fromEvent } from 'rxjs';
 import { SharedModule } from '../../../shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { MenuModel, RoomModel } from '../../../DPU/models/menus.model';
+import { RoomModel } from '../../../DPU/models/menus.model';
 import { MenusService } from '../../../DPU/services/menu.service';
 import { RoomService } from '../../../DPU/services/room.service';
+import { MenusModel } from '../../../DPU/models/all.model';
 
 export interface PhotosApi {
   albumId?: number;
@@ -28,7 +29,7 @@ export interface PhotosApi {
   styleUrls: ['./landing.component.scss']
 })
 export class LandingComponent {
-  menuList: MenuModel[] = []
+  menuList: MenusModel[] = []
   roomList: RoomModel[] = []
   body: HTMLBodyElement | null;
   constructor(

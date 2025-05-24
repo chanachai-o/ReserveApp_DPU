@@ -16,10 +16,9 @@ import { CustomerCardComponent } from './customer-card/customer-card.component';
 import { PaymentCardComponent } from './payment-card/payment-card.component';
 import { TableReservationComponent } from '../table-reservation/table-reservation.component';
 import { TablesService } from '../../services/tables.service';
-import { MenuModel, RoomModel, TablesModel } from '../../models/menus.model';
 import { Reservation } from '../../services/reservation.service';
 import swal from 'sweetalert';
-import { AvailableItem, Order, ReservationModel } from '../../models/all.model';
+import { AvailableItem, MenusModel, Order, OrderItem, ReservationModel } from '../../models/all.model';
 import { TokenService } from '../../../shared/services/token.service';
 import { OrderFoodComponent } from '../order-food/order-food.component';
 import { MenusService } from '../../services/menu.service';
@@ -43,7 +42,7 @@ export class WalkInReservationComponent {
   activeTableList: ReservationModel[] = [];
   paymentList: ReservationModel[] = [];
   reservation?: ReservationModel
-  menuList: MenuModel[] = []
+  menuList: MenusModel[] = []
   selectedOrder: Order
   isLoading = false;
   errorMsg = '';
@@ -269,5 +268,4 @@ export class WalkInReservationComponent {
     }
     console.log("filter", this.filteredAvailable)
   }
-
 }
