@@ -157,7 +157,7 @@
   </div>
 </div>
 <!-- Bill Modal -->
-<div id="view-bill" class="hs-overlay hidden ti-modal z-50">
+<div id="view-bill" class="hs-overlay hidden ti-modal z-50" *ngIf="reservation">
   <div
     class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out rounded-2xl shadow-2xl max-w-lg w-full mx-auto bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800">
     <div class="ti-modal-content">
@@ -168,13 +168,15 @@
           ดูบิล
         </h6>
         <button type="button" class="hover:bg-gray-200 dark:hover:bg-neutral-800 rounded-full p-2 ml-2 transition"
-          data-hs-overlay="#add-order">
+          data-hs-overlay="#view-bill">
           <i class="ri-close-line text-2xl text-gray-500 dark:text-white"></i>
         </button>
       </div>
       <div class="ti-modal-body px-6 py-6 !overflow-visible">
-        <!-- <app-view-bill [order]="selectedOrder"></app-view-bill> -->
-        <div class="text-center text-gray-400 dark:text-gray-500">ยังไม่เปิดใช้งาน</div>
+        <app-view-bill [reservation]="reservation" [payments]="reservation.payments"
+          (uploadSlip)="handleUploadSlip($event)" (checkOut)="handleCheckOut($event)">
+        </app-view-bill>
+        <!-- <div class="text-center text-gray-400 dark:text-gray-500">ยังไม่เปิดใช้งาน</div> -->
       </div>
     </div>
   </div>

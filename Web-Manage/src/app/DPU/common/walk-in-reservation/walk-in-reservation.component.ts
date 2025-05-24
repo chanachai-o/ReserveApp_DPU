@@ -199,24 +199,61 @@ export class WalkInReservationComponent {
 
   onBill(item: any) {
     console.log("bile", item)
+    this.reservation = item
+  }
+
+  handleUploadSlip(formData: FormData) {
+    // ส่ง formData ไป backend (POST /payments หรือแล้วแต่ API)
+    this.http.post('/api/payments/upload-slip', formData).subscribe(res => {
+      swal('อัปโหลดสำเร็จ!', '', 'success');
+      // โหลดข้อมูลใหม่ หรือปิด modal
+    });
+  }
+
+  handleCheckOut(item: any) {
+    console.log(item);
     item.end_time = new Date().toISOString()
     item.status = 'checked_out'
-    console.log(item)
+
     this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
-      console.log(result)
-      this.tableService.cancelReseave(item.table_id).subscribe(result => {
-        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-        this.ngOnInit()
-      })
-    })
-    // this.http.post("http://127.0.0.1:8000/payments/orders/" + item.id + "/payment", {
-    //   "amount": 0,
-    //   "slip_url": ""
-    // }).subscribe(result => {
-    //   swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-    //   this.ngOnInit()
-    // })
+      console.log(result);
+      // เช็คว่าเป็นการจองโต๊ะหรือห้อง เพื่อยกเลิกสถานะ
+      if (item.table_id) {
+        this.tableService.cancelReseave(item.table_id).subscribe(_ => {
+          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+          this.ngOnInit();
+        });
+      } else if (item.room_id) {
+        this.roomService.cancelReseave(item.room_id).subscribe(_ => {
+          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+          this.ngOnInit();
+        });
+      } else {
+        swal("Error", "ไม่พบข้อมูลโต๊ะหรือห้อง", "error");
+      }
+    });
   }
+
+  // onBill(item: any) {
+  //   console.log("bile", item)
+  //   item.end_time = new Date().toISOString()
+  //   item.status = 'checked_out'
+  //   console.log(item)
+  //   this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
+  //     console.log(result)
+  //     this.tableService.cancelReseave(item.table_id).subscribe(result => {
+  //       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+  //       this.ngOnInit()
+  //     })
+  //   })
+  //   // this.http.post("http://127.0.0.1:8000/payments/orders/" + item.id + "/payment", {
+  //   //   "amount": 0,
+  //   //   "slip_url": ""
+  //   // }).subscribe(result => {
+  //   //   swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+  //   //   this.ngOnInit()
+  //   // })
+  // }
 
   onOrder(item: any) {
     this.reservation = item
@@ -246,7 +283,7 @@ export class WalkInReservationComponent {
 
   onViewBill(item: any) {
     console.log(item)
-    this.selectedOrder = item
+    this.reservation = item
     // item.status = 'completed'
     // console.log(item)
     // this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {

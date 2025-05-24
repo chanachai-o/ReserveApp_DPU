@@ -175,7 +175,7 @@ export interface OrderItem {
   menu_id: number;
   quantity: number;
   status: OrderItemStatus;
-  menu?: Menus;
+  menu: Menus;
   note?: string | null;
 }
 
@@ -250,5 +250,5 @@ export interface ReservationModel {
   table?: Table;
   room?: Room;
   orders: Order[];
-  payments?: Payment[];
+  payments: Payment[];
 }

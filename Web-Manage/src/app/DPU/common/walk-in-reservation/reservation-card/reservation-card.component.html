@@ -55,7 +55,7 @@
         <ul class="list-disc ml-5">
           <li *ngFor="let order of reservation.orders">
             <span *ngFor="let oi of order.order_items">
-              {{ oi.menu?.name }} <span *ngIf="oi.quantity > 1">x{{oi.quantity}}</span>
+              {{ oi.menu.name }} <span *ngIf="oi.quantity > 1">x{{oi.quantity}}</span>
             </span>
           </li>
         </ul>
