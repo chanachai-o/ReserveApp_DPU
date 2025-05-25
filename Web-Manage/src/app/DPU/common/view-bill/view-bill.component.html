@@ -35,21 +35,37 @@
 </div>
 
 <!-- ชำระเงิน & แนบสลิป -->
-<div class="mb-2" *ngIf="reservation.status=='checked_out'">
+<div class="mb-2" *ngIf="reservation.status=='checked_out' || reservation.status=='completed'">
   <h4 class="font-semibold text-base mb-2">แนบใบเสร็จ/สลิป</h4>
-  <div *ngIf="payments?.length">
-    <div *ngFor="let payment of payments" class="mb-1 flex items-center gap-2">
-      <span class="text-green-600 font-medium">{{ payment.amount | number:'1.2-2' }} ฿</span>
-      <a *ngIf="payment.slip_url" [href]="payment.slip_url" target="_blank" class="underline text-blue-600">ดูสลิป</a>
+  <div *ngIf="reservation.payments">
+    <div class="mb-1 flex items-center gap-2">
+      <span class="text-green-600 font-medium">{{ reservation.payments[0].amount | number:'1.2-2' }} ฿</span>
+      <!-- <a *ngIf="reservation.payments[0].slip_url" [href]="reservation.payments[0].slip_url" target="_blank"
+        class="underline text-blue-600">ดูสลิป</a> -->
       <span class="badge"
-        [ngClass]="payment.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'">
-        {{ payment.status === 'completed' ? 'ชำระแล้ว' : 'รอตรวจสอบ' }}
+        [ngClass]="reservation.payments[0].status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'">
+        {{ reservation.payments[0].status === 'completed' || reservation.status=='completed' ? 'ชำระแล้ว' : 'รอตรวจสอบ' }}
       </span>
     </div>
   </div>
-  <div *ngIf="!payments?.length">
-    <input type="file" (change)="onFileChange($event)" accept="image/*,.pdf" class="mb-2" />
-    <button type="button" class="ti-btn ti-btn-success ti-btn-xs" (click)="submitSlip()" [disabled]="!selectedFile">
+  <div *ngIf="reservation.payments">
+    <div class="xl:col-span-12 col-span-12 blog-images-container" *ngIf="reservation.payments[0].slip_url==''">
+      <!-- <dropzone [config]="config" [message]="'Click or drag images here to upload'" (error)="onUploadError($event)" (success)="onUploadSuccess($event)"></dropzone> -->
+      @if(type === 'component'){
+
+      <dropzone class="dropzone-container" [config]="config" [disabled]="disabled" fxLayout="row"
+        fxLayoutAlign="start strech" fxFlex="auto" [message]="'Click or drag images here to upload'"
+        (init)="onUploadInit($event)" (error)="onUploadError($event)" (success)="onUploadSuccess($event)">
+      </dropzone>
+      }
+
+    </div>
+    <div class="mt-3 mb-6 sm:flex items-center w-full" *ngIf="reservation.payments[0].slip_url!=''">
+      <img class="object-cover rounded-sm"
+        src="{{reservation.payments[0].slip_url ? urlLink + reservation.payments[0].slip_url : './assets/images/faces/9.jpg'}}"
+        alt="Image Description">
+    </div>
+    <button type="button" class="ti-btn ti-btn-success ti-btn-xs" (click)="submitSlip()" *ngIf="reservation.payments[0].slip_url==''">
       <i class="ri-upload-cloud-2-line mr-1"></i> อัปโหลดสลิป
     </button>
   </div>
@@ -57,7 +73,8 @@
 
 <div class="flex items-center justify-between mt-2" *ngIf="reservation.status=='checked_in'">
   <div class="flex gap-2">
-    <button class="ti-btn ti-btn-success ti-btn-xs !rounded-md shadow-sm" (click)="checkBill()" data-hs-overlay="#view-bill">
+    <button class="ti-btn ti-btn-success ti-btn-xs !rounded-md shadow-sm" (click)="checkBill()"
+      data-hs-overlay="#view-bill">
       <i class="ri-login-circle-line mr-1"></i>
       เช็คบิล
     </button>

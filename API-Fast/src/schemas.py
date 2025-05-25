@@ -199,6 +199,14 @@ class PaymentBase(BaseModel):
 class PaymentCreate(PaymentBase):
     pass
 
+class PaymentUpdate(BaseModel):
+    amount: Optional[float]
+    slip_url: Optional[str]
+    status: Optional[str]
+
+    class Config:
+        orm_mode = True
+        
 class PaymentOut(PaymentBase):
     id: int
     order_id: int

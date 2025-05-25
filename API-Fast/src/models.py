@@ -121,7 +121,7 @@ class Order(Base):
     user = relationship("User", back_populates="orders")
     order_items = relationship("OrderItem", back_populates="order")
     reservation = relationship("Reservation", back_populates="orders")
-    payments = relationship("Payment", back_populates="order", uselist=False)  # ต้องมีแบบนี้
+    payments = relationship("Payment", back_populates="order")
     
 # OrderItem model
 class OrderItemStatus(enum.Enum):

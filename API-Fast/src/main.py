@@ -290,11 +290,22 @@ async def get_reservations(user: Optional[int] = None, db: AsyncSession = Depend
             selectinload(Reservation.orders).selectinload(Order.order_items).selectinload(OrderItem.menu),
             selectinload(Reservation.orders).selectinload(Order.payments),
         )
-        # ... (where condition)
     )
     result = await db.execute(stmt)
     reservations = result.scalars().all()
-    return reservations
+
+    reservation_out_list = []
+    for r in reservations:
+        # รวม payments ของ order ทั้งหมดใน reservation นี้
+        payments = []
+        for o in r.orders:
+            if o.payments:
+                payments.extend(o.payments)
+        # แปลง reservation เป็น dict แล้วแปะ payments
+        r_dict = ReservationOut.from_orm(r).dict()
+        r_dict['payments'] = [PaymentOut.from_orm(p) for p in payments] if payments else None
+        reservation_out_list.append(r_dict)
+    return reservation_out_list
 
 @reservations_router.post("/", response_model=ReservationOut)
 async def create_reservation(
@@ -639,6 +650,28 @@ async def create_payment(order_id: int, payment: PaymentCreate, db: AsyncSession
     await db.commit()
     await db.refresh(new_payment)
     return new_payment
+
+@payments_router.put("/orders/{order_id}/payment", response_model=PaymentOut)
+async def update_payment_by_order(
+    order_id: int,
+    payment_update: PaymentCreate,   # หรือสร้าง schema ใหม่สำหรับ update เช่น PaymentUpdate
+    db: AsyncSession = Depends(get_db)
+):
+    # ดึง payment แรกที่เจอของ order_id นี้
+    stmt = select(Payment).where(Payment.order_id == order_id)
+    result = await db.execute(stmt)
+    db_payment = result.scalars().first()
+
+    if not db_payment:
+        raise HTTPException(status_code=404, detail="Payment not found for this order.")
+
+    # อัปเดตข้อมูล (แก้ไขเฉพาะฟิลด์ที่ต้องการ)
+    for attr, value in payment_update.dict(exclude_unset=True).items():
+        setattr(db_payment, attr, value)
+
+    await db.commit()
+    await db.refresh(db_payment)
+    return db_payment
 
 @payments_router.get("/", response_model=List[PaymentOut])
 async def get_payments(order: Optional[int] = None, db: AsyncSession = Depends(get_db)):

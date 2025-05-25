@@ -192,7 +192,7 @@ export interface Payment {
   id: number;
   order_id: number;
   amount: number;
-  slip_url?: string | null;
+  slip_url: string | null;
   status: PaymentStatus;
 }
 

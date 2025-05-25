@@ -202,12 +202,15 @@ export class WalkInReservationComponent {
     this.reservation = item
   }
 
-  handleUploadSlip(formData: FormData) {
+  handleUploadSlip(item: any) {
     // ส่ง formData ไป backend (POST /payments หรือแล้วแต่ API)
-    this.http.post('/api/payments/upload-slip', formData).subscribe(res => {
-      swal('อัปโหลดสำเร็จ!', '', 'success');
-      // โหลดข้อมูลใหม่ หรือปิด modal
-    });
+    this.http.put("http://127.0.0.1:8000/payments/orders/" + item.orders[0].id + "/payment", {
+      "amount": item.orders[0].total_amount,
+      "slip_url": item.payments[0].slip_url
+    }).subscribe(result => {
+      swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+      this.ngOnInit()
+    })
   }
 
   handleCheckOut(item: any) {
@@ -217,6 +220,7 @@ export class WalkInReservationComponent {
 
     this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
       console.log(result);
+      this.savePayment(item.orders[0].id)
       // เช็คว่าเป็นการจองโต๊ะหรือห้อง เพื่อยกเลิกสถานะ
       if (item.table_id) {
         this.tableService.cancelReseave(item.table_id).subscribe(_ => {
@@ -232,6 +236,16 @@ export class WalkInReservationComponent {
         swal("Error", "ไม่พบข้อมูลโต๊ะหรือห้อง", "error");
       }
     });
+  }
+
+  savePayment(orderId: string) {
+    this.http.post("http://127.0.0.1:8000/payments/orders/" + orderId + "/payment", {
+      "amount": 0,
+      "slip_url": ""
+    }).subscribe(result => {
+      swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+      this.ngOnInit()
+    })
   }
 
   // onBill(item: any) {
@@ -278,6 +292,12 @@ export class WalkInReservationComponent {
         swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
         this.ngOnInit()
       })
+    })
+    this.http.post("http://127.0.0.1:8000/payments/orders/" + item.orders[0].id + "/verify", {
+      "status": "completed"
+    }).subscribe(result => {
+      swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+      this.ngOnInit()
     })
   }
 
