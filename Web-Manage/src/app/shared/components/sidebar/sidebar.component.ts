@@ -65,7 +65,7 @@ export class SidebarComponent {
   public menuitemsSubscribe$!: Subscription;
   companyModel: CompanyModel = new CompanyModel()
   isCommonRoute: boolean = false;
-  isInstallerRoute: boolean = false;
+  isCustomerRoute: boolean = false;
   previousUrl: string = '';
   currentUrl: string = '';
   constructor(
@@ -101,7 +101,7 @@ export class SidebarComponent {
     this.menuResizeFn();
     this.currentUrl = this.router.url
     this.isCommonRoute = this.currentUrl.includes('/admin');
-    this.isInstallerRoute = this.currentUrl.includes('/company');
+    this.isCustomerRoute = this.currentUrl.includes('/customer');
     this.menuitemsSubscribe$ = this.navServices.items.subscribe((items) => {
       this.changeMenu()
     });
@@ -127,12 +127,12 @@ export class SidebarComponent {
 
   checkInitialUrl(): void {
     this.isCommonRoute = this.currentUrl.includes('/admin');
-    this.isInstallerRoute = this.currentUrl.includes('/company');
+    this.isCustomerRoute = this.currentUrl.includes('/customer');
     this.checkUrlChanges()
     // Log to console for verification
     console.log('Initial URL:', this.currentUrl);
     console.log('Is Common Route:', this.isCommonRoute);
-    console.log('Is Installer Route:', this.isInstallerRoute);
+    console.log('Is Installer Route:', this.isCustomerRoute);
   }
 
   checkUrlChanges(): void {
@@ -149,8 +149,8 @@ export class SidebarComponent {
 
         // Check if there's a change between /installer and /admin
         if (
-          (this.previousUrl.includes('/company') && this.currentUrl.includes('/admin')) ||
-          (this.previousUrl.includes('/admin') && this.currentUrl.includes('/company'))
+          (this.previousUrl.includes('/customer') && this.currentUrl.includes('/admin')) ||
+          (this.previousUrl.includes('/admin') && this.currentUrl.includes('/customer'))
         ) {
           console.log('URL changed between /installer and /admin.');
           // Implement any logic needed when changing between /installer and /admin
@@ -158,7 +158,7 @@ export class SidebarComponent {
 
         // Update the boolean values
         this.isCommonRoute = this.currentUrl.includes('/admin');
-        this.isInstallerRoute = this.currentUrl.includes('/company');
+        this.isCustomerRoute = this.currentUrl.includes('/customer');
 
         // Log to console for verification
         console.log('Current URL:', this.currentUrl);
@@ -185,11 +185,11 @@ export class SidebarComponent {
       // }
 
     }
-    // else {
-    //   this.menuitemsSubscribe$ = this.navServices.items.subscribe((items) => {
-    //     this.menuItems = this.navServices.getCommonMenu();
-    //   });
-    // }
+    else {
+      this.menuitemsSubscribe$ = this.navServices.items.subscribe((items) => {
+        this.menuItems = this.navServices.getCustomerMenu();
+      });
+    }
     this.ParentActive()
   }
 

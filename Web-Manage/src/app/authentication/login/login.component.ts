@@ -126,7 +126,7 @@ export class LoginComponent {
         } else if (result.role == 'chef') {
           this.routes.navigate(['/chef/manage-store'])
         } else if (result.role == 'customer') {
-          this.routes.navigate(['/customer/customer-reserve'])
+          this.routes.navigate(['/customer/reservations'])
         }
       } else {
         this.error = 'ไม่สามารถใช้งานได้กรุณาติดต่อผู้ให้บริการ'

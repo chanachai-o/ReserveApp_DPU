@@ -143,18 +143,51 @@ export class NavService implements OnDestroy {
       path: '/admin/walk-in',
       title: 'บริการหน้าร้าน',
       type: 'link',
-    },
-    {
-      path: '/admin/reserved',
-      title: 'จองโต๊ะ/ห้องประชุม',
-      type: 'link',
-    }, {
-      path: '/admin/takehome',
-      title: 'สั่งอาหารกลับบ้าน',
-      type: 'link',
     }
     ]
   }
+
+  getCustomerMenu() {
+    return [
+      { headTitle: 'ลูกค้า' },
+      // หน้าหลักจองโต๊ะ/ห้อง
+      {
+        icon: 'calendar-check', // ใช้ icon library ที่ใช้อยู่ เช่น RemixIcon, FontAwesome ฯลฯ
+        path: '/customer/reservations',
+        title: 'การจองของฉัน',
+        type: 'link',
+      },
+      // สั่งอาหาร (สามารถลิงก์จาก reservation detail ได้ หรืออยู่ใน list ก็ได้)
+      {
+        icon: 'restaurant',
+        path: '/customer/orders',
+        title: 'สั่งอาหาร',
+        type: 'link',
+      },
+      // ดูบิล/ชำระเงิน
+      {
+        icon: 'calculator',
+        path: '/customer/bills',
+        title: 'บิล/ชำระเงิน',
+        type: 'link',
+      },
+      // โปรไฟล์ส่วนตัว
+      {
+        icon: 'user',
+        path: '/customer/profile',
+        title: 'โปรไฟล์',
+        type: 'link',
+      },
+      // แจ้งเตือน
+      {
+        icon: 'notification',
+        path: '/customer/notifications',
+        title: 'แจ้งเตือน',
+        type: 'link',
+      },
+    ];
+  }
+
 
   items = new BehaviorSubject<Menu[]>(this.MENUITEMS);
 }

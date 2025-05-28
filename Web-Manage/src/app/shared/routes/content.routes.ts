@@ -28,6 +28,7 @@ import { widgetsRoutingModule } from '../../components/widgets/widgets.routes';
 import { tablesRoutingModule } from '../../components/tables/tables.routes';
 import { CommonManageModule } from '../../DPU/common/common.module';
 import { CompanyManagementModule } from '../../DPU/company-management/company-management.module';
+import { CustomerModule } from '../../DPU/customer/customer.module';
 
 
 export const content: Routes = [
@@ -61,6 +62,7 @@ export const content: Routes = [
        ...widgetsRoutingModule.routes,
        ...tablesRoutingModule.routes,
       ...CommonManageModule.routes,
+      ...CustomerModule.routes,
       ...CompanyManagementModule.routes
     ]
   }
