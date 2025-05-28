@@ -23,7 +23,8 @@ export class HttpRequestInterceptor {
     } else {
       let authReq = req;
       const fullUrl = req.url.startsWith("http") ? req.url : environment.baseUrl + req.url;
-      const token = "Bearer "+this.tokenService.getToken()
+      // const token = "Bearer "+this.tokenService.getToken()
+      const token = ""
       console.log(fullUrl)
       if (token != null) {
         authReq = this.addTokenHeader(req, token ,fullUrl);
