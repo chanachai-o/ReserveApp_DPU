@@ -1,1 +1,7 @@
-<p>view-bill-modal works!</p>
+<div *ngIf="show" class="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
+  <div class="bg-white dark:bg-neutral-900 rounded-2xl p-8 max-w-lg w-full shadow-lg border">
+    <h3 class="mb-2">ดูบิล Order #{{reservation?.id}}</h3>
+    <app-bill [reservation]="reservation"></app-bill>
+    <button (click)="closed.emit()" class="mt-2 ti-btn ti-btn-light">ปิด</button>
+  </div>
+</div>

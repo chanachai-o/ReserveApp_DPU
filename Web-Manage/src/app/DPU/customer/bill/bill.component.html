@@ -1,1 +1,38 @@
-<p>bill works!</p>
+<div class="p-4">
+  <div *ngIf="reservation?.orders?.length">
+    <div *ngFor="let order of reservation.orders">
+      <div class="font-bold text-base text-primary mb-2">Order #{{ order.id }}</div>
+      <ul>
+        <li *ngFor="let item of order.order_items">
+          <div class="flex items-center gap-2">
+            <img [src]="item.menu?.getPicture ? item.menu.getPicture() : './assets/images/faces/111.jpg'" class="w-8 h-8 rounded border" />
+            <span>{{ item.menu?.name }} x{{ item.quantity }} ({{ item.menu?.price | number:'1.2-2' }} ฿)</span>
+          </div>
+        </li>
+      </ul>
+      <div class="mt-2 text-right text-lg text-green-600 font-bold">
+        รวม: {{ order.total_amount | number:'1.2-2' }} ฿
+      </div>
+    </div>
+  </div>
+  <div class="mt-4">
+    <span class="font-semibold">สถานะ:</span>
+    <span [ngClass]="{
+      'text-success': reservation.status === 'completed' || reservation.status === 'checked_out',
+      'text-warning': reservation.status === 'checked_in' || reservation.status === 'pending'
+    }">
+      {{ reservation.status }}
+    </span>
+  </div>
+  <div *ngIf="reservation.payments?.length" class="mt-4">
+    <div *ngFor="let payment of reservation.payments">
+      <div>
+        <span class="font-semibold">ชำระเงิน:</span>
+        <span>{{ payment.amount | number:'1.2-2' }} ฿</span>
+      </div>
+      <div *ngIf="payment.slip_url">
+        <a [href]="payment.slip_url" target="_blank" class="underline text-blue-500">ดูสลิป</a>
+      </div>
+    </div>
+  </div>
+</div>
