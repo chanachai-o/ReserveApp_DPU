@@ -16,7 +16,6 @@ import { CustomerCardComponent } from './customer-card/customer-card.component';
 import { PaymentCardComponent } from './payment-card/payment-card.component';
 import { TableReservationComponent } from '../table-reservation/table-reservation.component';
 import { TablesService } from '../../services/tables.service';
-import { Reservation } from '../../services/reservation.service';
 import swal from 'sweetalert';
 import { AvailableItem, MenusModel, Order, OrderItem, ReservationModel } from '../../models/all.model';
 import { TokenService } from '../../../shared/services/token.service';

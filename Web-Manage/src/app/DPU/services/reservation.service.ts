@@ -5,20 +5,21 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { ReservationModel } from '../models/all.model';
 
-export interface Reservation {
-  id?: number;                 // undefined เมื่อยังไม่สร้าง
-  user_id?: number;            // backend ใส่เอง
-  table_id?: number | null;
-  room_id?:  number | null;
-  start_time: string;          // ISO-8601
-  end_time:   string;
-  num_people: number;
-  status?:   'pending' | 'checked_in' | 'completed' | 'cancelled' | 'no_show';
-  note?: string | null;
-}
-export type ReservationCreate = Omit<Reservation, 'id' | 'status'>;   // payload ตอนสร้าง
-export type ReservationUpdate = Partial<Omit<Reservation, 'id'>>;     // payload ตอนแก้ไข
+// export interface Reservation {
+//   id?: number;                 // undefined เมื่อยังไม่สร้าง
+//   user_id?: number;            // backend ใส่เอง
+//   table_id?: number | null;
+//   room_id?:  number | null;
+//   start_time: string;          // ISO-8601
+//   end_time:   string;
+//   num_people: number;
+//   status?:   'pending' | 'checked_in' | 'completed' | 'cancelled' | 'no_show';
+//   note?: string | null;
+// }
+// export type ReservationCreate = Omit<Reservation, 'id' | 'status'>;   // payload ตอนสร้าง
+// export type ReservationUpdate = Partial<Omit<Reservation, 'id'>>;     // payload ตอนแก้ไข
 
 @Injectable({
   providedIn: 'root',
@@ -34,15 +35,15 @@ export class ReservationService {
   ────────────────────────────────── */
 
   /** ดึงรายการจองทั้งหมด (ถ้าใส่ userId จะ filter ตาม owner) */
-  getReservations(userId?: number): Observable<Reservation[]> {
+  getReservations(userId?: number): Observable<ReservationModel[]> {
     let params = new HttpParams();
     if (userId != null) params = params.set('user', userId.toString());
-    return this.http.get<Reservation[]>(this.BASE_URL, { params });
+    return this.http.get<ReservationModel[]>(this.BASE_URL, { params });
   }
 
   /** ดึงรายการจองเดี่ยวตาม id */
-  getReservationById(id: number): Observable<Reservation> {
-    return this.http.get<Reservation>(`${this.BASE_URL}/${id}`);
+  getReservationById(id: number): Observable<ReservationModel> {
+    return this.http.get<ReservationModel>(`${this.BASE_URL}/${id}`);
   }
 
   /* ────────────────────────────────
@@ -50,16 +51,16 @@ export class ReservationService {
   ────────────────────────────────── */
 
   /** สร้างการจองใหม่ */
-  createReservation(body: ReservationCreate): Observable<Reservation> {
-    return this.http.post<Reservation>(this.BASE_URL, body);
+  createReservation(body: ReservationModel): Observable<ReservationModel> {
+    return this.http.post<ReservationModel>(this.BASE_URL, body);
   }
 
   /** แก้ไขการจอง */
   updateReservation(
     id: number,
-    body: ReservationUpdate
-  ): Observable<Reservation> {
-    return this.http.put<Reservation>(`${this.BASE_URL}/${id}`, body);
+    body: ReservationModel
+  ): Observable<ReservationModel> {
+    return this.http.put<ReservationModel>(`${this.BASE_URL}/${id}`, body);
   }
 
   /** ยกเลิกการจอง  */

@@ -8,9 +8,11 @@ import { OrderFoodComponent } from './order-food/order-food.component';
 import { BillComponent } from './bill/bill.component';
 import { ProfileComponent } from './profile/profile.component';
 import { NotificationComponent } from './notification/notification.component';
+import { CustomerReservationPageComponent } from './customer-reservation-page/customer-reservation-page.component';
 export const customerRoutes: Routes = [
   {
     path: 'customer', children: [
+      { path: 'home-customer', component: CustomerReservationPageComponent },
       { path: 'reservations', component: ReservationListComponent },
       { path: 'reservations/:id', component: ReservationDetailComponent },
       { path: 'reservations/:id/order', component: OrderFoodComponent },

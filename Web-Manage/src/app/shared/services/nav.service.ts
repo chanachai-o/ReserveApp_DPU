@@ -151,6 +151,12 @@ export class NavService implements OnDestroy {
     return [
       { headTitle: 'ลูกค้า' },
       // หน้าหลักจองโต๊ะ/ห้อง
+       {
+        icon: 'calendar-check', // ใช้ icon library ที่ใช้อยู่ เช่น RemixIcon, FontAwesome ฯลฯ
+        path: '/customer/home-customer',
+        title: 'หน้าแรก',
+        type: 'link',
+      },
       {
         icon: 'calendar-check', // ใช้ icon library ที่ใช้อยู่ เช่น RemixIcon, FontAwesome ฯลฯ
         path: '/customer/reservations',

@@ -1,0 +1,28 @@
+<div class="container max-w-7xl mx-auto py-8 px-3">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- เลือกจอง -->
+    <div class="lg:col-span-9">
+      <h2 class="title"><i class="ri-booking-line"></i> เลือกโต๊ะ/ห้องที่ต้องการจอง</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <app-available-item-card *ngFor="let item of availableList" [item]="item" (reserve)="onReserve(item)"></app-available-item-card>
+      </div>
+    </div>
+    <!-- รายการจอง -->
+    <div class="lg:col-span-3">
+      <h3 class="subtitle"><i class="ri-calendar-check-line mr-2"></i> การจองของคุณ</h3>
+      <ng-container *ngIf="reservationList.length; else noReservation">
+        <!-- <app-reservation-card *ngFor="let res of reservationList" [reservation]="res" (cancel)="onCancel(res)" (order)="onOrder(res)" (viewBill)="onViewBill(res)"></app-reservation-card> -->
+      </ng-container>
+      <ng-template #noReservation>
+        <div class="no-reservation">
+          <i class="ri-calendar-event-line text-4xl"></i>
+          <div class="mt-2">คุณยังไม่มีการจอง</div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <!-- Modals -->
+  <!-- <app-table-reservation-modal [show]="showReserveModal" [item]="selectedItem" (reserved)="handleReserved($event)" (closed)="showReserveModal = false"></app-table-reservation-modal>
+  <app-order-food-modal [show]="showOrderModal" [reservation]="selectedOrderRes" [menuList]="menuList" (submitted)="handleOrder($event)" (closed)="showOrderModal = false"></app-order-food-modal>
+  <app-view-bill-modal [show]="showBillModal" [reservation]="selectedBillRes" (closed)="showBillModal = false"></app-view-bill-modal> -->
+</div>

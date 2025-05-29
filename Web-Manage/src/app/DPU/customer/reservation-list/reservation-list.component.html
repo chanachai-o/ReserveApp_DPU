@@ -1,130 +1,111 @@
-<div class="container max-w-2xl mx-auto py-6 px-3">
-  <!-- ปุ่มจองใหม่ -->
-  <div class="flex justify-between items-center mb-4">
-    <h3 class="text-xl font-bold text-primary"><i class="ri-calendar-check-line mr-2"></i> รายการจองของคุณ</h3>
-    <button class="ti-btn ti-btn-primary flex items-center gap-2"
-            (click)="onOpenBooking()">
-      <i class="ri-add-circle-line"></i> จองโต๊ะ/ห้อง
-    </button>
-  </div>
+<div class="container max-w-7xl mx-auto py-8 px-3">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-  <!-- ถ้ายังไม่มีการจอง -->
-  <div *ngIf="!activeReservation" class="bg-gray-50 dark:bg-neutral-800 rounded-lg p-8 text-center text-gray-400">
-    <i class="ri-calendar-event-line text-4xl"></i>
-    <div class="mt-2">คุณยังไม่มีการจอง</div>
-  </div>
-
-  <!-- การจองที่กำลังดำเนินการ -->
-  <div *ngIf="activeReservation" class="bg-white dark:bg-neutral-900 shadow-md rounded-xl border border-gray-100 dark:border-neutral-800 p-5 flex gap-5 mt-3">
-    <div class="w-20 h-20 rounded-lg overflow-hidden border bg-gray-100 dark:bg-neutral-800 flex items-center justify-center">
-      <img *ngIf="getPicture(activeReservation)" [src]="getPicture(activeReservation)"
-           class="object-cover w-full h-full" alt="จอง">
-      <i *ngIf="!getPicture(activeReservation)" class="ri-image-line text-3xl text-gray-300"></i>
-    </div>
-    <div class="flex-1 flex flex-col gap-2">
-      <div class="flex gap-2 flex-wrap items-center">
-        <span class="badge bg-blue-100 text-blue-700" *ngIf="activeReservation.table">
-          โต๊ะ {{ activeReservation.table.table_number }}
-        </span>
-        <span class="badge bg-amber-100 text-amber-700" *ngIf="activeReservation.room">
-          ห้อง {{ activeReservation.room.name }}
-        </span>
-        <span class="badge px-2" [ngClass]="{
-          'bg-primary/10 text-primary': activeReservation.status === 'pending',
-          'bg-green-50 text-green-600': activeReservation.status === 'checked_in',
-          'bg-gray-200 text-gray-400': activeReservation.status === 'completed',
-          'bg-rose-100 text-rose-500': activeReservation.status === 'cancelled'
-        }">
-          {{ getStatusLabel(activeReservation.status) }}
-        </span>
-      </div>
-      <div class="text-sm text-gray-600 dark:text-gray-200 flex flex-wrap gap-5">
-        <span><i class="ri-time-line mr-1"></i>{{ activeReservation.start_time | date: 'short' }}</span>
-        <span><i class="ri-user-fill mr-1"></i>{{ activeReservation.num_people }} คน</span>
-      </div>
-      <div class="text-xs text-gray-500 italic" *ngIf="activeReservation.note">
-        <i class="ri-information-line"></i> {{ activeReservation.note }}
-      </div>
-      <div class="flex gap-2 mt-1">
-        <button *ngIf="activeReservation.status === 'pending'" class="ti-btn ti-btn-danger ti-btn-xs"
-                (click)="onCancel(activeReservation)">
-          <i class="ri-close-line"></i> ยกเลิก
-        </button>
-        <button *ngIf="activeReservation.status === 'checked_in'" class="ti-btn ti-btn-primary ti-btn-xs"
-                (click)="onOrder(activeReservation)">
-          <i class="ri-restaurant-2-line"></i> สั่งอาหาร
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal สำหรับจองใหม่ -->
-  <ng-template #bookingModal>
-    <!-- TODO: ใส่ฟอร์มเลือกโต๊ะ/ห้อง -->
-  </ng-template>
-</div>
-
-
-<div class="container max-w-4xl mx-auto py-8 px-3">
-  <h2 class="text-2xl font-bold mb-6 text-primary flex items-center gap-2">
-    <i class="ri-booking-line"></i> เลือกโต๊ะ/ห้องที่ต้องการจอง
-  </h2>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <ng-container *ngFor="let item of availableList">
-      <div class="box kanban-tasks new shadow-md rounded-xl border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 transition-all duration-150 hover:scale-[1.025]" style="min-height: 300px;">
-        <div class="box-body !p-0">
-          <!-- Header -->
-          <div class="p-4 kanban-board-head">
-            <div class="flex items-center gap-2 mb-2 text-lg">
-              <span *ngIf="item.type === 'table'" class="text-blue-500"><i class="ri-table-fill"></i></span>
-              <span *ngIf="item.type === 'room'" class="text-amber-500"><i class="ri-door-lock-fill"></i></span>
-              <span class="font-bold text-base">
-                {{ item.type === 'table' ? 'โต๊ะ' : 'ห้อง' }} {{ item.table_number || item.room_number || item.name }}
-              </span>
-            </div>
-            <div class="badge bg-info/10 text-info px-3 py-1 rounded-md mb-2 flex items-center gap-1 w-max">
-              <i class="ri-user-fill"></i>
-              {{ item.capacity }} คน
+    <!-- ซ้ายมือ: รายการจองได้ (9 ส่วน) -->
+    <div class="lg:col-span-9">
+      <h2 class="text-2xl font-bold mb-6 text-primary flex items-center gap-2">
+        <i class="ri-booking-line"></i> เลือกโต๊ะ/ห้องที่ต้องการจอง
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <ng-container *ngFor="let item of availableList">
+          <div class="box kanban-tasks new shadow-md rounded-xl border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 transition-all duration-150 hover:scale-[1.025]" style="min-height: 300px;">
+            <div class="box-body !p-0">
+              <!-- Header -->
+              <div class="p-4 kanban-board-head">
+                <div class="flex items-center gap-2 mb-2 text-lg">
+                  <span *ngIf="item.type === 'table'" class="text-blue-500"><i class="ri-table-fill"></i></span>
+                  <span *ngIf="item.type === 'room'" class="text-amber-500"><i class="ri-door-lock-fill"></i></span>
+                  <span class="font-bold text-base">
+                    {{ item.type === 'table' ? 'โต๊ะ' : 'ห้อง' }} {{ item.table_number || item.room_number || item.name }}
+                  </span>
+                </div>
+                <div class="badge bg-info/10 text-info px-3 py-1 rounded-md mb-2 flex items-center gap-1 w-max">
+                  <i class="ri-user-fill"></i>
+                  {{ item.capacity }} คน
+                </div>
+              </div>
+              <!-- รูปภาพ -->
+              <div class="flex justify-center items-center h-36 bg-gray-100 dark:bg-neutral-800 rounded-lg overflow-hidden border border-dashed border-gray-300 mx-4 mb-2">
+                <img [src]="item.picture ? item.getPicture() : 'assets/images/placeholder-room.png'"
+                     class="object-cover w-full h-full max-h-36" alt="ภาพ" />
+              </div>
+              <!-- ปุ่มจอง -->
+              <div class="p-4 flex justify-center">
+                <button data-hs-overlay="#add-reserve" class="ti-btn ti-btn-primary ti-btn-md !rounded shadow-sm w-full"
+                        (click)="onReserve(item)">
+                  <i class="ri-calendar-check-line mr-1"></i> จอง{{ item.type === 'room' ? 'ห้อง' : 'โต๊ะ' }}
+                </button>
+              </div>
             </div>
           </div>
-          <!-- รูปภาพ -->
-          <div class="flex justify-center items-center h-36 bg-gray-100 dark:bg-neutral-800 rounded-lg overflow-hidden border border-dashed border-gray-300 mx-4 mb-2">
-            <img [src]="item.picture ? item.getPicture() : 'assets/images/placeholder-room.png'"
-                 class="object-cover w-full h-full max-h-36" alt="ภาพ" />
+        </ng-container>
+        <div *ngIf="!availableList.length" class="text-center text-gray-400 col-span-full py-16 text-xl">
+          ไม่มีโต๊ะหรือห้องว่างในขณะนี้
+        </div>
+      </div>
+    </div>
+
+    <!-- ขวามือ: รายการจอง (ngFor) (3 ส่วน) -->
+    <div class="lg:col-span-3">
+      <h3 class="text-xl font-bold text-primary mb-4 flex items-center"><i class="ri-calendar-check-line mr-2"></i> การจองของคุณ</h3>
+      <div *ngIf="!reservationList.length" class="bg-gray-50 dark:bg-neutral-800 rounded-lg p-8 text-center text-gray-400">
+        <i class="ri-calendar-event-line text-4xl"></i>
+        <div class="mt-2">คุณยังไม่มีการจอง</div>
+      </div>
+      <div *ngFor="let res of reservationList" class="bg-white dark:bg-neutral-900 shadow-md rounded-xl border border-gray-100 dark:border-neutral-800 p-5 flex gap-5 mb-4">
+        <div class="w-16 h-16 rounded-lg overflow-hidden border bg-gray-100 dark:bg-neutral-800 flex items-center justify-center">
+          <img *ngIf="getPicture(res)" [src]="getPicture(res)" class="object-cover w-full h-full" alt="จอง">
+          <i *ngIf="!getPicture(res)" class="ri-image-line text-3xl text-gray-300"></i>
+        </div>
+        <div class="flex-1 flex flex-col gap-1">
+          <div class="flex gap-2 flex-wrap items-center mb-1">
+            <span class="badge bg-blue-100 text-blue-700" *ngIf="res.table">
+              โต๊ะ {{ res.table.table_number }}
+            </span>
+            <span class="badge bg-amber-100 text-amber-700" *ngIf="res.room">
+              ห้อง {{ res.room.name }}
+            </span>
+            <span class="badge px-2" [ngClass]="{
+              'bg-primary/10 text-primary': res.status === 'pending',
+              'bg-green-50 text-green-600': res.status === 'checked_in',
+              'bg-gray-200 text-gray-400': res.status === 'completed',
+              'bg-rose-100 text-rose-500': res.status === 'cancelled'
+            }">
+              {{ res.status }}
+            </span>
           </div>
-          <!-- ปุ่มจอง -->
-          <div class="p-4 flex justify-center">
-            <button data-hs-overlay="#add-reserve" class="ti-btn ti-btn-primary ti-btn-md !rounded shadow-sm w-full"
-                    (click)="onReserve(item)">
-              <i class="ri-calendar-check-line mr-1"></i> จอง{{ item.type === 'room' ? 'ห้อง' : 'โต๊ะ' }}
+          <div class="text-xs text-gray-600 dark:text-gray-200 flex flex-wrap gap-3">
+            <span><i class="ri-time-line mr-1"></i>{{ res.start_time | date: 'short' }}</span>
+            <span><i class="ri-user-fill mr-1"></i>{{ res.num_people }} คน</span>
+          </div>
+          <div class="text-xs text-gray-500 italic" *ngIf="res.note">
+            <i class="ri-information-line"></i> {{ res.note }}
+          </div>
+          <div class="flex gap-2 mt-2">
+            <button *ngIf="res.status === 'pending'" class="ti-btn ti-btn-danger ti-btn-xs"
+                    (click)="onCancel(res)">
+              <i class="ri-close-line"></i> ยกเลิก
             </button>
+            <button *ngIf="res.status === 'checked_in'" class="ti-btn ti-btn-primary ti-btn-xs"
+                    (click)="onOrder(res)">
+              <i class="ri-restaurant-2-line"></i> สั่งอาหาร
+            </button>
+            <!-- สามารถเพิ่มปุ่ม view หรืออื่น ๆ ได้ -->
           </div>
         </div>
       </div>
-    </ng-container>
-    <div *ngIf="!availableList.length" class="text-center text-gray-400 col-span-full py-16 text-xl">
-      ไม่มีโต๊ะหรือห้องว่างในขณะนี้
     </div>
   </div>
-
-  <!-- Modal/Drawer สำหรับจอง (ตัวอย่างเป็น Modal) -->
-  <!-- <app-customer-reserve-modal
-    *ngIf="showReserveModal"
-    [item]="selectedItem"
-    (reserved)="handleReserved($event)"
-    (closed)="showReserveModal = false">
-  </app-customer-reserve-modal> -->
 </div>
+
+<!-- Modal สำหรับจองใหม่ -->
 <div id="add-reserve" class="hs-overlay hidden ti-modal z-50">
-  <div
-    class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out rounded-2xl shadow-2xl max-w-md w-full mx-auto bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800">
+  <div class="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out rounded-2xl shadow-2xl max-w-md w-full mx-auto bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800">
     <div class="ti-modal-content">
-      <div
-        class="ti-modal-header flex justify-between items-center p-6 pb-2 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl bg-gradient-to-r from-green-100/60 via-white/80 to-white/80 dark:from-neutral-800 dark:to-neutral-900">
+      <div class="ti-modal-header flex justify-between items-center p-6 pb-2 border-b border-gray-100 dark:border-neutral-800 rounded-t-2xl bg-gradient-to-r from-green-100/60 via-white/80 to-white/80 dark:from-neutral-800 dark:to-neutral-900">
         <h6 class="modal-title text-lg font-bold text-green-600 dark:text-white tracking-wide" id="mail-ComposeLabel">
           <i class="ri-login-circle-line mr-2 text-green-400"></i>
-          Check-In
+          จองโต๊ะ/ห้อง
         </h6>
         <button type="button" class="hover:bg-gray/90 dark:hover:bg-neutral-800 rounded-full p-2 ml-2 transition"
           data-hs-overlay="#add-reserve">

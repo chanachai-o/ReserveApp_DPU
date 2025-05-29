@@ -10,6 +10,7 @@ import { TablesService } from '../../services/tables.service';
 import { ReservationCardComponent } from '../../common/walk-in-reservation/reservation-card/reservation-card.component';
 import { TableReservationComponent } from '../../common/table-reservation/table-reservation.component';
 import swal from 'sweetalert';
+import { ReservationService } from '../../services/reservation.service';
 
 @Component({
   selector: 'app-reservation-list',
@@ -19,14 +20,14 @@ import swal from 'sweetalert';
   styleUrl: './reservation-list.component.scss'
 })
 export class ReservationListComponent {
-  activeReservation: ReservationModel | null = null;
+  reservationList: ReservationModel[] = [];
   availableList: AvailableItem[] = [];
   showReserveModal = false;
   selectedItem: AvailableItem | null = null;
   availableTables: AvailableItem[] = [];
   availableRooms: AvailableItem[] = [];
   tableType = '';
-  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private menuService: MenusService, private roomService: RoomService) {
+  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private menuService: MenusService, private roomService: RoomService , private reserveService : ReservationService) {
 
   }
   getPicture(reservation: ReservationModel): string | null {
@@ -42,6 +43,14 @@ export class ReservationListComponent {
   ngOnInit() {
     this.selectedItem = null
     this.getTable()
+    this.getReserved()
+  }
+
+  getReserved(){
+    this.reserveService.getReservations(this.tokenService.getUser().id).subscribe(result=>{
+      this.reservationList = result
+    })
+
   }
 
   getStatusLabel(status: string) {

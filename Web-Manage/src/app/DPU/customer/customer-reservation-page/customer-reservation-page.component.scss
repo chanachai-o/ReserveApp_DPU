@@ -1,0 +1,9 @@
+.title {
+  @apply text-2xl font-bold mb-6 text-primary flex items-center gap-2;
+}
+.subtitle {
+  @apply text-xl font-bold text-primary mb-4 flex items-center;
+}
+.no-reservation {
+  @apply bg-gray-50 dark:bg-neutral-800 rounded-lg p-8 text-center text-gray-400;
+}
