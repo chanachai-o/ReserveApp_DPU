@@ -83,28 +83,28 @@
           <ul class="main-menu">
             <!-- Start::slide -->
             <li class="slide">
-              <a class="side-menu__item" value="home" (click)="scroll(home)">
+              <a class="side-menu__item" value="home" href="#home">
                 <span class="side-menu__label">หน้าหลัก</span>
               </a>
             </li>
             <!-- End::slide -->
             <!-- Start::slide -->
             <li class="slide">
-              <a value="about" (click)="scroll(about)" class="side-menu__item">
+              <a value="about" href="#about" class="side-menu__item">
                 <span class="side-menu__label">บริการหลักของระบบ</span>
               </a>
             </li>
             <!-- End::slide -->
             <!-- Start::slide -->
             <li class="slide">
-              <a value="team" (click)="scroll(team)" class="side-menu__item">
+              <a value="team" href="#team" class="side-menu__item">
                 <span class="side-menu__label">รายการอาหาร</span>
               </a>
             </li>
             <!-- End::slide -->
             <!-- Start::slide -->
             <li class="slide">
-              <a value="pricing" (click)="scroll(pricing)" class="side-menu__item">
+              <a value="pricing" href="#pricing" class="side-menu__item">
                 <span class="side-menu__label">ห้องประชุม</span>
               </a>
             </li>
@@ -113,7 +113,7 @@
             <!-- End::slide -->
             <!-- Start::slide -->
             <li class="slide">
-              <a value="contact" (click)="scroll(contact)" class="side-menu__item">
+              <a value="contact" href="#contact" class="side-menu__item">
                 <span class="side-menu__label">การติดต่อ</span>
               </a>
             </li>
@@ -179,267 +179,144 @@
     <!-- End:: Section-2 -->
 
     <!-- Start:: Section-3 -->
-    <section class="section text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem]" id="about" #about>
-      <div class="container">
-        <div class="grid grid-cols-12 justify-center text-center mb-[3rem] text-primary">
-          <div class="xl:col-span-3 col-span-12"></div>
-          <div class="xl:col-span-6 col-span-12">
-
-            <h3 class="font-semibold mb-2 dark:text-primary/70">บริการ</h3>
-            <!-- <span class="text-[0.9375rem] font-normal block opacity-[0.8]">Sed do eiusmod tempor incididunt ut labore et
-              dolore magna aliqua</span> -->
-          </div>
-          <div class="xl:col-span-3 col-span-12"></div>
-        </div>
-        <div class="grid grid-cols-12 gap-6">
-          <div class="lg:col-span-4 md:col-span-6 sm:col-span-6 col-span-12">
-            <div class="box feature-style">
-              <div class="box-body">
-                <a aria-label="anchor" href="javascript:void(0);" class="stretched-link"></a>
-                <div class="feature-style-icon bg-primary/10">
-                  <svg class="svg-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-                    <g data-name="Working-Home-Online-Work From Home-Computer">
-                      <path d="M28 29h2v2h-2zM34 29h2v2h-2z" />
-                      <circle cx="32" cy="52" r="2" />
-                      <path
-                        d="M60.99 25.89h-.01L33.93 3.31a2.981 2.981 0 0 0-3.85 0L3.1 25.95a3.071 3.071 0 0 0-.74 3.89 2.976 2.976 0 0 0 2.08 1.43 2.921 2.921 0 0 0 .5.05 2.986 2.986 0 0 0 1.93-.71l4.13-3.5V61a1 1 0 0 0 1 1h40a1 1 0 0 0 1-1V27.01l4.13 3.48a3 3 0 0 0 3.86-4.6ZM40 59a1 1 0 0 1-1 1H25a1 1 0 0 1-1-1v-1h16Zm.09-3H23.9l-.69-6.9a1.022 1.022 0 0 1 .26-.77.985.985 0 0 1 .74-.33h15.58a.985.985 0 0 1 .74.33 1.022 1.022 0 0 1 .26.77ZM45 60h-3.18a3 3 0 0 0 .18-1v-1.95l.78-7.75a3.009 3.009 0 0 0-.77-2.31 2.97 2.97 0 0 0-2.22-.99H24.21a2.97 2.97 0 0 0-2.22.99 3.009 3.009 0 0 0-.77 2.31l.78 7.75V59a3 3 0 0 0 .18 1H19V49.87a5.018 5.018 0 0 1 2.93-4.56l6.76-3.07a3.993 3.993 0 0 0 6.62 0l6.76 3.07A5.018 5.018 0 0 1 45 49.87ZM24.07 31.99c-.02 0-.05.01-.07.01a2 2 0 0 1 0-4v3a7.954 7.954 0 0 0 .07.99ZM24 26a4.091 4.091 0 0 0-1 .14V26a9 9 0 0 1 18 0v.14a4.091 4.091 0 0 0-1-.14c-.02 0-.05.01-.07.01a7.99 7.99 0 0 0-15.86 0c-.02 0-.05-.01-.07-.01Zm18 4a2.006 2.006 0 0 1-2 2c-.02 0-.05-.01-.07-.01A7.954 7.954 0 0 0 40 31v-3a2.006 2.006 0 0 1 2 2Zm-4.09-4h-.5l-1.7-1.71a1 1 0 0 0-1.16-.18L30.76 26h-4.67a5.993 5.993 0 0 1 11.82 0ZM26 28h5a1 1 0 0 0 .45-.11l3.35-1.67 1.49 1.49A1.033 1.033 0 0 0 37 28h1v3a6 6 0 0 1-12 0Zm8 10.74V40a2 2 0 0 1-4 0v-1.26a7.822 7.822 0 0 0 4 0ZM51 60h-4V49.87a7.025 7.025 0 0 0-4.11-6.38L36 40.36v-2.44a8.066 8.066 0 0 0 3.43-3.97A5.481 5.481 0 0 0 40 34a3.981 3.981 0 0 0 3-6.62V26a11 11 0 1 0-22 0v1.38A3.981 3.981 0 0 0 24 34a5.481 5.481 0 0 0 .57-.05A8.066 8.066 0 0 0 28 37.92v2.45l-6.89 3.12A7.025 7.025 0 0 0 17 49.87V60h-4V25.42L32 9.31l19 16.01Zm8.82-31.17a.988.988 0 0 1-1.4.13L32.64 7.24a.987.987 0 0 0-1.29 0L5.58 29.08a.986.986 0 0 1-.81.22 1 1 0 0 1-.7-.49 1.083 1.083 0 0 1 .31-1.33L31.36 4.84a1.025 1.025 0 0 1 .64-.23 1 1 0 0 1 .64.23L59.7 27.43a.987.987 0 0 1 .12 1.4Z" />
-                    </g>
-                  </svg>
-                </div>
-                <h5 class=" font-semibold text-default text-[1.25rem]">การจองโต๊ะ</h5>
-                <p class="text-[#8c9097] dark:text-white/50 mb-4">โต๊ะที่ให้บริการกว่า 120 โต๊ะ</p>
-                <a class="text-primary font-semibold" href="javascript:void(0);">จองทันที<i
-                    class="ri-arrow-right-s-line align-middle rtl:rotate-180"></i></a>
-              </div>
-            </div>
-          </div>
-          <div class="lg:col-span-4 md:col-span-6 sm:col-span-6 col-span-12">
-            <div class="box feature-style">
-              <div class="box-body">
-                <a aria-label="anchor" href="javascript:void(0);" class="stretched-link"></a>
-                <div class="feature-style-icon bg-primary/10">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="svg-primary" viewBox="0 0 64 64">
-                    <path d="M45 30h2v2h-2zM41 30h2v2h-2zM37 30h2v2h-2z" />
-                    <path
-                      d="M62 13v-2H42V9c0-3.859-3.141-7-7-7h-6c-3.859 0-7 3.141-7 7v2h-8a1 1 0 0 0-1 1v19c0 .633.13 1.234.346 1.792L2.75 35.532a1 1 0 0 0 0 1.936L16 40.894V46H5v2h11v2H8v2h8v2h-5v2h5.839l14.845 4.948a1.006 1.006 0 0 0 .632 0l15-5A.998.998 0 0 0 48 55V40.894l10-2.586v14.455l-1.895 3.789a1 1 0 0 0 0 .895l2 4a1.001 1.001 0 0 0 1.79 0l2-4a1 1 0 0 0 0-.895L60 52.764V37.791l1.25-.323a1 1 0 0 0 0-1.936l-10.596-2.741A4.938 4.938 0 0 0 51 31V21h5v-2h-5v-2h8v-2h-8v-2h11zm-3 45.764L58.118 57 59 55.236 59.882 57 59 58.764zM24 9c0-2.757 2.243-5 5-5h6c2.757 0 5 2.243 5 5v2h-2V9c0-1.654-1.346-3-3-3h-6c-1.654 0-3 1.346-3 3v2h-2V9zm12 2h-8V9a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2zm-21 2h34v4c0 1.654-1.346 3-3 3H36v-3a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v3H18c-1.654 0-3-1.346-3-3v-4zm34 18c0 .68-.236 1.3-.618 1.804-.006.007-.015.012-.021.02a3.076 3.076 0 0 1-.497.508 3.016 3.016 0 0 1-.5.325c-.03.015-.058.034-.088.048-.161.078-.33.135-.503.182-.042.011-.081.029-.123.038A2.985 2.985 0 0 1 46 34H18c-.222 0-.439-.028-.651-.076-.043-.009-.082-.027-.123-.038a2.866 2.866 0 0 1-.502-.182c-.031-.014-.059-.033-.089-.048a3.002 3.002 0 0 1-.996-.832c-.006-.008-.014-.012-.021-.02A2.975 2.975 0 0 1 15 31V20.974A4.948 4.948 0 0 0 18 22h1v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-3h14v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-3h1c1.13 0 2.162-.391 3-1.026V31zm-28-9h2v2h-2v-2zm13-2h-4v-2h4v2zm7 2h2v2h-2v-2zm5 32.279-14 4.667-14-4.667V41.412l13.75 3.556a1.008 1.008 0 0 0 .5 0L46 41.412v12.867zM32 42.967 6.993 36.5l7.504-1.941c.457.45.998.811 1.599 1.06.111.046.23.069.343.107.19.063.376.134.575.174.321.065.651.1.986.1h28c.335 0 .665-.035.986-.1.199-.04.385-.112.575-.174.114-.038.233-.061.343-.107a5 5 0 0 0 1.599-1.06l7.504 1.941L32 42.967z" />
-                  </svg>
-                </div>
-                <h5 class=" font-semibold text-default text-[1.25rem]">การจองห้องประชุม</h5>
-                <p class="text-[#8c9097] dark:text-white/50 mb-4">ห้องประชุมที่ให้บริการกว่า 120 ห้อง</p>
-                <a class="text-primary font-semibold" href="javascript:void(0);">จองทันที<i
-                    class="ri-arrow-right-s-line align-middle rtl:rotate-180"></i></a>
-
-              </div>
-            </div>
-          </div>
-          <div class="lg:col-span-4 md:col-span-6 sm:col-span-6 col-span-12">
-            <div class="box feature-style">
-              <div class="box-body">
-                <a aria-label="anchor" href="javascript:void(0);" class="stretched-link"></a>
-                <div class="feature-style-icon bg-primary/10">
-                  <svg class="svg-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 66 66">
-                    <g data-name="Layer 2">
-                      <path
-                        d="M66 40.88a13 13 0 0 0-25.91-1.45c-1.51-.19-3.18-.34-5-.46v-2.09a15.25 15.25 0 0 0 5.42-8.51 5.34 5.34 0 0 0 3.21-4.91c0-2.18-.68-3.89-1.78-4.67 0-7.2-.63-11.65-3.24-14.25C34.15 0 23.87 4.17 20.75.36A1 1 0 0 0 19.4.18C13 4.7 10.73 13 12.92 19.3a6.55 6.55 0 0 0-1.21 4.15 5.33 5.33 0 0 0 3.21 4.92 15.26 15.26 0 0 0 5.44 8.53V39C13.3 39.42 0 40.23 0 53.93V65a1 1 0 0 0 1 1h53.44a1 1 0 0 0 1-1V53.64A13 13 0 0 0 66 40.88ZM44.75 58.36V64h-16V52.82l6-11.87c8.62.52 16.9 1.44 18.57 10.85h-2.01a6.56 6.56 0 0 0-6.56 6.56Zm-17-8-2.3-4.59.92-2.92h2.77l.86 2.89ZM19.9 2.3c4.61 3.49 13.92.19 17.4 3.7 2.19 2.18 2.64 6.61 2.65 13.5l-.39.64c-.28-2.22-.45-3.37-.61-4v-.06c-.86-5.94-7.47-6.07-12.59-2.41-2.89 1.8-5.67 1.44-8.73-1.12a1 1 0 0 0-1.63.65l-.78 6.48C12.86 14.76 14.18 6.82 19.9 2.3Zm-3.16 25.05a1 1 0 0 0-.89-.79 3.2 3.2 0 0 1-2.14-3.1 6.59 6.59 0 0 1 .29-1.94A5.18 5.18 0 0 0 15.37 23a1 1 0 0 0 1.54-.72l.86-7.13a8.42 8.42 0 0 0 9.69.19c3.63-2.59 8.85-3.46 9.5 1 0 .27.72 4.83 1 6.86a1 1 0 0 0 1.85.4l1.52-2.5a5.67 5.67 0 0 1 .44 2.36 3.23 3.23 0 0 1-2.15 3.1 1 1 0 0 0-.88.79c-1.25 5.95-5.77 10.1-11 10.1s-9.74-4.15-11-10.1Zm11 12.1a11.8 11.8 0 0 0 5.38-1.3v1.47l-1.78 3.56-.53-1.65a1 1 0 0 0-.95-.7h-4.25a1 1 0 0 0-1 .7l-.52 1.66-1.77-3.52v-1.51a11.87 11.87 0 0 0 5.4 1.29Zm-7 1.5 5.95 11.84V64h-16v-5.64a6.56 6.56 0 0 0-6.56-6.56H2.19C3.86 42.37 12.24 41.46 20.76 41ZM2 53.93a.57.57 0 0 1 0-.13h2.13a4.56 4.56 0 0 1 4.56 4.56V64H2ZM53.44 64h-6.69v-5.64a4.56 4.56 0 0 1 4.56-4.56h2.12c.01.69.01-2.66.01 10.2Zm1.81-12.35c-1-6.06-5-10.62-13.18-11.94a11 11 0 1 1 13.18 11.94Z" />
-                      <path d="M57.54 39.87H54v-5.25a1 1 0 0 0-2 0v6.25a1 1 0 0 0 1 1h4.54a1 1 0 0 0 0-2Z" />
-                    </g>
-                  </svg>
-                </div>
-                <h5 class=" font-semibold text-default text-[1.25rem]">การสั่งอาหารล่วงหน้าและออนไลน์</h5>
-                <p class="text-[#8c9097] dark:text-white/50 mb-4">เมนูให้เลือกกว่า 50 รายการ</p>
-                <a class="text-primary font-semibold" href="javascript:void(0);">สั่งอาหารทันที<i
-                    class="ri-arrow-right-s-line align-middle rtl:rotate-180"></i></a>
-              </div>
-            </div>
-          </div>
-
+    <!-- Banner -->
+  <section id="home" class="landing-banner bg-gradient-to-r from-primary/40 via-white/90 to-white pt-12 pb-12">
+    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+      <div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-primary drop-shadow">ระบบจองโต๊ะ & ห้องประชุม</h1>
+        <p class="mb-6 text-gray-600 text-lg">
+          <span class="font-semibold text-secondary">DPU Cafe</span> – สั่งอาหารล่วงหน้า จองโต๊ะ-ห้องประชุมออนไลน์ <br/>
+          พร้อมระบบจัดการหลังร้านครบวงจร
+        </p>
+        <div class="flex gap-4">
+          <a routerLink="/customer-register" class="ti-btn ti-btn-lg ti-btn-primary">จองทันที</a>
+          <a routerLink="/auth/login" class="ti-btn ti-btn-lg ti-btn-light border border-primary text-primary">ดูรายการจอง</a>
         </div>
       </div>
-    </section>
-    <!-- End:: Section-3 -->
-    <!-- Start:: Section-4 -->
-    <!-- End:: Section-4 -->
+      <div class="flex justify-end">
+        <img src="./assets/images/media/landing/1.jpg" alt="Landing"
+          class="rounded-2xl shadow-xl w-full max-w-md h-auto object-cover" />
+      </div>
+    </div>
+  </section>
 
-    <!-- End:: Section-5 -->
-
-    <!-- Start:: Section-6 -->
-    <!-- End:: Section-6 -->
-
-    <!-- Start:: Section-7 -->
-    <section
-      class="section  bg-[#f9fafb] section-bg text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem]"
-      id="team" #team>
-      <div class="container">
-        <div class=" mb-[3rem] justify-center text-center">
-          <!-- <p class="text-[0.75rem] font-semibold mb-1"><span class="landing-section-heading">Our Blog</span> </p> -->
-          <h3 class="font-semibold mb-2 text-[1.75rem] dark:text-defaulttextcolor/70">
-            ห้องประชุมและห้องสัมมนาในโอกาสต่างๆ
-          </h3>
-          <!-- <div class="xl:col-span-9 col-span-12">
-            <span class="block font-normal text-[0.9375rem] text-[#8c9097] dark:text-white/50">Sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua</span>
-          </div> -->
-        </div>
-        <div class="grid grid-cols-12 gap-x-6" gallerize>
-          @for(img of roomList; track img.id){
-
-          <div class="lg:col-span-3 md:col-span-3 sm:col-span-6 col-span-12">
-            <a class="glightbox box" data-gallery="gallery1">
-              <img [src]="img.getPicture()" alt="image">
-
-            </a>
+  <!-- Section: บริการเด่น -->
+  <section id="about" class="py-12 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold text-primary mb-3">บริการของเรา</h2>
+        <p class="text-gray-500 text-lg">ดูแลคุณตั้งแต่จองโต๊ะจนจ่ายบิลครบจบในที่เดียว</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Card1 -->
+        <div class="bg-primary/10 rounded-xl shadow-md p-7 flex flex-col items-center hover:scale-105 transition">
+          <div class="bg-primary/20 p-4 rounded-full mb-5">
+            <i class="ri-table-fill text-4xl text-primary"></i>
           </div>
-          }
-
+          <h3 class="font-semibold text-xl mb-2 text-primary">จองโต๊ะ</h3>
+          <p class="text-gray-500 text-center">จองโต๊ะอาหารได้ล่วงหน้า ลดปัญหาต่อคิว</p>
+        </div>
+        <!-- Card2 -->
+        <div class="bg-secondary/10 rounded-xl shadow-md p-7 flex flex-col items-center hover:scale-105 transition">
+          <div class="bg-secondary/20 p-4 rounded-full mb-5">
+            <i class="ri-door-lock-fill text-4xl text-secondary"></i>
+          </div>
+          <h3 class="font-semibold text-xl mb-2 text-secondary">จองห้องประชุม</h3>
+          <p class="text-gray-500 text-center">เลือกห้อง/อุปกรณ์พร้อมใช้งานทันที</p>
+        </div>
+        <!-- Card3 -->
+        <div class="bg-green-100 rounded-xl shadow-md p-7 flex flex-col items-center hover:scale-105 transition">
+          <div class="bg-green-200 p-4 rounded-full mb-5">
+            <i class="ri-restaurant-line text-4xl text-green-600"></i>
+          </div>
+          <h3 class="font-semibold text-xl mb-2 text-green-600">สั่งอาหารออนไลน์</h3>
+          <p class="text-gray-500 text-center">เมนูหลากหลาย สั่งล่วงหน้าได้ทันที</p>
         </div>
       </div>
-    </section>
-    <!-- End:: Section-7 -->
+    </div>
+  </section>
 
-    <!-- Start:: Section-8 -->
-    <section class="section text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] " id="pricing" #pricing>
-      <div class="container">
-        <div class="flex items-center justify-between flex-wrap gap-4 mb-[3rem]">
-          <div>
-            <!-- <p class="text-[0.75rem] font-semibold mb-1"></p> -->
-            <h3 class="font-semibold mb-0 dark:text-defaulttextcolor/70">รายการอาหาร</h3>
-            <!-- <span class="text-[#8c9097] dark:text-white/50 text-[0.9375rem] font-normal block">Sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua</span> -->
+  <!-- Section: Gallery/Room -->
+  <section id="team" class="py-12 bg-gradient-to-b from-gray-50 to-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-primary text-center mb-8">ตัวอย่างห้องประชุม</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <ng-container *ngFor="let img of roomList">
+          <div class="rounded-lg shadow hover:scale-105 transition overflow-hidden">
+            <img [src]="img.getPicture()" class="w-full h-40 object-cover" alt="Room" />
           </div>
-          <div>
-            <a href="javascript:void(0);" class="ti-btn bg-primary text-white !font-medium">
-              สั่งอาหาร <i class="bi bi-arrow-right"></i>
-            </a>
-          </div>
-        </div>
-        <div class="grid grid-cols-12 gap-x-6">
-          @for(item of menuList;track menuList){
-            <div class="xxl:col-span-2 xl:col-span-3 lg:col-span-4 md:col-span-4 sm:col-span-6 col-span-12">
-              <div class="box custom-box">
-                <img [src]="item.getPicture()" class="!rounded-t-md" alt="..."
-                  style="width: 100%;height: 200px;object-fit: cover;">
-                <div class="flex items-center justify-between nft-like-section w-full px-4">
-                  <!-- <div class="flex-grow">
-                    <button type="button" aria-label="button"
-                      class="ti-btn ti-btn-sm ti-btn-success-full !rounded-full btn-wave waves-effect waves-light">
-                      <i class="ri-heart-fill"></i>
-                    </button>
-                  </div>
-                  <div>
-                    <span class="badge nft-like-badge text-white"><i
-                        class="ri-heart-fill me-1 text-danger align-middle inline-block"></i>0.47k</span>
-                  </div> -->
-                </div>
-                <div class="box-body">
-
-                  <div class="flex items-center mb-4">
-                    <div>
-
-                      <p class="text-[.9375rem] font-semibold mb-2"><a href="javascript:void(0);">{{item.name}}</a></p>
-
-                    </div>
-                  </div>
-
-                  <div class="flex flex-wrap align-itesm-center justify-between">
-                    <div class="font-semibold mb-1">รายละเอียด :</div>
-                    <p class="text-[#8c9097] dark:text-white/50 mb-3">{{item.description}}</p>
-                    <!-- <div class="flex flex-wrap items-center leading-none">
-                      <span class="avatar avatar-xs me-1">
-                        <img src="./assets/images/crypto-currencies/square-color/Ethereum.svg" alt="">
-                      </span>0.24ETH
-                    </div> -->
-                  </div>
-
-                  <div class="flex flex-wrap align-itesm-center justify-between">
-                    <div class="font-semibold mb-1">หมวดหมู่ :</div>
-                    <p class="text-[#8c9097] dark:text-white/50 mb-3">{{item.category}}</p>
-                  </div>
-                  <div class="flex flex-wrap align-itesm-center justify-between mb-2">
-                    <div class="font-semibold mb-1">ราคา :</div>
-                    <h3 class="text-[#8c9097] dark:text-white/50">{{item.price}}</h3>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
-          <!-- <div class="lg:col-span-4 md:col-span-6 col-span-12">
-            <div class="box border dark:border-defaultborder/10">
-              <div class="grid grid-cols-12 g-0">
-                <div class="md:col-span-3 col-span-4">
-                  <img src="./assets/images/media/jobs-landing/1.jpg"
-                    class="img-fluid rounded-start h-full browse-jobs-image !rounded-s-md" alt="...">
-                </div>
-                <div class="md:col-span-9 col-span-8 my-auto">
-                  <div class="box-body">
-                    <h5 class="box-title font-semibold !text-[1.25rem]">Business Development</h5>
-                    <p class="mb-4"><span class="text-default font-semibold ">120 Jobs</span> available</p>
-                    <a class="text-primary font-semibold" href="javascript:void(0);">Explore Jobs<i
-                        class="ri-arrow-right-s-line align-middle rtl:rotate-180"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> -->
-          }
-        </div>
+        </ng-container>
       </div>
-    </section>
-    <!-- End:: Section-8 -->
+    </div>
+  </section>
 
-    <!-- Start:: Section-9 -->
-
-    <!-- End:: Section-9 -->
-
-    <!-- Start:: Section-10 -->
-    <section class="section text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem]" id="contact" #contact>
-      <div class="container text-center">
-        <p class="text-[0.75rem] font-semibold text-success mb-1"><span class="landing-section-heading">ติดต่อ
-            US</span></p>
-        <h3 class="font-semibold mb-2">มีคำถามใด ๆ หรือไม่? เรายินดีที่จะรับฟังจากคุณ</h3>
-        <!-- <div class="grid grid-cols-12 justify-center">
-          <div class="col-span-12">
-            <p class="text-[#8c9097] dark:text-white/50 text-[0.9375rem] mb-12 font-normal">You can contact us anytime
-              regarding any queries or deals,dont hesitate to clear your doubts before trying our product.</p>
-          </div>
-        </div> -->
-        <div class="grid grid-cols-12 gap-6 text-start">
-          <div class="xxl:col-span-12 xl:col-span-12 lg:col-span-12 md:col-span-12 sm:col-spam-12 col-span-12">
-            <div class="box border dark:border-defaultborder/10 shadow-none">
-              <div class="box-body !p-0">
-                <iframe title="map"
-                  src="https://www.google.com/maps/embed?pb=!1m26!1m12!1m3!1d30444.274596168965!2d78.54114692513858!3d17.48198883339408!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m11!3e6!4m3!3m2!1d17.4886524!2d78.5495041!4m5!1s0x3bcb9c7ec139a15d%3A0x326d1c90786b2ab6!2sspruko%20technologies!3m2!1d17.474805099999998!2d78.570258!5e0!3m2!1sen!2sin!4v1670225507254!5m2!1sen!2sin"
-                  height="365" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  <!-- Section: เมนูอาหาร -->
+  <section id="pricing" class="py-12 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-wrap items-center justify-between mb-8 gap-3">
+        <h2 class="text-3xl font-bold text-primary">เมนูอาหารแนะนำ</h2>
+        <a href="javascript:void(0);" class="ti-btn bg-primary text-white font-semibold rounded">ดูเมนูทั้งหมด</a>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-7">
+        <ng-container *ngFor="let item of menuList">
+          <div class="rounded-xl shadow-md hover:shadow-xl transition bg-white">
+            <img [src]="item.getPicture()" alt="Menu" class="rounded-t-xl w-full h-44 object-cover">
+            <div class="p-4">
+              <h3 class="font-bold text-lg mb-1 text-primary">{{item.name}}</h3>
+              <div class="mb-2 text-sm text-gray-500">{{item.category}}</div>
+              <p class="mb-2 text-gray-500 h-12 overflow-hidden">{{item.description}}</p>
+              <div class="flex justify-between items-center mt-4">
+                <span class="text-lg text-green-600 font-semibold">{{item.price | number:'1.2-2'}} ฿</span>
+                <a class="ti-btn ti-btn-xs ti-btn-outline-primary" href="javascript:void(0);">สั่งเลย</a>
               </div>
             </div>
           </div>
-
-        </div>
+        </ng-container>
       </div>
-    </section>
-    <!-- End:: Section-10 -->
+    </div>
+  </section>
 
-    <!-- Start:: Section-11 -->
-
-    <section class="section bg-banner" id="careeradvice" #careeradvice>
-      <div class="grid grid-cols-12 justify-center !px-4">
-        <div class="lg:col-span-3 col-span-12"></div>
-        <div class="lg:col-span-6 col-span-12 text-center">
-          <div class="mb-6">
-            <h3 class="font-semibold mb-2">😀 อาหารรสชาติถูกปากและห้องประชุมรอคุณอยู่</h3>
+  <!-- Section: Contact -->
+  <section id="contact" class="py-12 bg-gray-50">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-3 text-primary">ติดต่อเรา</h2>
+      <p class="text-gray-500 mb-6">มีคำถาม หรือต้องการสอบถามข้อมูลเพิ่มเติม ติดต่อทีมงานเราได้ตลอดเวลา</p>
+      <div class="flex flex-col md:flex-row justify-center items-center gap-8 mb-8">
+        <div class="flex-1">
+          <div class="bg-white shadow rounded-xl p-6 text-left">
+            <div class="flex items-center gap-3 mb-2">
+              <i class="ri-map-pin-line text-xl text-secondary"></i>
+              <span>123 ถนนบางเขน กรุงเทพฯ</span>
+            </div>
+            <div class="flex items-center gap-3 mb-2">
+              <i class="ri-phone-line text-xl text-green-600"></i>
+              <span>02-xxx-xxxx</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i class="ri-mail-line text-xl text-primary"></i>
+              <span>ทดสอบ</span>
+            </div>
           </div>
-          <!-- <span class="text-[0.9375rem] font-normal opacity-[0.8] block mb-6">Est amet sit vero sanctus labore no sed
-            ipsum ipsum nonumy. Sit ipsum sanctus ea magna est. Aliquyam sed amet. Kasd diam rebum sit ipsum ipsum erat
-            et kasd.Est amet sit vero sanctus labore no sed ipsum ipsum nonumy vero sanctus labore..</span> -->
-          <a href="javascript:void(0);"
-            class="ti-btn ti-btn-lg ti-btn-light me-2 dark:border-defaultborder/10 !font-medium"><i
-              class="bi bi-search me-1"></i>จองโต๊ะอาหาร</a>
-          <a href="javascript:void(0);" class="ti-btn ti-btn-lg  ti-btn-danger-full text-white  !font-medium"><i
-              class="bi bi-send me-1"></i>จองห้องประชุม</a>
         </div>
-        <div class="lg:col-span-3 col-span-12"></div>
+        <div class="flex-1">
+          <iframe title="map" src="https://maps.google.com/maps?q=dpu%20university&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            height="230" class="w-full rounded-xl shadow border"></iframe>
+        </div>
       </div>
-    </section>
+      <a href="javascript:void(0);" class="ti-btn ti-btn-lg ti-btn-success-full">จองโต๊ะ/ห้องประชุม</a>
+    </div>
+  </section>
+
+  <!-- Banner Call-to-action -->
+  <section class="py-10 bg-gradient-to-r from-primary via-secondary/60 to-primary/80 text-white text-center mt-12">
+    <div class="container mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-bold mb-4">😀 อาหารรสชาติถูกปากและห้องประชุมรอคุณอยู่</h2>
+      <div class="flex flex-col md:flex-row gap-5 justify-center mt-3">
+        <a class="ti-btn ti-btn-lg ti-btn-light border border-white !font-medium text-primary" href="#">จองโต๊ะอาหาร</a>
+        <a class="ti-btn ti-btn-lg  ti-btn-danger-full text-white !font-medium" href="#">จองห้องประชุม</a>
+      </div>
+    </div>
+  </section>
   </div>
   <!-- End::main-content -->
 
