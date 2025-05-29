@@ -13,12 +13,13 @@ import { AvailableItem } from '../../models/all.model';
 import { ReservationCustomerCardComponent } from '../reservation-card/reservation-card.component';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { TableReservationModalComponent } from '../table-reservation-modal/table-reservation-modal.component';
 
 @Component({
   selector: 'app-customer-reservation-page',
   templateUrl: './customer-reservation-page.component.html',
   standalone: true,
-  imports: [CommonModule, AvailableItemCardComponent, ViewBillModalComponent, ReservationCustomerCardComponent],
+  imports: [CommonModule, AvailableItemCardComponent, ViewBillModalComponent, ReservationCustomerCardComponent, TableReservationModalComponent],
   styleUrls: ['./customer-reservation-page.component.scss']
 })
 export class CustomerReservationPageComponent implements OnInit {
