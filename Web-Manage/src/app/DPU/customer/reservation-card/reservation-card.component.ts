@@ -1,16 +1,14 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-
+import { CommonModule, DatePipe } from '@angular/common';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'app-reservation-card',
+  selector: 'app-cus-reservation-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,DatePipe],
   templateUrl: './reservation-card.component.html',
   styleUrls: ['./reservation-card.component.scss']
 })
-export class ReservationCardComponent {
-
+export class ReservationCustomerCardComponent {
   @Input() reservation: any;
   @Output() cancel = new EventEmitter<any>();
   @Output() order = new EventEmitter<any>();
@@ -25,5 +23,4 @@ export class ReservationCardComponent {
       default: return status;
     }
   }
-
 }

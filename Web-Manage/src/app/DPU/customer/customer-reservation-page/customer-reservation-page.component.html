@@ -11,7 +11,7 @@
     <div class="lg:col-span-3">
       <h3 class="subtitle"><i class="ri-calendar-check-line mr-2"></i> การจองของคุณ</h3>
       <ng-container *ngIf="reservationList.length; else noReservation">
-        <!-- <app-reservation-card *ngFor="let res of reservationList" [reservation]="res" (cancel)="onCancel(res)" (order)="onOrder(res)" (viewBill)="onViewBill(res)"></app-reservation-card> -->
+        <app-cus-reservation-card *ngFor="let res of reservationList" [reservation]="res" (cancel)="onCancel(res)" (order)="onOrder(res)" (viewBill)="onViewBill(res)"></app-cus-reservation-card>
       </ng-container>
       <ng-template #noReservation>
         <div class="no-reservation">

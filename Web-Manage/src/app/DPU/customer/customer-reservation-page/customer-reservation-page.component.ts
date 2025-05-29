@@ -10,12 +10,15 @@ import { ReservationService } from '../../services/reservation.service';
 import { RoomService } from '../../services/room.service';
 import { TablesService } from '../../services/tables.service';
 import { AvailableItem } from '../../models/all.model';
+import { ReservationCustomerCardComponent } from '../reservation-card/reservation-card.component';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-customer-reservation-page',
   templateUrl: './customer-reservation-page.component.html',
   standalone: true,
-  imports: [CommonModule, AvailableItemCardComponent, ViewBillModalComponent,],
+  imports: [CommonModule, AvailableItemCardComponent, ViewBillModalComponent, ReservationCustomerCardComponent],
   styleUrls: ['./customer-reservation-page.component.scss']
 })
 export class CustomerReservationPageComponent implements OnInit {
@@ -38,7 +41,16 @@ export class CustomerReservationPageComponent implements OnInit {
   ngOnInit() {
     // เรียกข้อมูล availableList, reservationList, menuList จาก API หรือ service
     this.getTable()
+    this.getReserved();
   }
+
+  getReserved() {
+    this.reserveService.getReservations(this.tokenService.getUser().id).subscribe(result => {
+      this.reservationList = result
+    })
+
+  }
+
 
   getTable() {
     forkJoin({
