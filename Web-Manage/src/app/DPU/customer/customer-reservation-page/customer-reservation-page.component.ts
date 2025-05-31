@@ -55,7 +55,7 @@ export class CustomerReservationPageComponent implements OnInit {
   }
 
   getReserved() {
-    this.reserveService.getReservations(this.tokenService.getUser().id).subscribe(result => {
+    this.reserveService.getReservations({ user :this.tokenService.getUser().id , status : 'pending' }).subscribe(result => {
       this.reservationList = result
     })
 
@@ -109,21 +109,40 @@ export class CustomerReservationPageComponent implements OnInit {
     console.log('API', item);
     item.status = 'pending'
     item.end_time = item.start_time
-    this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
-      console.log(result)
+    this.reserveService.createReservation(item).subscribe(result => {
+      console.log(result);
       if (item['table_id']) {
-        this.tableService.reseave(item.table_id).subscribe(result => {
+        this.tableService.reserve(item.table_id).subscribe(() => {
           swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-          this.ngOnInit()
-        })
+          this.ngOnInit();
+        });
       }
-      else {
-        this.roomService.reseave(item.room_id).subscribe(result => {
+      if (item['room_id']) {
+        this.roomService.reserve(item.room_id).subscribe(() => {
           swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-          this.ngOnInit()
-        })
+          this.ngOnInit();
+        });
       }
-    })
+    }, error => {
+      console.error('Error creating reservation:', error);
+      swal("Error", "ไม่สามารถบันทึกข้อมูลได้", "error");
+    });
+
+    // this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
+    //   console.log(result)
+    //   if (item['table_id']) {
+    //     this.tableService.reseave(item.table_id).subscribe(result => {
+    //       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+    //       this.ngOnInit()
+    //     })
+    //   }
+    //   else {
+    //     this.roomService.reseave(item.room_id).subscribe(result => {
+    //       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+    //       this.ngOnInit()
+    //     })
+    //   }
+    // })
   }
 
   onCancel(res: any) {

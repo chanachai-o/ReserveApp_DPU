@@ -259,7 +259,7 @@ export class ReservedRoomTablesComponent {
     delete item.room_id
     this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
       console.log(result)
-      this.tableService.reseave(item.table_id).subscribe(result => {
+      this.tableService.reserve(item.table_id).subscribe(result => {
         swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
         this.ngOnInit()
       })

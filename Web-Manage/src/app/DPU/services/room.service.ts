@@ -38,7 +38,7 @@ export class RoomService {
       );
   }
 
-  reseave(roomId: number) {
+  reserve(roomId: number) {
     return this.http.patch<{
       "message": string,
       "user": RoomModel

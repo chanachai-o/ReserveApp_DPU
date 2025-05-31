@@ -139,13 +139,13 @@ export class WalkInReservationComponent {
     this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
       console.log(result)
       if (item['table_id']) {
-        this.tableService.reseave(item.table_id).subscribe(result => {
+        this.tableService.reserve(item.table_id).subscribe(result => {
           swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
           this.ngOnInit()
         })
       }
       else {
-        this.roomService.reseave(item.room_id).subscribe(result => {
+        this.roomService.reserve(item.room_id).subscribe(result => {
           swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
           this.ngOnInit()
         })
@@ -164,7 +164,7 @@ export class WalkInReservationComponent {
     console.log(item)
     this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
       console.log(result)
-      this.tableService.reseave(item.table_id).subscribe(result => {
+      this.tableService.reserve(item.table_id).subscribe(result => {
         swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
         this.ngOnInit()
       })
@@ -180,7 +180,7 @@ export class WalkInReservationComponent {
       // โต๊ะ
       this.http.post("http://127.0.0.1:8000/reservations/" + item.id + "/checkin", item).subscribe(result => {
         console.log(result);
-        this.tableService.reseave(item.table_id).subscribe(_ => {
+        this.tableService.reserve(item.table_id).subscribe(_ => {
           swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
           this.ngOnInit();
         });
@@ -189,7 +189,7 @@ export class WalkInReservationComponent {
       // ห้องประชุม
       this.http.post("http://127.0.0.1:8000/reservations/" + item.id + "/checkin", item).subscribe(result => {
         console.log(result);
-        this.roomService.reseave(item.room_id).subscribe(_ => {
+        this.roomService.reserve(item.room_id).subscribe(_ => {
           swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
           this.ngOnInit();
         });

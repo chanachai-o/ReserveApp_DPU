@@ -58,7 +58,7 @@ export class TablesService {
     }>(this.apiBaseUrl + "/" + body.id);
   }
 
-  reseave(tableId: number) {
+  reserve(tableId: number) {
     return this.http.patch<{
       "message": string,
       "user": TablesModel
