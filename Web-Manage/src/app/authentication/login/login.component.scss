@@ -1,15 +1,8 @@
-::ng-deep{
-
-
-    .firebase {
-        width: 30px;
-        height: 30px;
-    }
-    
-    .rounded-lg{
-                width: 120px;
-                justify-content: center;
-                margin: auto;
-                border-radius: 0.75rem;
-            }           
-    }
+:host {
+  .form-control {
+    @apply rounded-md border border-gray-300 px-3 py-2 transition focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary dark:bg-neutral-700 dark:border-neutral-600 dark:text-white;
+  }
+  .ti-btn {
+    @apply rounded-md bg-primary text-white transition hover:bg-primary/90;
+  }
+}
