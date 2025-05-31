@@ -291,6 +291,11 @@ async def get_reservations(user: Optional[int] = None, db: AsyncSession = Depend
             selectinload(Reservation.orders).selectinload(Order.payments),
         )
     )
+    # ===== เพิ่ม filter user_id ถ้ามี =====
+    if user:
+        stmt = stmt.where(Reservation.user_id == user)
+    # ====================================
+
     result = await db.execute(stmt)
     reservations = result.scalars().all()
 
@@ -306,6 +311,7 @@ async def get_reservations(user: Optional[int] = None, db: AsyncSession = Depend
         r_dict['payments'] = [PaymentOut.from_orm(p) for p in payments] if payments else None
         reservation_out_list.append(r_dict)
     return reservation_out_list
+
 
 @reservations_router.post("/", response_model=ReservationOut)
 async def create_reservation(
