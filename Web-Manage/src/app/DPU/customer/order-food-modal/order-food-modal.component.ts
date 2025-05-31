@@ -13,7 +13,6 @@ import { OrderFoodComponent } from '../../common/order-food/order-food.component
 export class OrderFoodModalComponent {
   @Input() show = false;
   @Input() reservation: any;
-  @Input() menuList: any[] = [];
   @Output() submitted = new EventEmitter<any>();
   @Output() closed = new EventEmitter<void>();
 }

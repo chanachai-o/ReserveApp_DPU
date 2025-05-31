@@ -1,60 +1,34 @@
 import { environment } from "../../../environments/environment";
 
+// ========== ENUM + Utility ==========
 export enum UserRole {
   Customer = 'customer',
   Staff = 'staff',
   Chef = 'chef',
   Manager = 'manager',
 }
+export const UserRoleLabel = {
+  [UserRole.Customer]: 'ลูกค้า',
+  [UserRole.Staff]: 'พนักงาน',
+  [UserRole.Chef]: 'เชฟ',
+  [UserRole.Manager]: 'ผู้จัดการ',
+};
 
-export enum TableStatus {
-  Available = 'available',
-  Reserved = 'reserved',
-  Occupied = 'occupied',
-  Cleaning = 'cleaning',
-  Maintenance = 'maintenance',
+export enum TableStatus { Available = 'available', Reserved = 'reserved', Occupied = 'occupied', Cleaning = 'cleaning', Maintenance = 'maintenance', }
+export enum RoomStatus { Available = 'available', Reserved = 'reserved', Occupied = 'occupied', Cleaning = 'cleaning', Maintenance = 'maintenance', }
+export enum ReservationStatus { Pending = 'pending', CheckedIn = 'checked_in', CheckedOut = 'checked_out', Completed = 'completed', Cancelled = 'cancelled', NoShow = 'no_show', }
+export enum OrderStatus { Pending = 'pending', Preparing = 'preparing', Cooked = 'cooked', Served = 'served', Rejected = 'rejected', }
+export enum OrderItemStatus { Pending = 'pending', Preparing = 'preparing', Cooked = 'cooked', Served = 'served', Rejected = 'rejected', }
+export enum PaymentStatus { Pending = 'pending', Completed = 'completed', Declined = 'declined', }
+
+// ========== BASE MODEL ==========
+export class BaseModel {
+  constructor(obj: any) {
+    Object.assign(this, obj);
+  }
 }
 
-export enum RoomStatus {
-  Available = 'available',
-  Reserved = 'reserved',
-  Occupied = 'occupied',
-  Cleaning = 'cleaning',
-  Maintenance = 'maintenance',
-}
-
-export enum ReservationStatus {
-  Pending = 'pending',
-  CheckedIn = 'checked_in',
-  CheckedOut = 'checked_out',
-  Completed = 'completed',
-  Cancelled = 'cancelled',
-  NoShow = 'no_show',
-}
-
-export enum OrderStatus {
-  Pending = 'pending',
-  Preparing = 'preparing',
-  Cooked = 'cooked',
-  Served = 'served',
-  Rejected = 'rejected',
-}
-
-export enum OrderItemStatus {
-  Pending = 'pending',
-  Preparing = 'preparing',
-  Cooked = 'cooked',
-  Served = 'served',
-  Rejected = 'rejected',
-}
-
-export enum PaymentStatus {
-  Pending = 'pending',
-  Completed = 'completed',
-  Declined = 'declined',
-}
-
-
+// ========== USER ==========
 export interface UserProfileModel {
   id: number;
   name: string;
@@ -63,13 +37,52 @@ export interface UserProfileModel {
   is_active: boolean;
   picture?: string | null;
 }
+export class UserProfile extends BaseModel implements UserProfileModel {
+  id = 0;
+  name = '';
+  phone = '';
+  role = UserRole.Customer;
+  is_active = true;
+  picture?: string | null = null;
 
+  constructor(data: Partial<UserProfileModel> = {}) {
+    super(data);
+  }
+
+  getPicture(): string {
+    return this.picture ? environment.baseUrl + '/images/' + this.picture : './assets/images/faces/111.jpg';
+  }
+  get roleLabel(): string {
+    return UserRoleLabel[this.role] || this.role;
+  }
+}
+
+// ========== TABLE/ROOM ==========
 export interface Table {
   id: number;
   table_number: string;
   capacity: number;
   status: TableStatus;
   picture?: string | null;
+  getPicture(): string;
+}
+export class TableModel extends BaseModel implements Table {
+  id = 0;
+  table_number = '';
+  capacity = 0;
+  status = TableStatus.Available;
+  picture?: string | null = null;
+  constructor(data: Partial<Table> = {}) {
+    super(data);
+    this.id = data.id || 0;
+    this.table_number = data.table_number || '';
+    this.capacity = data.capacity || 0;
+    this.status = data.status || TableStatus.Available;
+    this.picture = data.picture || null;
+  }
+  getPicture(): string {
+    return this.picture ? environment.baseUrl + '/images/' + this.picture : './assets/images/faces/222.png';
+  }
 }
 
 export interface Room {
@@ -79,58 +92,67 @@ export interface Room {
   equipment?: string | null;
   status: RoomStatus;
   picture?: string | null;
+
+}
+export class RoomModel extends BaseModel implements Room {
+  id = 0;
+  name = '';
+  capacity = 0;
+  equipment?: string | null = null;
+  status = RoomStatus.Available;
+  picture?: string | null = null;
+  constructor(data: Partial<Room> = {}) {
+    super(data);
+    this.id = data.id || 0;
+    this.name = data.name || '';
+    this.capacity = data.capacity || 0;
+    this.equipment = data.equipment || null;
+    this.status = data.status || RoomStatus.Available;
+    this.picture = data.picture || null;
+  }
+  getPicture(): string {
+    return this.picture ? environment.baseUrl + '/images/' + this.picture : './assets/images/faces/333.png';
+  }
 }
 
+// ========== AVAILABLE ITEM (เลือกใช้ class) ==========
 export class AvailableItem {
-  id: number;
-  type: 'table' | 'room';
-  table_number?: string;
-  room_number?: string;
-  name?: string;
-  capacity: number;
-  picture?: string;
-  description?: string;
-  status?: string;
+  id = 0;
+  type: 'table' | 'room' = 'table';
+  table_number = '';
+  room_number = '';
+  name = '';
+  capacity = 0;
+  picture = '';
+  description = '';
+  status = '';
 
-  constructor(data: Partial<AvailableItem> = {}) {
-    this.id = data.id ?? 0;
-    this.type = data.table_number ? 'table' : 'room';
-    this.table_number = data.table_number ?? '';
-    this.room_number = data.room_number ?? '';
-    this.name = data.name ?? '';
-    this.capacity = data.capacity ?? 0;
-    this.picture = data.picture ?? '';
-    this.description = data.description ?? '';
-    this.status = data.status
+  constructor(data: Partial<AvailableItem>) {
+    Object.assign(this, data);
+    if (typeof data.type === "undefined") {
+      this.type = data.table_number ? 'table' : 'room';
+    }
   }
-
   getPicture(): string {
-    return this.picture ? environment.baseUrl + '/images/' + this.picture : (this.type === 'room'
-      ? './assets/images/faces/333.png'
-      : './assets/images/faces/222.png')
+    return this.picture
+      ? environment.baseUrl + '/images/' + this.picture
+      : (this.type === 'room'
+        ? './assets/images/faces/333.png'
+        : './assets/images/faces/222.png');
   }
-
   getLabel(): string {
-    // คืนชื่อที่เหมาะสม (เช่น โต๊ะ 1, ห้อง A)
     if (this.type === 'table') return `โต๊ะ ${this.table_number || this.id}`;
     if (this.type === 'room') return `ห้อง ${this.name || this.room_number || this.id}`;
     return this.name || '';
   }
-
-
-  getStatus(): string {
-    // # available, reserved, unavailable
-    if (this.status == 'available') {
-      return 'เปิดบริการ'
-    } else if (this.status == 'reserved') {
-      return 'จอง'
-    } {
-      return 'ไม่เปิดให้บริการ'
-    }
+  getStatusLabel(): string {
+    if (this.status === 'available') return 'เปิดบริการ';
+    if (this.status === 'reserved') return 'จอง';
+    return 'ไม่เปิดให้บริการ';
   }
 }
 
-
+// ========== MENU ==========
 export interface Menus {
   id: number;
   name: string;
@@ -140,36 +162,35 @@ export interface Menus {
   is_active: boolean;
   picture?: string | null;
 }
-
-export class MenusModel implements Menus {
-  id: number;
-  name: string;
-  description?: string | null;
-  category?: string | null;
-  price: number;
-  is_active: boolean;
-  picture?: string | null;
-
+export class MenusModel extends BaseModel implements Menus {
+  id = 0;
+  name = '';
+  description = '';
+  category = '';
+  price = 0;
+  is_active = false;
+  picture?: string | null = null;
   constructor(data: Partial<Menus> = {}) {
-    this.id = data.id ?? 0;
-    this.name = data.name ?? '';
-    this.description = data.description ?? '';
-    this.category = data.category ?? '';
-    this.price = data.price ?? 0;
-    this.is_active = data.is_active ?? false;
-    this.picture = data.picture ?? null;
+    super(data);
+    this.id = data.id || 0;
+    this.name = data.name || '';
+    this.description = data.description || '';
+    this.category = data.category || '';
+    this.price = data.price || 0;
+    this.is_active = data.is_active || false;
+    this.picture = data.picture || null;
   }
-
   getPicture(): string {
     return this.picture
       ? `${environment.baseUrl}/images/${this.picture}`
       : './assets/images/faces/111.jpg';
   }
-
   getStatus(): string {
     return this.is_active ? 'เปิดบริการ' : 'ปิดการให้บริการ';
   }
 }
+
+// ========== ORDER/ORDER ITEM ==========
 export interface OrderItem {
   id: number;
   menu_id: number;
@@ -177,6 +198,23 @@ export interface OrderItem {
   status: OrderItemStatus;
   menu: Menus;
   note?: string | null;
+}
+export class OrderItemModel extends BaseModel implements OrderItem {
+  id = 0;
+  menu_id = 0;
+  quantity = 1;
+  status = OrderItemStatus.Pending;
+  menu: Menus = { id: 0, name: '', price: 0, is_active: false };
+  note?: string | null = null;
+  constructor(data: Partial<OrderItem> = {}) {
+    super(data);
+    this.id = data.id || 0;
+    this.menu_id = data.menu_id || 0;
+    this.quantity = data.quantity || 1;
+    this.status = data.status || OrderItemStatus.Pending;
+    this.menu = data.menu ? new MenusModel(data.menu) : { id: 0, name: '', price: 0, is_active: false };
+    this.note = data.note || null;
+  }
 }
 
 export interface Order {
@@ -187,7 +225,25 @@ export interface Order {
   total_amount: number;
   order_items: OrderItem[];
 }
+export class OrderModel extends BaseModel implements Order {
+  id = 0;
+  user_id = 0;
+  reservation_id?: number | null = null;
+  status = OrderStatus.Pending;
+  total_amount = 0;
+  order_items: OrderItem[] = [];
+  constructor(data: Partial<Order> = {}) {
+    super(data);
+    this.id = data.id || 0;
+    this.user_id = data.user_id || 0;
+    this.reservation_id = data.reservation_id || null;
+    this.status = data.status || OrderStatus.Pending;
+    this.total_amount = data.total_amount || 0;
+    this.order_items = data.order_items ? data.order_items.map(item => new OrderItemModel(item)) : [];
+  }
+}
 
+// ========== PAYMENT ==========
 export interface Payment {
   id: number;
   order_id: number;
@@ -195,7 +251,23 @@ export interface Payment {
   slip_url: string | null;
   status: PaymentStatus;
 }
+export class PaymentModel extends BaseModel implements Payment {
+  id = 0;
+  order_id = 0;
+  amount = 0;
+  slip_url: string | null = null;
+  status = PaymentStatus.Pending;
+  constructor(data: Partial<Payment> = {}) {
+    super(data);
+    this.id = data.id || 0;
+    this.order_id = data.order_id || 0;
+    this.amount = data.amount || 0;
+    this.slip_url = data.slip_url || null;
+    this.status = data.status || PaymentStatus.Pending;
+  }
+}
 
+// ========== STORE ==========
 export interface StoreProfileModel {
   id?: number;
   name: string;
@@ -207,23 +279,21 @@ export interface StoreProfileModel {
   logo_url?: string;
   layout_picture?: string;
 }
-
-export class StoreProfile implements StoreProfileModel {
+export class StoreProfile extends BaseModel implements StoreProfileModel {
   id?: number | undefined;
-  name: string;
-  address: string;
-  phone: string;
-  email?: string | undefined;
-  open_time: string;
-  close_time: string;
-  logo_url?: string | undefined;
-  layout_picture?: string | undefined;
-  // ...implement methods for getPicture(), getLayout() as fallback
+  name = '';
+  address = '';
+  phone = '';
+  email?: string;
+  open_time = '';
+  close_time = '';
+  logo_url?: string;
+  layout_picture?: string;
   getPicture(): string { return this.logo_url || 'assets/img/no-image.png'; }
   getLayout(): string { return this.layout_picture || 'assets/img/layout-placeholder.png'; }
-  // etc.
 }
 
+// ========== NOTIFICATION ==========
 export interface Notification {
   id: number;
   user_id: number;
@@ -233,22 +303,74 @@ export interface Notification {
   is_read: boolean;
   created_at: string;
 }
+export class NotificationModel extends BaseModel implements Notification {
+  id = 0;
+  user_id = 0;
+  title = '';
+  message = '';
+  type = '';
+  is_read = false;
+  created_at = new Date().toISOString();
+  constructor(data: Partial<Notification> = {}) {
+    super(data);
+    this.id = data.id || 0;
+    this.user_id = data.user_id || 0;
+    this.title = data.title || '';
+    this.message = data.message || '';
+    this.type = data.type || '';
+    this.is_read = data.is_read || false;
+    this.created_at = data.created_at || new Date().toISOString();
+  }
+}
 
-export interface ReservationModel {
+// ========== RESERVATION ==========
+export interface ReservationDetailModel {
   id: number;
   user_id?: number | null;
   table_id?: number | null;
   room_id?: number | null;
-  start_time: string;     // ISO 8601 (Date)
+  start_time: string;
   end_time: string;
   num_people: number;
   status: ReservationStatus;
   note?: string | null;
-
-  // Relations (optional for display/detail)
   user: UserProfileModel;
   table?: Table;
   room?: Room;
   orders: Order[];
   payments: Payment[];
+}
+export class ReservationModel extends BaseModel implements ReservationDetailModel {
+  id = 0;
+  user_id?: number | null = null;
+  table_id?: number | null = null;
+  room_id?: number | null = null;
+  start_time = '';
+  end_time = '';
+  num_people = 0;
+  status = ReservationStatus.Pending;
+  note?: string | null = '';
+  user: UserProfileModel = new UserProfile();
+  table?: Table = undefined;
+  room?: Room = undefined;
+  orders: Order[] = [];
+  payments: Payment[] = [];
+  constructor(data: Partial<ReservationDetailModel>) {
+    super(data);
+    this.id = data.id || 0;
+    this.user_id = data.user_id || null;
+    this.table_id = data.table_id || null;
+    this.room_id = data.room_id || null;
+    this.start_time = data.start_time || '';
+    this.end_time = data.end_time || '';
+    this.num_people = data.num_people || 0;
+    this.status = data.status || ReservationStatus.Pending;
+    this.note = data.note || '';
+
+    this.user = data.user ? new UserProfile(data.user) : new UserProfile();
+    this.table = data.table ? new TableModel(data.table) : undefined;
+    this.room = data.room ? new RoomModel(data.room) : undefined;
+    this.orders = data.orders ? data.orders.map(o => new OrderModel(o)) : [];
+    this.payments = data.payments ? data.payments.map(p => new PaymentModel(p)) : [];
+  }
 }

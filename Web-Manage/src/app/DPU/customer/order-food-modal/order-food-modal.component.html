@@ -4,7 +4,6 @@
     <app-order-food
       [userId]="reservation?.user_id"
       [reservationId]="reservation?.id"
-      [menuList]="menuList"
       [orderItems]="reservation?.orders?.length ? reservation.orders[0].order_items : []"
       (submitOrder)="submitted.emit($event)">
     </app-order-food>

@@ -10,7 +10,7 @@ import { ReservationModel } from '../../../models/all.model';
   styleUrls: ['./reservation-card.component.scss']
 })
 export class ReservationCardComponent {
-  @Input() reservation!: ReservationModel; // ใช้ interface ที่ประกาศไว้
+  @Input() reservation: ReservationModel; // ใช้ interface ที่ประกาศไว้
   @Output() checkIn = new EventEmitter<ReservationModel>();
   @Output() cancel = new EventEmitter<ReservationModel>();
   @Output() view = new EventEmitter<number>();

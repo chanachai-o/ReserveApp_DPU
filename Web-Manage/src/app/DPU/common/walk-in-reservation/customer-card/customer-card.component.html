@@ -1,68 +1,26 @@
-<!-- มีลูกค้าเข้า -->
-<div class="box kanban-tasks active shadow-lg rounded-xl border-2 border-warning-300 mb-5 bg-white dark:bg-neutral-900 transition-all duration-150 hover:scale-[1.01]" style="min-width:280px;">
-  <div class="box-body !p-0">
-    <div class="p-4 bg-gradient-to-r from-warning/10 to-white/80 dark:from-warning-900/20 dark:to-black/5 rounded-t-xl">
-      <div class="flex justify-between items-center mb-1 text-base font-semibold text-warning-600">
-        <div class="inline-flex items-center gap-1">
-          <i class="ri-login-circle-line mr-1"></i>
-          <span>
-            Check-In:
-            <span class="text-gray-700 dark:text-gray-200">{{ occupied.start_time | date: 'short' }}</span>
-          </span>
-        </div>
-        <span class="badge bg-secondary/10 text-secondary px-2 rounded-full shadow">
-          <i class="ri-hourglass-line align-middle mr-1"></i>
-          {{ getStayDuration(occupied.start_time) }}
-        </span>
+<div class="box shadow-md rounded-2xl border border-yellow-200 dark:border-yellow-700 bg-white dark:bg-neutral-900 flex flex-col transition hover:scale-105">
+    <div class="p-4 bg-gradient-to-r from-yellow-100/50 to-white/80 dark:from-yellow-900/15 rounded-t-2xl flex items-center justify-between">
+      <div class="flex items-center gap-2 text-yellow-700">
+        <i class="ri-login-circle-line text-2xl"></i>
+        <span class="font-bold text-base">กำลังใช้</span>
       </div>
-      <div class="flex items-center justify-between mt-2">
-        <span class="badge bg-info/10 text-info rounded px-3 py-1 font-medium">
-          <i [ngClass]="occupied.room ? 'ri-door-lock-fill text-amber-400' : 'ri-table-fill text-blue-400'"></i>
-          {{ occupied.room ? 'ห้อง: ' + (occupied.room?.name || occupied.room_id) : 'โต๊ะ #' + (occupied.table?.table_number || occupied.table_id) }}
-        </span>
-        <div class="flex gap-2">
-          <button class="ti-btn ti-btn-primary ti-btn-xs !rounded" (click)="onOrder()" data-hs-overlay="#add-order">
-            <i class="ri-restaurant-2-line mr-1"></i>สั่งอาหาร
-          </button>
-          <button class="ti-btn ti-btn-warning ti-btn-xs !rounded" (click)="onBill()" data-hs-overlay="#view-bill">
-            <i class="ri-bill-line mr-1"></i>เรียกบิล
-          </button>
-        </div>
-      </div>
-      <div class="flex items-center gap-3 mt-4">
-        <span class="avatar avatar-md avatar-rounded bg-gray-100 dark:bg-neutral-700">
-          <img *ngIf="occupied.user?.picture" [src]="occupied.user?.picture" class="object-cover w-10 h-10 rounded-full" alt="user" />
-          <i *ngIf="!occupied.user?.picture" class="ri-user-3-line text-gray-400 text-2xl"></i>
-        </span>
-        <div>
-          <h6 class="font-semibold text-gray-900 dark:text-white mb-1 text-base">{{ occupied.user?.name || occupied.customer_name || '-' }}</h6>
-          <span class="block text-xs text-gray-500">จำนวน: <b>{{ occupied.num_people }}</b> คน</span>
-        </div>
-      </div>
-      <div class="mt-4">
-        <span class="block text-xs text-gray-400 mb-1">อาหารล่าสุด:</span>
-        <div class="flex flex-wrap gap-1">
-          <ng-container *ngIf="occupied.orders?.length; else noOrder">
-            <ng-container *ngFor="let order of occupied.orders.slice(-1)">
-              <ng-container *ngFor="let item of order.order_items">
-                <span class="badge bg-blue-100/60 text-blue-600 px-2 py-1 rounded shadow-sm">
-                  {{ item.menu?.name }}
-                  <span *ngIf="item.quantity > 1" class="ml-1 text-xs text-gray-400">x{{ item.quantity }}</span>
-                </span>
-              </ng-container>
-            </ng-container>
-          </ng-container>
-          <ng-template #noOrder>
-            <span class="text-gray-300 italic">ยังไม่มีการสั่งอาหาร</span>
-          </ng-template>
-        </div>
-      </div>
+      <span class="badge bg-warning-100 text-warning-700 px-2 rounded">#C05</span>
     </div>
-    <div class="p-4 border-t border-dashed dark:border-defaultborder/10 rounded-b-xl bg-gray-50 dark:bg-neutral-800 text-xs text-gray-500 flex justify-between items-center">
-      <span>เข้าใช้ถึง {{ occupied.end_time | date: 'shortTime' }}</span>
-      <span *ngIf="occupied.note" class="italic text-rose-400 truncate" [title]="occupied.note">
-        <i class="ri-information-line"></i> {{ occupied.note }}
-      </span>
+    <div class="flex flex-col items-center py-5 px-4 gap-2 flex-1">
+      <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="user" class="rounded-full w-20 h-20 object-cover border" />
+      <div class="mt-3 font-semibold text-gray-700 dark:text-white">คุณจิตรา</div>
+      <div class="text-xs text-gray-400">เริ่มใช้ 18:30 น. (2 คน)</div>
+    </div>
+    <div class="flex justify-between px-4 pb-4">
+      <button class="ti-btn ti-btn-primary ti-btn-xs rounded shadow" title="สั่งอาหาร">
+        <i class="ri-restaurant-2-line mr-1"></i> สั่งอาหาร
+      </button>
+      <button class="ti-btn ti-btn-warning ti-btn-xs rounded shadow" title="เรียกบิล">
+        <i class="ri-bill-line mr-1"></i> เรียกบิล
+      </button>
+    </div>
+    <div class="border-t border-dashed bg-gray-50 dark:bg-neutral-800 rounded-b-2xl px-4 py-2 text-xs text-gray-500">
+      <span>ถึง 20:00 น.</span>
+      <span class="ml-3 text-blue-600">ล่าสุด: ข้าวผัดกุ้ง</span>
     </div>
   </div>
-</div>

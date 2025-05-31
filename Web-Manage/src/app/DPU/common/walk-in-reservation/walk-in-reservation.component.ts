@@ -24,6 +24,7 @@ import { MenusService } from '../../services/menu.service';
 import { RoomService } from '../../services/room.service';
 import { ViewBillComponent } from '../view-bill/view-bill.component';
 import { forkJoin } from 'rxjs';
+import { ReservationService } from '../../services/reservation.service';
 @Component({
   selector: 'app-walk-in-reservation',
   standalone: true,
@@ -41,15 +42,14 @@ export class WalkInReservationComponent {
   activeTableList: ReservationModel[] = [];
   paymentList: ReservationModel[] = [];
   reservation?: ReservationModel
-  menuList: MenusModel[] = []
   selectedOrder: Order
   isLoading = false;
   errorMsg = '';
   tableType = '';
   filterDate: string = '';
   maxDate: string = '';
-  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private menuService: MenusService, private roomService: RoomService) {
-    this.getMenu()
+  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private roomService: RoomService, private reserveService: ReservationService) {
+
   }
 
   ngOnInit(): void {
@@ -75,11 +75,6 @@ export class WalkInReservationComponent {
     this.onTypeChange()
   }
 
-  getMenu() {
-    this.menuService.getLists().subscribe(result => {
-      this.menuList = result
-    })
-  }
 
   getTable() {
     forkJoin({
@@ -97,19 +92,32 @@ export class WalkInReservationComponent {
     let params = {
       start_time: this.filterDate ? this.filterDate : new Date().toISOString().slice(0, 10)
     }
-    this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations", { params })
-      .subscribe({
-        next: (result) => {
-          this.reservationList = result.filter(e => e.status === 'pending');
-          this.activeTableList = result.filter(e => e.status === 'checked_in');
-          this.paymentList = result.filter(e => ['checked_out', 'completed'].includes(e.status));
-          this.isLoading = false;
-        },
-        error: () => {
-          this.errorMsg = "โหลดข้อมูลไม่สำเร็จ";
-          this.isLoading = false;
-        }
-      });
+    this.reserveService.getReservations(params).subscribe({
+      next: (result) => {
+        this.reservationList = result.filter(e => e.status === 'pending');
+        this.activeTableList = result.filter(e => e.status === 'checked_in');
+        this.paymentList = result.filter(e => ['checked_out', 'completed'].includes(e.status));
+        this.isLoading = false;
+        console.log(this.reservationList)
+      },
+      error: () => {
+        this.errorMsg = "โหลดข้อมูลไม่สำเร็จ";
+        this.isLoading = false;
+      }
+    });
+    // this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations", { params })
+    //   .subscribe({
+    //     next: (result) => {
+    //       this.reservationList = result.filter(e => e.status === 'pending');
+    //       this.activeTableList = result.filter(e => e.status === 'checked_in');
+    //       this.paymentList = result.filter(e => ['checked_out', 'completed'].includes(e.status));
+    //       this.isLoading = false;
+    //     },
+    //     error: () => {
+    //       this.errorMsg = "โหลดข้อมูลไม่สำเร็จ";
+    //       this.isLoading = false;
+    //     }
+    //   });
   }
 
   handleOpenTable(item: AvailableItem) {

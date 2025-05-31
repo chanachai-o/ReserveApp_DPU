@@ -27,7 +27,7 @@ export class ReservationListComponent {
   availableTables: AvailableItem[] = [];
   availableRooms: AvailableItem[] = [];
   tableType = '';
-  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private menuService: MenusService, private roomService: RoomService , private reserveService : ReservationService) {
+  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private menuService: MenusService, private roomService: RoomService, private reserveService: ReservationService) {
 
   }
   getPicture(reservation: ReservationModel): string | null {
@@ -46,8 +46,8 @@ export class ReservationListComponent {
     this.getReserved()
   }
 
-  getReserved(){
-    this.reserveService.getReservations(this.tokenService.getUser().id).subscribe(result=>{
+  getReserved() {
+    this.reserveService.getReservations({ user: this.tokenService.getUser().id }).subscribe(result => {
       this.reservationList = result
     })
 

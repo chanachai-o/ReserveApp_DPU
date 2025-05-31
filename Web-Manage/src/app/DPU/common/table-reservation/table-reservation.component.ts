@@ -1,17 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-export interface ReserveTableModel {
-  start_time: string;
-  end_time: string;
-  num_people: number;
-  user_id: number | undefined;
-  phone: string;
-  table_id: number;
-  status: string;
-}
-
-
+import { ReservationModel } from '../../models/all.model';
 @Component({
   selector: 'app-table-reservation',
   standalone: true,
@@ -25,7 +15,7 @@ export class TableReservationComponent implements OnInit, OnChanges {
   @Input() status: string = 'pending';
   @Input() type?: string
   @Input() phone?: string;
-  @Output() reserve = new EventEmitter<ReserveTableModel>();
+  @Output() reserve = new EventEmitter<ReservationModel>();
   minDateTime: string;
   form = this.fb.group({
     start_time: [this.getCurrentLocalDateTime(), Validators.required],
@@ -96,7 +86,7 @@ export class TableReservationComponent implements OnInit, OnChanges {
       } else {
         delete value.room_id;
       }
-      this.reserve.emit(value as ReserveTableModel);
+      this.reserve.emit(value as ReservationModel);
     } else {
       this.form.markAllAsTouched();
     }

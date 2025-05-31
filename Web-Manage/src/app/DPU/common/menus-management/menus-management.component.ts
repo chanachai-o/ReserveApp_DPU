@@ -43,7 +43,7 @@ export class MenusManagementComponent {
   uploadErrorMsg: string = "";
   itemsList: MenusModel[] = []
   filterList: MenusModel[] = []
-  selectModel: MenusModel = new MenusModel()
+  selectModel: MenusModel = new MenusModel({})
   selectedItems = new Map<string, boolean>();
   pageIndex = 0;
   get searchTerm(): string {
@@ -165,7 +165,7 @@ export class MenusManagementComponent {
 
   new() {
     this.isEdit = false
-    this.selectModel = new MenusModel()
+    this.selectModel = new MenusModel({})
   }
 
   view(item: MenusModel) {

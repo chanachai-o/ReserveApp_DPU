@@ -3,6 +3,7 @@ import { Component, Input, Output, EventEmitter, OnInit, SimpleChanges, OnChange
 import { FormBuilder, FormGroup, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenusModel, Order, OrderItem } from '../../models/all.model';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { MenusService } from '../../services/menu.service';
 
 @Component({
   selector: 'app-order-food',
@@ -13,16 +14,24 @@ import { NgSelectModule } from '@ng-select/ng-select';
 export class OrderFoodComponent implements OnInit, OnChanges {
   @Input() userId!: number;
   @Input() reservationId!: number;
-  @Input() menuList: MenusModel[] = [];
+  menuList: MenusModel[] = [];
   @Input() orderItems?: OrderItem[] = []; // <-- เพิ่ม input ตรงนี้
   @Output() submitOrder = new EventEmitter<any>();
 
   form!: FormGroup;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private menuService: MenusService) { }
 
   ngOnInit() {
+    this.getMenu();
     this.initForm();
+  }
+
+
+  getMenu() {
+    this.menuService.getLists().subscribe(result => {
+      this.menuList = result
+    })
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -3,7 +3,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ReservationModel } from '../models/all.model';
 
@@ -28,17 +28,18 @@ export class ReservationService {
   /** URL ต้นทาง:  https://api.example.com/reservations */
   private readonly BASE_URL = `${environment.apiBaseUrl}/reservations`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /* ────────────────────────────────
           READ
   ────────────────────────────────── */
 
   /** ดึงรายการจองทั้งหมด (ถ้าใส่ userId จะ filter ตาม owner) */
-  getReservations(userId?: number): Observable<ReservationModel[]> {
-    let params = new HttpParams();
-    if (userId != null) params = params.set('user', userId.toString());
-    return this.http.get<ReservationModel[]>(this.BASE_URL, { params });
+  getReservations(params: any): Observable<ReservationModel[]> {
+    // if (userId != null) params = params.set('user', userId.toString());
+    return this.http.get<ReservationModel[]>(this.BASE_URL, { params }).pipe(
+      map((e) => e.map((e) => new ReservationModel(e)))
+    );
   }
 
   /** ดึงรายการจองเดี่ยวตาม id */
