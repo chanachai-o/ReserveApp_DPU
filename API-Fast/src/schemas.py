@@ -293,14 +293,7 @@ class TableQuickStatus(BaseModel):
         return v
 
 class RoomQuickStatus(BaseModel):
-    status: AllowedStatus
-
-    # เผื่อ backend enum ไม่ sync กับข้อความ – ตรวจอีกชั้น
-    @validator("status")
-    def check_status(cls, v):
-        if v not in RoomStatus.__members__:
-            raise ValueError("Invalid Room status")
-        return v    
+    status: RoomStatus
 
     
 class KitchenOrderItem(BaseModel):

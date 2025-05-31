@@ -116,8 +116,7 @@ export class CustomerReservationPageComponent implements OnInit {
           swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
           this.ngOnInit();
         });
-      }
-      if (item['room_id']) {
+      } else {
         this.roomService.reserve(item.room_id).subscribe(() => {
           swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
           this.ngOnInit();

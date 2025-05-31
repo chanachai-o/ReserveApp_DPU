@@ -215,8 +215,10 @@ async def quick_change_table_status(
 rooms_router = APIRouter(prefix="/rooms", tags=["Rooms"])
 
 @rooms_router.get("/", response_model=List[RoomOut])
-async def get_rooms(db: AsyncSession = Depends(get_db)):
+async def get_rooms(status: Optional[str] = None, db: AsyncSession = Depends(get_db)):
     stmt = select(Room)
+    if status:
+        stmt = stmt.where(Room.status == status)
     result = await db.execute(stmt)
     return result.scalars().all()
 
@@ -263,18 +265,30 @@ async def quick_change_room_status(
     payload: RoomQuickStatus,
     db: AsyncSession = Depends(get_db)
 ):
-    """เปลี่ยนสถานะห้องรวดเร็ว (cleaning / maintenance / occupied …)"""
+    """เปลี่ยนสถานะห้องรวดเร็ว (cleaning / maintenance / occupied / available)"""
 
     stmt = select(Room).where(Room.id == room_id)
     result = await db.execute(stmt)
     room = result.scalars().first()
     if not room:
         raise HTTPException(404, "Room not found")
+    
+    print("เปลี่ยนสถานะห้อง: ", room.id, "->", payload.status)
+    # ลอง print ค่าเดิมและใหม่
+    print("ค่าเดิม:", room.status)
+    print("ค่าใหม่:", payload.status)
 
-    room.status = RoomStatus(payload.status)
+    # อัปเดต (validate ด้วย Enum)
+    try:
+        room.status = RoomStatus(payload.status)
+    except ValueError as e:
+        raise HTTPException(400, f"Invalid status: {payload.status}") from e
+
     await db.commit()
     await db.refresh(room)
+    print("บันทึกสำเร็จ:", room.status)
     return room
+
 
 
 ### Reservations Endpoints
