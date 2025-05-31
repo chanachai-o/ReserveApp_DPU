@@ -69,10 +69,12 @@
         <!-- Start::nav -->
         <nav class="main-menu-container nav nav-pills flex-column sub-open">
           <div class="landing-logo-container my-auto hidden lg:block">
-            <div class="responsive-logo">
-              <a class="responsive-logo-light" aria-label="Brand"> <img [src]="storeModel?.getPicture()" alt="logo" class="mx-auto mb-2 rounded-full shadow" width="75px" /></a>
-              <a class="responsive-logo-dark" aria-label="Brand"><img [src]="storeModel?.getPicture()" alt="logo" class="mx-auto mb-2 rounded-full shadow" width="75px" /></a>
-            </div>
+            <!-- <div class="responsive-logo">
+              <a class="responsive-logo-light" aria-label="Brand"> <img [src]="storeModel?.getPicture()" alt="logo"
+                  class="mx-auto mb-2 rounded-full shadow" width="75px" /></a>
+              <a class="responsive-logo-dark" aria-label="Brand"><img [src]="storeModel?.getPicture()" alt="logo"
+                  class="mx-auto mb-2 rounded-full shadow" width="75px" /></a>
+            </div> -->
           </div>
           <div class="slide-left hidden" id="slide-left"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191"
               width="24" height="24" viewBox="0 0 24 24">
@@ -164,8 +166,7 @@
             </div>
             <div class="xxl:col-span-5 xl:col-span-5 lg:col-span-5 col-span-12">
               <div class="text-end landing-main-image landing-heading-img flex justify-end w-full">
-                <img src="./assets/images/media/landing/1.jpg" alt="" class="img-fluid"
-                  style="width: 100%;height: auto;">
+                <img [src]="storeModel?.getPicture()" alt="" class="img-fluid">
               </div>
             </div>
           </div>
@@ -280,8 +281,7 @@
             </div>
           </div>
           <div class="flex-1">
-            <img [src]="storeModel?.getLayout()" alt="Contact Us"
-              class="rounded-lg shadow-md w-full h-64 object-cover">
+            <img [src]="storeModel?.getLayout()" alt="Contact Us" class="rounded-lg shadow-md w-full h-64 object-cover">
           </div>
         </div>
 

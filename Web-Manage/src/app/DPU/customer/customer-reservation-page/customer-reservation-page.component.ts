@@ -1,3 +1,4 @@
+import { StoreProfile } from './../../services/store-profile.service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ViewBillModalComponent } from '../view-bill-modal/view-bill-modal.component';
@@ -15,12 +16,13 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { TableReservationModalComponent } from '../table-reservation-modal/table-reservation-modal.component';
 import { OrderFoodModalComponent } from '../order-food-modal/order-food-modal.component';
+import { StoreProfileService } from '../../services/store-profile.service';
 
 @Component({
   selector: 'app-customer-reservation-page',
   templateUrl: './customer-reservation-page.component.html',
   standalone: true,
-  imports: [CommonModule, AvailableItemCardComponent, ViewBillModalComponent, ReservationCustomerCardComponent, TableReservationModalComponent, OrderFoodModalComponent],
+  imports: [CommonModule, AvailableItemCardComponent, ViewBillModalComponent, ReservationCustomerCardComponent, TableReservationModalComponent, OrderFoodModalComponent, FormsModule],
   styleUrls: ['./customer-reservation-page.component.scss']
 })
 export class CustomerReservationPageComponent implements OnInit {
@@ -35,8 +37,13 @@ export class CustomerReservationPageComponent implements OnInit {
   showReserveModal = false;
   showOrderModal = false;
   showBillModal = false;
-  tableType = ''
-  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private menuService: MenusService, private roomService: RoomService, private reserveService: ReservationService) {
+  filterType: string = '';
+  filterCapacity: string = '';
+  filteredAvailableList: AvailableItem[] = [];
+  searchText: string = '';
+  storeModel: StoreProfile = new StoreProfile();
+  showMap: boolean = false;
+  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private menuService: MenusService, private roomService: RoomService, private reserveService: ReservationService, private storeService: StoreProfileService) {
 
   }
 
@@ -44,6 +51,7 @@ export class CustomerReservationPageComponent implements OnInit {
     // เรียกข้อมูล availableList, reservationList, menuList จาก API หรือ service
     this.getTable()
     this.getReserved();
+    this.getStoreProfile()
   }
 
   getReserved() {
@@ -51,6 +59,14 @@ export class CustomerReservationPageComponent implements OnInit {
       this.reservationList = result
     })
 
+  }
+
+  getStoreProfile() {
+    this.storeService.getProfile().subscribe(result => {
+      this.storeModel = result;
+    }, error => {
+      console.error('Error fetching store profile:', error);
+    });
   }
 
 
@@ -64,17 +80,25 @@ export class CustomerReservationPageComponent implements OnInit {
       this.onTypeChange(); // เรียกครั้งเดียวหลังข้อมูลครบ
     });
   }
+  filterAvailable() {
+    console.log('Filtering available items with:', {
+      searchText: this.searchText,
+      filterType: this.filterType,
+      filterCapacity: this.filterCapacity
+    });
+    this.filteredAvailableList = this.availableList.filter(item => {
+      const textMatch = !this.searchText || (item.name || item.table_number || item.room_number || '').toLowerCase().includes(this.searchText.toLowerCase());
+      const typeMatch = !this.filterType || item.type === this.filterType;
+      const capacityMatch = !this.filterCapacity || item.capacity >= +this.filterCapacity;
+      return textMatch && typeMatch && capacityMatch;
+    });
+  }
 
   onTypeChange() {
-    if (this.tableType === 'tables') {
-      this.availableList = [...this.availableTables];
-    } else if (this.tableType === 'room') {
-      this.availableList = [...this.availableRooms];
-    } else {
-      this.availableList = [...this.availableTables, ...this.availableRooms];
-    }
-    console.log("filter", this.availableList)
+    this.availableList = [...this.availableTables, ...this.availableRooms];
+    this.filterAvailable();
   }
+
 
   onReserve(item: any) {
     this.selectedItem = item;
