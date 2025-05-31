@@ -46,13 +46,33 @@ export class WalkInReservationComponent {
   isLoading = false;
   errorMsg = '';
   tableType = '';
+  filterDate: string = '';
+  maxDate: string = '';
   constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private menuService: MenusService, private roomService: RoomService) {
     this.getMenu()
   }
 
   ngOnInit(): void {
+    this.maxDate = this.getToday();
+    this.filterDate = this.getToday();
     this.getTable();
     this.getReservations();
+  }
+
+  getToday(): string {
+    const now = new Date();
+    return now.toISOString().slice(0, 10);
+  }
+
+  onDateChange() {
+    this.getReservations()
+  }
+
+  clearFilter() {
+    this.filterDate = this.getToday();;
+    this.tableType = '';
+    this.getReservations();
+    this.onTypeChange()
   }
 
   getMenu() {
@@ -74,7 +94,10 @@ export class WalkInReservationComponent {
 
   getReservations() {
     this.isLoading = true;
-    this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations")
+    let params = {
+      start_time: this.filterDate ? this.filterDate : new Date().toISOString().slice(0, 10)
+    }
+    this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations", { params })
       .subscribe({
         next: (result) => {
           this.reservationList = result.filter(e => e.status === 'pending');
@@ -315,6 +338,8 @@ export class WalkInReservationComponent {
   }
 
   onTypeChange() {
+    const date = this.filterDate;
+    const type = this.tableType;
     if (this.tableType === 'tables') {
       this.filteredAvailable = [...this.availableTables];
     } else if (this.tableType === 'room') {
@@ -323,5 +348,6 @@ export class WalkInReservationComponent {
       this.filteredAvailable = [...this.availableTables, ...this.availableRooms];
     }
     console.log("filter", this.filteredAvailable)
+
   }
 }

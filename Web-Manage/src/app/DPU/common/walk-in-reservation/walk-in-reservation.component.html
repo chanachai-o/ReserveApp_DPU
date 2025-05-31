@@ -2,14 +2,26 @@
   [title1]="'บริการหน้าร้าน'"></app-page-header>
 
 <!-- Filter Bar -->
-<div class="box mb-6 rounded-2xl shadow border border-gray-100 dark:border-neutral-800">
-  <div class="box-body p-4 flex flex-wrap gap-4 items-center">
+<div
+  class="box mb-6 rounded-2xl shadow border border-gray-100 dark:border-neutral-800 bg-white dark:bg-neutral-900 rounded-2xl">
+  <div class="box-body p-4 flex flex-1 gap-4 items-center">
+
     <ng-select class="w-52 !rounded-xl !shadow !border-gray-200" [(ngModel)]="tableType" placeholder="ประเภท"
       (change)="onTypeChange()">
       <ng-option value="">ทั้งหมด</ng-option>
       <ng-option value="tables">โต๊ะ</ng-option>
       <ng-option value="room">ห้องประชุม</ng-option>
     </ng-select>
+
+    <!-- Date Filter -->
+    <input type="date"
+      class="border border-gray-200 rounded-xl px-4 py-2 focus:outline-primary transition; !rounded-xl !shadow !border-gray-200"
+      [(ngModel)]="filterDate" (change)="onDateChange()" [max]="maxDate" placeholder="เลือกวันที่">
+
+    <button class="ti-btn ti-btn-light !rounded-xl rounded-xl px-4 py-2 shadow font-medium" (click)="clearFilter()">
+      <i class="ri-close-line"></i> ล้างตัวกรอง
+    </button>
+
   </div>
 </div>
 
