@@ -122,10 +122,8 @@ export class LoginComponent {
         if (result.role == 'manager') {
           this.routes.navigate(['/admin/home'])
         } else if (result.role == 'staff') {
-          this.routes.navigate(['/staff/manage-store'])
-        } else if (result.role == 'chef') {
-          this.routes.navigate(['/chef/manage-store'])
-        } else if (result.role == 'customer') {
+          this.routes.navigate(['/admin/walk-in'])
+        }  else if (result.role == 'customer') {
           this.routes.navigate(['/customer/reservations'])
         }
       } else {

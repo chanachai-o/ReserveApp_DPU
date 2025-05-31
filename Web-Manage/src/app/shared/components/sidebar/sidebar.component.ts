@@ -172,6 +172,21 @@ export class SidebarComponent {
     if (this.isCommonRoute) {
       this.menuitemsSubscribe$ = this.navServices.items.subscribe((items) => {
         this.menuItems = this.navServices.getCommonMenu();
+        if (this.tokenService.getUser().role == 'manager') {
+          this.menuItems.forEach((item: any) => {
+            item.show = true;
+            if (item.children) {
+              item.children.forEach((child: any) => {
+                child.show = true;
+                if (child.children) {
+                  child.children.forEach((subChild: any) => {
+                    subChild.show = true;
+                  });
+                }
+              });
+            }
+          })
+        }
       });
       // if(this.tokenService.getUser().role=='manager'){
       //   this.menuitemsSubscribe$ = this.navServices.items.subscribe((items) => {

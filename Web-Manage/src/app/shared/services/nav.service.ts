@@ -22,6 +22,7 @@ export interface Menu {
   Menusub?: boolean;
   target?: boolean;
   menutype?: string
+  show?: boolean; // ใช้สำหรับการแสดงเมนูในบางกรณี
 }
 
 @Injectable({
@@ -121,21 +122,24 @@ export class NavService implements OnDestroy {
     // { path: '/admin/home', title: 'หน้าแรก', type: 'link' },
     {
       title: 'การจัดการ',
+      show: false,
       type: 'sub',
       children: [
-        { path: '/admin/manage-store', title: 'จัดการร้าน', type: 'link' },
-        { path: '/admin/manage-member', title: 'พนักงาน', type: 'link' },
-        { path: '/admin/manage-customer', title: 'ลูกค้า', type: 'link' },
-        { path: '/admin/manage-menu', title: 'รายการอาหาร', type: 'link' },
+        { path: '/admin/manage-store', title: 'จัดการร้าน', type: 'link', show: false },
+        { path: '/admin/manage-member', title: 'พนักงาน', type: 'link', show: false },
+        { path: '/admin/manage-customer', title: 'ลูกค้า', type: 'link', show: false },
+        { path: '/admin/manage-menu', title: 'รายการอาหาร', type: 'link', show: false },
         {
           path: '/admin/manage-table',
           title: 'โต๊ะอาหาร',
           type: 'link',
+          show: false
         },
         {
           path: '/admin/manage-room',
           title: 'ห้องประชุม',
           type: 'link',
+          show: false
         },
       ],
     },
@@ -143,6 +147,7 @@ export class NavService implements OnDestroy {
       path: '/admin/walk-in',
       title: 'บริการหน้าร้าน',
       type: 'link',
+      show: true
     }
     ]
   }
@@ -151,7 +156,7 @@ export class NavService implements OnDestroy {
     return [
       { headTitle: 'ลูกค้า' },
       // หน้าหลักจองโต๊ะ/ห้อง
-       {
+      {
         icon: 'calendar-check', // ใช้ icon library ที่ใช้อยู่ เช่น RemixIcon, FontAwesome ฯลฯ
         path: '/customer/home-customer',
         title: 'หน้าแรก',

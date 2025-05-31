@@ -102,7 +102,7 @@
               </a>
               }
               <!-- has-Sub -->
-              @if(menuItem.type === 'sub'){
+              @if(menuItem.type === 'sub' && menuItem.show){
 
               <a class="side-menu__item " [routerLink]="menuItem.type ? null: [menuItem.path]"
                 [ngClass]="{active: menuItem.selected}" (click)="toggleNavActive(menuItem)">
@@ -120,7 +120,7 @@
               }
 
               <!-- 2nd Level menu -->
-              @if(menuItem.children){
+              @if(menuItem.children  && menuItem.show){
 
               <ul class="slide-menu child1 {{menuItem.menutype}}" [ngClass]="{ 'active': menuItem.active}" [ngClass]="{
                               'active': menuItem.active,
