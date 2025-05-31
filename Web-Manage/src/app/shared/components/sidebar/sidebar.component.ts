@@ -6,6 +6,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { checkHoriMenu, switcherArrowFn } from './sidebar';
 import { TokenService } from '../../services/token.service';
 import { CompanyModel } from '../../../DPU/models/company.model';
+import { UserProfileModel } from '../../../DPU/models/user.model';
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -13,6 +14,7 @@ import { CompanyModel } from '../../../DPU/models/company.model';
 })
 
 export class SidebarComponent {
+  userModel: UserProfileModel = new UserProfileModel(this.tokenService.getUser())
   localStorage: any;
   // Addding sticky-pin
   scrolled = false;

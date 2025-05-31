@@ -16,18 +16,18 @@
           </svg>
         </div>
         <ul class="main-menu">
-          <div class="box custom-box mx-2" *ngIf="isCustomerRoute">
+          <div class="box custom-box mx-2">
             <div class="box-body">
               <div class="flex items-center flex-wrap gap-2">
                 <span
                   class="avatar avatar-xl bg-white dark:bg-bodybg shadow-sm border dark:border-defaultborder/10 p-2 !rounded-full">
-                  <img [src]="tokenService.getSelectCompany().getPicture()" alt="">
+                  <img [src]="userModel.getPicture()" alt="">
                 </span>
                 <div class="ms-2">
-                  <h5 class="font-semibold mb-0 flex items-center"><a>{{tokenService.getSelectCompany().project_name}}
+                  <h5 class="font-semibold mb-0 flex items-center"><a>{{userModel.name}}
                       <i class="bi bi-check-circle-fill text-success text-base" title="Verified company"></i></a></h5>
                   <div class="flex gap-2">
-                    <p class="mb-0 text-[#8c9097] dark:text-white/50">{{tokenService.getSelectCompany().project_code}}
+                    <p class="mb-0 text-[#8c9097] dark:text-white/50">{{userModel.role}}
                     </p>
                   </div>
                 </div>
