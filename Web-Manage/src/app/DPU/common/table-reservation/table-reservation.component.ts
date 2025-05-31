@@ -25,6 +25,7 @@ export class TableReservationComponent implements OnInit, OnChanges {
     table_id: [0],
     room_id: [0],
     status: ['pending'],
+    note: ['']
   });
 
   constructor(private fb: FormBuilder) { }

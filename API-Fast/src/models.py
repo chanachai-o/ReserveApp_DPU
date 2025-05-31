@@ -86,6 +86,9 @@ class Reservation(Base):
     end_time = Column(DateTime(timezone=True), server_default=func.now())
     num_people = Column(Integer, nullable=False)
     status = Column(Enum(ReservationStatus), default=ReservationStatus.pending)
+    note = Column(Text, nullable=True)  # หมายเหตุเพิ่มเติมจากลูกค้า
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())
 
     user = relationship("User", back_populates="reservations")
     table = relationship("Table", back_populates="reservations")

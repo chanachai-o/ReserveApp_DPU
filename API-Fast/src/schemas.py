@@ -97,6 +97,7 @@ class RoomOut(RoomBase):
     status: RoomStatus
     picture: Optional[str]
     
+    
     class Config:
         from_attributes = True
 
@@ -112,11 +113,13 @@ class ReservationCreate(ReservationBase):
     table_id: Optional[int] = None
     room_id: Optional[int] = None
     status: ReservationStatus = None
+    note: Optional[str] = None
 
 class ReservationUpdate(ReservationBase):
     table_id: Optional[int]
     room_id: Optional[int]
     status: Optional[Literal["pending", "checked_in", "completed", "cancelled", "checked_out", "no_show"]]
+    note: Optional[str] = None
 
 
 # Menu schemas

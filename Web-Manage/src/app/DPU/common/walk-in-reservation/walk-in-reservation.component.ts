@@ -136,21 +136,32 @@ export class WalkInReservationComponent {
     console.log('API', item);
     item.status = 'pending'
     item.end_time = item.start_time
-    this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
-      console.log(result)
-      if (item['table_id']) {
-        this.tableService.reserve(item.table_id).subscribe(result => {
-          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-          this.ngOnInit()
-        })
-      }
-      else {
-        this.roomService.reserve(item.room_id).subscribe(result => {
-          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-          this.ngOnInit()
-        })
-      }
+    swal({
+      title: "Are you sure?",
+      text: "คุณต้องการบันทึกการจองนี้หรือไม่?",
+      icon: "info",
+      buttons: ["Cancel", "Yes, Delete it!"],
     })
+      .then((willDelete: any) => {
+        if (willDelete) {
+          this.reserveService.createReservation(item).subscribe(result => {
+            console.log(result)
+            if (item['table_id']) {
+              this.tableService.reserve(item.table_id).subscribe(result => {
+                swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+                this.ngOnInit()
+              })
+            }
+            else {
+              this.roomService.reserve(item.room_id).subscribe(result => {
+                swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+                this.ngOnInit()
+              })
+            }
+          })
+        }
+      });
+
   }
 
   checkInTable(item: any) {

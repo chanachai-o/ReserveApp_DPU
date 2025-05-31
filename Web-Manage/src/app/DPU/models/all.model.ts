@@ -92,6 +92,7 @@ export interface Room {
   equipment?: string | null;
   status: RoomStatus;
   picture?: string | null;
+  getPicture(): string;
 
 }
 export class RoomModel extends BaseModel implements Room {

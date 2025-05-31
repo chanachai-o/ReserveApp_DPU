@@ -1,41 +1,57 @@
-<div class="reservation-card">
-  <div class="w-16 h-16 rounded-lg overflow-hidden border bg-gray-100 dark:bg-neutral-800 flex items-center justify-center">
+<div class="reservation-card flex gap-4 p-4 rounded-2xl shadow bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 transition hover:shadow-lg hover:-translate-y-1 duration-200">
+  <!-- รูปภาพ/Avatar -->
+  <div class="w-16 h-16 rounded-xl overflow-hidden border bg-gray-100 dark:bg-neutral-800 flex items-center justify-center shadow-sm">
     <img *ngIf="reservation.table?.picture || reservation.room?.picture"
-         [src]="reservation.table?.picture ? reservation.table?.picture : reservation.room?.picture"
-         class="object-cover w-full h-full" alt="จอง">
+         [src]="reservation.table?.picture ? reservation.table?.getPicture() : reservation.room?.getPicture()"
+         class="object-cover w-full h-full" alt="จอง" />
     <i *ngIf="!reservation.table?.picture && !reservation.room?.picture" class="ri-image-line text-3xl text-gray-300"></i>
   </div>
-  <div class="flex-1 flex flex-col gap-1">
-    <div class="flex gap-2 flex-wrap items-center mb-1">
-      <span class="badge bg-blue-100 text-blue-700" *ngIf="reservation.table">
-        โต๊ะ {{ reservation.table.table_number }}
+  <!-- Content -->
+  <div class="flex-1 flex flex-col justify-between gap-1 min-w-0">
+    <!-- ชื่อ/สถานะ -->
+    <div class="flex flex-wrap items-center gap-2 mb-1">
+      <span *ngIf="reservation.table" class="badge bg-blue-50 text-blue-700 px-2 py-1 rounded shadow-sm">
+        <i class="ri-table-fill mr-1"></i> โต๊ะ {{ reservation.table.table_number }}
       </span>
-      <span class="badge bg-amber-100 text-amber-700" *ngIf="reservation.room">
-        ห้อง {{ reservation.room.name }}
+      <span *ngIf="reservation.room" class="badge bg-amber-100 text-amber-700 px-2 py-1 rounded shadow-sm">
+        <i class="ri-door-lock-fill mr-1"></i> ห้อง {{ reservation.room.name }}
       </span>
-      <span class="badge px-2" [ngClass]="{
-        'bg-primary/10 text-primary': reservation.status === 'pending',
-        'bg-green-50 text-green-600': reservation.status === 'checked_in',
-        'bg-gray-200 text-gray-400': reservation.status === 'completed',
-        'bg-rose-100 text-rose-500': reservation.status === 'cancelled'
-      }">{{ getStatusLabel(reservation.status) }}</span>
+      <span class="badge px-2 py-1 rounded shadow-sm text-xs"
+            [ngClass]="{
+              'bg-primary/10 text-primary': reservation.status === 'pending',
+              'bg-green-100 text-green-700': reservation.status === 'checked_in',
+              'bg-gray-200 text-gray-400': reservation.status === 'completed',
+              'bg-rose-100 text-rose-500': reservation.status === 'cancelled'
+            }">
+        {{ getStatusLabel(reservation.status) }}
+      </span>
     </div>
+    <!-- เวลาและจำนวนคน -->
     <div class="text-xs text-gray-600 dark:text-gray-200 flex flex-wrap gap-3">
       <span><i class="ri-time-line mr-1"></i>{{ reservation.start_time | date: 'short' }}</span>
       <span><i class="ri-user-fill mr-1"></i>{{ reservation.num_people }} คน</span>
     </div>
-    <div class="text-xs text-gray-500 italic" *ngIf="reservation.note">
+    <!-- หมายเหตุ -->
+    <div class="text-xs text-gray-500 italic truncate max-w-full" *ngIf="reservation.note">
       <i class="ri-information-line"></i> {{ reservation.note }}
     </div>
-    <div class="flex gap-2 mt-2">
-      <button *ngIf="reservation.status === 'pending'" class="ti-btn ti-btn-danger ti-btn-xs" (click)="cancel.emit(reservation)">
+    <!-- Action ปุ่ม -->
+    <div class="flex flex-wrap gap-2 mt-3">
+      <button *ngIf="reservation.status === 'pending'" class="ti-btn ti-btn-warning ti-btn-xs"
+              (click)="preorder.emit(reservation)">
+        <i class="ri-restaurant-2-line"></i> สั่งอาหารล่วงหน้า
+      </button>
+      <button *ngIf="reservation.status === 'pending'" class="ti-btn ti-btn-danger ti-btn-xs"
+              (click)="cancel.emit(reservation)">
         <i class="ri-close-line"></i> ยกเลิก
       </button>
-      <button *ngIf="reservation.status === 'checked_in'" class="ti-btn ti-btn-primary ti-btn-xs" (click)="order.emit(reservation)">
+      <button *ngIf="reservation.status === 'checked_in'" class="ti-btn ti-btn-primary ti-btn-xs"
+              (click)="order.emit(reservation)">
         <i class="ri-restaurant-2-line"></i> สั่งอาหาร
       </button>
-      <button *ngIf="reservation.status === 'checked_in' || reservation.status === 'completed'" class="ti-btn ti-btn-success ti-btn-xs" (click)="viewBill.emit(reservation)">
-        <i class="ri-bill-line"></i> ดูบิล
+      <button *ngIf="reservation.status === 'checked_in' || reservation.status === 'completed'" class="ti-btn ti-btn-success ti-btn-xs"
+              (click)="viewBill.emit(reservation)">
+        <i class="ri-bill-line"></i> {{ reservation.status === 'checked_in' ? 'ชำระเงิน' : 'ดูบิล' }}
       </button>
     </div>
   </div>
