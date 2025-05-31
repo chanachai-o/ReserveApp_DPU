@@ -55,7 +55,7 @@ export class CustomerReservationPageComponent implements OnInit {
   }
 
   getReserved() {
-    this.reserveService.getReservations({ user :this.tokenService.getUser().id , status : 'pending' }).subscribe(result => {
+    this.reserveService.getReservations({ user: this.tokenService.getUser().id, status: 'pending' }).subscribe(result => {
       this.reservationList = result
     })
 
@@ -109,23 +109,34 @@ export class CustomerReservationPageComponent implements OnInit {
     console.log('API', item);
     item.status = 'pending'
     item.end_time = item.start_time
-    this.reserveService.createReservation(item).subscribe(result => {
-      console.log(result);
-      if (item['table_id']) {
-        this.tableService.reserve(item.table_id).subscribe(() => {
-          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-          this.ngOnInit();
-        });
-      } else {
-        this.roomService.reserve(item.room_id).subscribe(() => {
-          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-          this.ngOnInit();
-        });
-      }
-    }, error => {
-      console.error('Error creating reservation:', error);
-      swal("Error", "ไม่สามารถบันทึกข้อมูลได้", "error");
-    });
+    swal({
+      title: "Are you sure?",
+      text: "คุณต้องการบันทึกการจองนี้หรือไม่?",
+      icon: "info",
+      buttons: ["Cancel", "Yes, Save it!"],
+    })
+      .then((willDelete: any) => {
+        if (willDelete) {
+          this.reserveService.createReservation(item).subscribe(result => {
+            console.log(result);
+            if (item['table_id']) {
+              this.tableService.reserve(item.table_id).subscribe(() => {
+                swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+                this.ngOnInit();
+              });
+            } else {
+              this.roomService.reserve(item.room_id).subscribe(() => {
+                swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+                this.ngOnInit();
+              });
+            }
+          }, error => {
+            console.error('Error creating reservation:', error);
+            swal("Error", "ไม่สามารถบันทึกข้อมูลได้", "error");
+          });
+        }
+      });
+
 
     // this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
     //   console.log(result)
@@ -144,9 +155,40 @@ export class CustomerReservationPageComponent implements OnInit {
     // })
   }
 
-  onCancel(res: any) {
-    // ยกเลิกจอง
+  onCancel(item: any) {
+    console.log(item);
+    item.end_time = item.start_time;
+    item.status = 'cancelled';
+    swal({
+      title: "Are you sure?",
+      text: "คุณต้องการยกเลิกการจองนี้หรือไม่?",
+      icon: "warning",
+      dangerMode: true,
+      buttons: ["Cancel", "Yes, Delete it!"],
+    })
+      .then((willDelete: any) => {
+        if (willDelete) {
+          this.reserveService.cancelReservation(item.id).subscribe(result => {
+            console.log(result);
+            // เช็คว่าเป็นการจองโต๊ะหรือห้อง เพื่อยกเลิกสถานะ
+            if (item.table_id) {
+              this.tableService.cancelReseave(item.table_id).subscribe(_ => {
+                swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+                this.ngOnInit();
+              });
+            } else if (item.room_id) {
+              this.roomService.cancelReseave(item.room_id).subscribe(_ => {
+                swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+                this.ngOnInit();
+              });
+            } else {
+              swal("Error", "ไม่พบข้อมูลโต๊ะหรือห้อง", "error");
+            }
+          });
+        }
+      });
   }
+
   onOrder(res: any) {
     this.selectedOrderRes = res;
     this.showOrderModal = true;

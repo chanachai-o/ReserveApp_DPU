@@ -204,23 +204,34 @@ export class WalkInReservationComponent {
     item.end_time = item.start_time;
     item.status = 'cancelled';
 
-    this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
-      console.log(result);
-      // เช็คว่าเป็นการจองโต๊ะหรือห้อง เพื่อยกเลิกสถานะ
-      if (item.table_id) {
-        this.tableService.cancelReseave(item.table_id).subscribe(_ => {
-          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-          this.ngOnInit();
-        });
-      } else if (item.room_id) {
-        this.roomService.cancelReseave(item.room_id).subscribe(_ => {
-          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-          this.ngOnInit();
-        });
-      } else {
-        swal("Error", "ไม่พบข้อมูลโต๊ะหรือห้อง", "error");
-      }
-    });
+    swal({
+      title: "Are you sure?",
+      text: "คุณต้องการยกเลิกการจองนี้หรือไม่?",
+      icon: "warning",
+      dangerMode: true,
+      buttons: ["Cancel", "Yes, Delete it!"],
+    })
+      .then((willDelete: any) => {
+        if (willDelete) {
+          this.reserveService.cancelReservation(item.id).subscribe(result => {
+            console.log(result);
+            // เช็คว่าเป็นการจองโต๊ะหรือห้อง เพื่อยกเลิกสถานะ
+            if (item.table_id) {
+              this.tableService.cancelReseave(item.table_id).subscribe(_ => {
+                swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+                this.ngOnInit();
+              });
+            } else if (item.room_id) {
+              this.roomService.cancelReseave(item.room_id).subscribe(_ => {
+                swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+                this.ngOnInit();
+              });
+            } else {
+              swal("Error", "ไม่พบข้อมูลโต๊ะหรือห้อง", "error");
+            }
+          });
+        }
+      });
   }
 
   onCloseTable(item: any) {
