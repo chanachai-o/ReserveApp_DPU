@@ -3,16 +3,6 @@ export class LoginModel {
   public password: string = "";
 }
 
-
-export class UserModel {
-  phone: string;
-  name: string;
-  hashed_password: string;
-  id: number;
-  role: string;
-  is_active: boolean;
-}
-
 export interface ProfileModel {
   phone: string;
   name: string;

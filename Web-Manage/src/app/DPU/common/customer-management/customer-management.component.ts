@@ -176,7 +176,6 @@ export class CustomerManagementComponent implements OnInit {
       .then((willDelete: any) => {
         if (willDelete) {
           if (this.action == 'add') {
-            this.selectModel.role = 'customer'
             this.userService.save(this.selectModel).subscribe(result => {
               console.log(result)
               swal("Save Success!!", "บันทึกข้อมูลสมาชิก", "success");

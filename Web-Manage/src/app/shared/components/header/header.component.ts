@@ -2,7 +2,6 @@ import { Component, ElementRef, Renderer2 } from '@angular/core';
 import { Menu, NavService } from '../../services/nav.service';
 import { TokenService } from '../../services/token.service';
 import { TranslateService } from '@ngx-translate/core';
-import { UserModel } from '../../user-auth.model';
 import { UserProfileModel } from '../../../DPU/models/user.model';
 interface Item {
   id: number;

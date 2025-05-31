@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { ReservationModel } from '../../../models/all.model';
 
 @Component({
   selector: 'app-customer-card',
@@ -9,12 +10,12 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./customer-card.component.scss']
 })
 export class CustomerCardComponent {
-  @Input() occupied: any; // หรือใช้ interface ที่เหมาะสม
+  @Input() occupied: ReservationModel; // หรือใช้ interface ที่เหมาะสม
   @Input() customer: any; // ข้อมูลลูกค้า หรือ null
   @Input() currentOrder: any; // ข้อมูลออเดอร์ปัจจุบัน (optional)
 
-  @Output() order = new EventEmitter<number>();
-  @Output() bill = new EventEmitter<number>();
+  @Output() order = new EventEmitter<ReservationModel>();
+  @Output() bill = new EventEmitter<ReservationModel>();
   @Output() closeTable = new EventEmitter<number>();
 
   onOrder() {
@@ -24,7 +25,7 @@ export class CustomerCardComponent {
     this.bill.emit(this.occupied);
   }
   onClose() {
-    this.closeTable.emit(this.occupied);
+    this.closeTable.emit(this.occupied.id);
   }
 
   getStayDuration(startTime: string): string {

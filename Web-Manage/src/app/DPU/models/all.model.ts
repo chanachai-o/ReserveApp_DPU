@@ -1,4 +1,5 @@
 import { environment } from "../../../environments/environment";
+import { UserProfileModel } from "./user.model";
 
 // ========== ENUM + Utility ==========
 export enum UserRole {
@@ -29,33 +30,6 @@ export class BaseModel {
 }
 
 // ========== USER ==========
-export interface UserProfileModel {
-  id: number;
-  name: string;
-  phone: string;
-  role: UserRole;
-  is_active: boolean;
-  picture?: string | null;
-}
-export class UserProfile extends BaseModel implements UserProfileModel {
-  id = 0;
-  name = '';
-  phone = '';
-  role = UserRole.Customer;
-  is_active = true;
-  picture?: string | null = null;
-
-  constructor(data: Partial<UserProfileModel> = {}) {
-    super(data);
-  }
-
-  getPicture(): string {
-    return this.picture ? environment.baseUrl + '/images/' + this.picture : './assets/images/faces/111.jpg';
-  }
-  get roleLabel(): string {
-    return UserRoleLabel[this.role] || this.role;
-  }
-}
 
 // ========== TABLE/ROOM ==========
 export interface Table {
@@ -351,7 +325,7 @@ export class ReservationModel extends BaseModel implements ReservationDetailMode
   num_people = 0;
   status = ReservationStatus.Pending;
   note?: string | null = '';
-  user: UserProfileModel = new UserProfile();
+  user: UserProfileModel = new UserProfileModel();
   table?: Table = undefined;
   room?: Room = undefined;
   orders: Order[] = [];
@@ -368,7 +342,7 @@ export class ReservationModel extends BaseModel implements ReservationDetailMode
     this.status = data.status || ReservationStatus.Pending;
     this.note = data.note || '';
 
-    this.user = data.user ? new UserProfile(data.user) : new UserProfile();
+    this.user = data.user ? new UserProfileModel(data.user) : new UserProfileModel();
     this.table = data.table ? new TableModel(data.table) : undefined;
     this.room = data.room ? new RoomModel(data.room) : undefined;
     this.orders = data.orders ? data.orders.map(o => new OrderModel(o)) : [];

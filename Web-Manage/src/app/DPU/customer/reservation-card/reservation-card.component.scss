@@ -1,3 +1,20 @@
 .reservation-card {
-  @apply bg-white dark:bg-neutral-900 shadow-md rounded-xl border border-gray-100 dark:border-neutral-800 p-5 flex gap-5 mb-4;
+  transition: box-shadow 0.2s, transform 0.2s;
+  &:hover {
+    box-shadow: 0 4px 16px 0 rgba(56, 189, 248, 0.07);
+    transform: translateY(-2px) scale(1.01);
+  }
+  .badge {
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .ti-btn-xs {
+    font-size: 0.88rem;
+    padding: 0.33rem 1rem;
+    border-radius: 1rem;
+  }
+  img, .ri-image-line {
+    border-radius: 0.8rem;
+  }
 }

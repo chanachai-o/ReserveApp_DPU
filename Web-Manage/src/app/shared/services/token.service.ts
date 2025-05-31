@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { jwtDecode } from "jwt-decode";
-import { ProfileModel, UserModel } from "../user-auth.model";
 import { UserProfileModel } from "../../DPU/models/user.model";
 import { CompanyModel } from "../../DPU/models/company.model";
 import { ProjectModel } from "../../DPU/models/project.model";
@@ -26,7 +25,7 @@ export class TokenService {
     this.router.navigate(["/"]);
   }
 
-  public saveToken(token: UserModel): void {
+  public saveToken(token: UserProfileModel): void {
     window.localStorage.removeItem(TOKEN_KEY);
     window.localStorage.setItem(TOKEN_KEY, JSON.stringify(token));
 
@@ -36,13 +35,13 @@ export class TokenService {
     }
   }
 
-  public getUser(): UserModel {
+  public getUser(): UserProfileModel {
     const user = window.localStorage.getItem(USER_KEY);
     if (user) {
       return JSON.parse(user);
     }
 
-    return new UserModel();
+    return new UserProfileModel();
   }
 
   public getToken(): string | null {

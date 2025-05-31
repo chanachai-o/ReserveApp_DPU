@@ -55,7 +55,7 @@ export class CustomerReservationPageComponent implements OnInit {
   }
 
   getReserved() {
-    this.reserveService.getReservations({ user: this.tokenService.getUser().id, status: 'pending' }).subscribe(result => {
+    this.reserveService.getReservations({ user: this.tokenService.getUser().id}).subscribe(result => {
       this.reservationList = result
     })
 
