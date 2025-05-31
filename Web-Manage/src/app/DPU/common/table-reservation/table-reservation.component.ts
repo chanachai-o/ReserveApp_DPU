@@ -24,10 +24,11 @@ export class TableReservationComponent implements OnInit, OnChanges {
   @Input() userId?: number;
   @Input() status: string = 'pending';
   @Input() type?: string
+  @Input() phone?: string;
   @Output() reserve = new EventEmitter<ReserveTableModel>();
-
+  minDateTime: string;
   form = this.fb.group({
-    start_time: ['', Validators.required],
+    start_time: [this.getCurrentLocalDateTime(), Validators.required],
     num_people: [1, [Validators.required, Validators.min(1)]],
     user_id: [0],
     phone: [''],
@@ -39,11 +40,25 @@ export class TableReservationComponent implements OnInit, OnChanges {
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
+    this.minDateTime = this.getCurrentLocalDateTime();
     // set default from @Input on load
     if (this.tableId) this.form.patchValue({ table_id: this.tableId });
     if (this.roomId) this.form.patchValue({ room_id: this.roomId });
     if (this.userId) this.form.patchValue({ user_id: this.userId });
     if (this.status) this.form.patchValue({ status: this.status });
+    if (this.phone) this.form.patchValue({ phone: this.phone });
+  }
+
+  getCurrentLocalDateTime(): string {
+    const now = new Date();
+    // แปลงเป็น local ISO format 'YYYY-MM-DDTHH:mm'
+    const pad = (n: number) => n < 10 ? '0' + n : n;
+    const yyyy = now.getFullYear();
+    const mm = pad(now.getMonth() + 1);
+    const dd = pad(now.getDate());
+    const hh = pad(now.getHours());
+    const min = pad(now.getMinutes());
+    return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -65,6 +80,9 @@ export class TableReservationComponent implements OnInit, OnChanges {
     if (changes['type'] && changes['type'].currentValue) {
       this.type = changes['type'].currentValue;
     }
+    if (changes['phone'] && changes['phone'].currentValue) {
+      this.form.patchValue({ phone: changes['phone'].currentValue });
+    }
   }
 
   submit() {
@@ -73,9 +91,9 @@ export class TableReservationComponent implements OnInit, OnChanges {
     if (this.form.valid) {
       // ตัดค่าที่ไม่ได้เลือกออก เช่น ถ้าไม่มี table_id ก็ไม่ต้องส่ง, เอาเฉพาะ field ที่จำเป็น
       const value = { ...this.form.value };
-      if(this.type=='room'){
+      if (this.type == 'room') {
         delete value.table_id;
-      }else{
+      } else {
         delete value.room_id;
       }
       this.reserve.emit(value as ReserveTableModel);

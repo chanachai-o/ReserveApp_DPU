@@ -3,7 +3,7 @@
   <div class="flex flex-col gap-2">
     <label class="block font-semibold text-gray-700 dark:text-gray-200">เริ่มใช้{{ type==='room' ? 'ห้อง' : 'โต๊ะ'
       }}</label>
-    <input type="datetime-local" formControlName="start_time"
+    <input type="datetime-local" formControlName="start_time"  [min]="minDateTime"
       class="form-control !rounded-md !bg-gray-50 dark:!bg-neutral-800"
       [ngClass]="{'border-red-500': form.get('start_time')?.invalid && form.get('start_time')?.touched}" required />
     <div *ngIf="form.get('start_time')?.invalid && form.get('start_time')?.touched" class="text-xs text-red-500">
@@ -23,8 +23,7 @@
   </div>
 
   <div class="flex flex-col gap-2">
-    <label class="block font-semibold text-gray-700 dark:text-gray-200">เบอร์โทรลูกค้า <span
-        class="text-xs text-gray-400">(ถ้ามี)</span></label>
+    <label class="block font-semibold text-gray-700 dark:text-gray-200">เบอร์โทรลูกค้า</label>
     <input type="text" formControlName="phone" class="form-control !rounded-md !bg-gray-50 dark:!bg-neutral-800"
       placeholder="เช่น 089-xxx-xxxx" autocomplete="tel" />
   </div>

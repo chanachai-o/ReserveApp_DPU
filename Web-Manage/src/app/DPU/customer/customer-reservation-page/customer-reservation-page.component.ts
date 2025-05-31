@@ -17,7 +17,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { TableReservationModalComponent } from '../table-reservation-modal/table-reservation-modal.component';
 import { OrderFoodModalComponent } from '../order-food-modal/order-food-modal.component';
 import { StoreProfileService } from '../../services/store-profile.service';
-
+import swal from 'sweetalert';
 @Component({
   selector: 'app-customer-reservation-page',
   templateUrl: './customer-reservation-page.component.html',
@@ -104,10 +104,28 @@ export class CustomerReservationPageComponent implements OnInit {
     this.selectedItem = item;
     this.showReserveModal = true;
   }
-  handleReserved(e: any) {
+  handleReserved(item: any) {
     this.showReserveModal = false;
-    // reload data
+    console.log('API', item);
+    item.status = 'pending'
+    item.end_time = item.start_time
+    this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
+      console.log(result)
+      if (item['table_id']) {
+        this.tableService.reseave(item.table_id).subscribe(result => {
+          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+          this.ngOnInit()
+        })
+      }
+      else {
+        this.roomService.reseave(item.room_id).subscribe(result => {
+          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+          this.ngOnInit()
+        })
+      }
+    })
   }
+
   onCancel(res: any) {
     // ยกเลิกจอง
   }

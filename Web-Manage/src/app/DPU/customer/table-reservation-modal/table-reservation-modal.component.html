@@ -2,10 +2,10 @@
   <div class="bg-white dark:bg-neutral-900 rounded-2xl p-8 max-w-lg w-full shadow-lg border;">
     <h3 class="mb-2">จอง{{ item?.type === 'room' ? 'ห้อง' : 'โต๊ะ' }}</h3>
     <app-table-reservation [tableId]="item?.type === 'table' ? item?.id : 0"
-                          [roomId]="item?.type === 'room' ? item?.id : 0"
-                          [type]="item?.type"
-                          (reserve)="reserved.emit($event)">
+      [roomId]="item?.type === 'room' ? item?.id : 0" [type]="item?.type" (reserve)="reserved.emit($event)" [phone]="phone">
     </app-table-reservation>
     <button (click)="closed.emit()" class="mt-2 ti-btn ti-btn-light">ปิด</button>
   </div>
+
 </div>
+

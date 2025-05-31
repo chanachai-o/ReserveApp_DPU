@@ -1,6 +1,7 @@
-from fastapi import FastAPI, APIRouter, Depends, HTTPException, status
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, status,Query
 from fastapi.staticfiles import StaticFiles
 from typing import List, Optional
+from datetime import datetime
 import os
 import logging
 from .routes import file_upload_router
@@ -280,7 +281,15 @@ async def quick_change_room_status(
 reservations_router = APIRouter(prefix="/reservations", tags=["Reservations"])
 
 @reservations_router.get("/", response_model=List[ReservationOut])
-async def get_reservations(user: Optional[int] = None, db: AsyncSession = Depends(get_db)):
+async def get_reservations(
+    user: Optional[int] = None,
+    status: Optional[str] = None,
+    table_id: Optional[int] = None,
+    room_id: Optional[int] = None,
+    start_time: Optional[datetime] = Query(None, description="จองหลังจาก (start_time)"),
+    end_time: Optional[datetime] = Query(None, description="จองก่อนถึง (end_time)"),
+    db: AsyncSession = Depends(get_db)
+):
     stmt = (
         select(Reservation)
         .options(
@@ -291,10 +300,21 @@ async def get_reservations(user: Optional[int] = None, db: AsyncSession = Depend
             selectinload(Reservation.orders).selectinload(Order.payments),
         )
     )
-    # ===== เพิ่ม filter user_id ถ้ามี =====
+
+    # ===== เพิ่ม Filter ตาม param ที่ส่งมา =====
     if user:
         stmt = stmt.where(Reservation.user_id == user)
-    # ====================================
+    if status:
+        stmt = stmt.where(Reservation.status == status)
+    if table_id:
+        stmt = stmt.where(Reservation.table_id == table_id)
+    if room_id:
+        stmt = stmt.where(Reservation.room_id == room_id)
+    if start_time:
+        stmt = stmt.where(Reservation.start_time >= start_time)
+    if end_time:
+        stmt = stmt.where(Reservation.end_time <= end_time)
+    # ============================================
 
     result = await db.execute(stmt)
     reservations = result.scalars().all()
@@ -306,7 +326,6 @@ async def get_reservations(user: Optional[int] = None, db: AsyncSession = Depend
         for o in r.orders:
             if o.payments:
                 payments.extend(o.payments)
-        # แปลง reservation เป็น dict แล้วแปะ payments
         r_dict = ReservationOut.from_orm(r).dict()
         r_dict['payments'] = [PaymentOut.from_orm(p) for p in payments] if payments else None
         reservation_out_list.append(r_dict)
