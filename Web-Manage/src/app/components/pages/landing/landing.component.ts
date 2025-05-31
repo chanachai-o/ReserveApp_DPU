@@ -11,6 +11,7 @@ import { RoomModel } from '../../../DPU/models/menus.model';
 import { MenusService } from '../../../DPU/services/menu.service';
 import { RoomService } from '../../../DPU/services/room.service';
 import { MenusModel } from '../../../DPU/models/all.model';
+import { StoreProfile, StoreProfileService } from '../../../DPU/services/store-profile.service';
 
 export interface PhotosApi {
   albumId?: number;
@@ -32,11 +33,13 @@ export class LandingComponent {
   menuList: MenusModel[] = []
   roomList: RoomModel[] = []
   body: HTMLBodyElement | null;
+  storeModel: StoreProfile | null = null;
   constructor(
     @Inject(DOCUMENT) private document: Document, private elementRef: ElementRef,
     private renderer: Renderer2, private el: ElementRef,
     private menuService: MenusService,
-    private roomService: RoomService
+    private roomService: RoomService,
+    private storeService: StoreProfileService
 
   ) {
     this.body = document.querySelector('body');
@@ -50,6 +53,9 @@ export class LandingComponent {
   }
 
   ngOnInit(): void {
+    this.storeService.getProfile().subscribe(result => {
+      this.storeModel = result;
+    });
     this.menuService.getLists().subscribe(result => {
       this.menuList = result
     })

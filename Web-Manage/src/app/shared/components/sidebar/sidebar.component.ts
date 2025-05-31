@@ -7,6 +7,7 @@ import { checkHoriMenu, switcherArrowFn } from './sidebar';
 import { TokenService } from '../../services/token.service';
 import { CompanyModel } from '../../../DPU/models/company.model';
 import { UserProfileModel } from '../../../DPU/models/user.model';
+import { StoreProfile, StoreProfileService } from '../../../DPU/services/store-profile.service';
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -70,20 +71,24 @@ export class SidebarComponent {
   isCustomerRoute: boolean = false;
   previousUrl: string = '';
   currentUrl: string = '';
+  storeModel: StoreProfile = new StoreProfile();
   constructor(
     private navServices: NavService,
     private sanitizer: DomSanitizer,
     public router: Router,
     public renderer: Renderer2,
     private elementRef: ElementRef,
-    public tokenService: TokenService
+    public tokenService: TokenService,
+    public storeService: StoreProfileService
   ) {
     // this.companyModel = new CompanyModel(this.tokenService.getSelectCompany())
     this.screenWidth = window.innerWidth;
   }
 
   ngOnInit() {
-
+    this.storeService.getProfile().subscribe(result => {
+      this.storeModel = result;
+    });
     let bodyElement: any = document.querySelector('.main-content');
 
     bodyElement.onclick = () => {

@@ -13,8 +13,8 @@
         <div class="header-element">
           <div class="horizontal-logo">
             <a class="header-logo">
-              <img src="./assets/images/brand-logos/logo.jpg" alt="logo" class="toggle-logo">
-              <img src="./assets/images/brand-logos/logo.jpg" alt="logo" class="toggle-dark">
+              <img [src]="storeModel?.getPicture()" alt="logo" class="toggle-logo">
+              <img [src]="storeModel?.getPicture()" alt="logo" class="toggle-dark">
             </a>
           </div>
         </div>
@@ -70,10 +70,8 @@
         <nav class="main-menu-container nav nav-pills flex-column sub-open">
           <div class="landing-logo-container my-auto hidden lg:block">
             <div class="responsive-logo">
-              <a class="responsive-logo-light" aria-label="Brand"><img src="./assets/images/brand-logos/logo.jpg"
-                  style="max-width: 150px;" alt="logo" class="mx-auto"></a>
-              <a class="responsive-logo-dark" aria-label="Brand"><img src="./assets/images/brand-logos/logo.jpg"
-                  style="max-width: 150px;" alt="logo" class="mx-auto"></a>
+              <a class="responsive-logo-light" aria-label="Brand"> <img [src]="storeModel?.getPicture()" alt="logo" class="mx-auto mb-2 rounded-full shadow" width="75px" /></a>
+              <a class="responsive-logo-dark" aria-label="Brand"><img [src]="storeModel?.getPicture()" alt="logo" class="mx-auto mb-2 rounded-full shadow" width="75px" /></a>
             </div>
           </div>
           <div class="slide-left hidden" id="slide-left"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191"
@@ -153,7 +151,7 @@
               <div>
                 <h1 class="text-4xl md:text-5xl font-bold mb-4 text-white drop-shadow">ระบบจองโต๊ะ & ห้องประชุม</h1>
                 <p class="mb-6 text-gray-600 text-lg">
-                  <span class="font-semibold text-secondary">DPU Cafe</span> – สั่งอาหารล่วงหน้า
+                  <span class="font-semibold text-secondary">{{storeModel?.name}}</span> – สั่งอาหารล่วงหน้า
                   จองโต๊ะ-ห้องประชุมออนไลน์ <br />
                   พร้อมระบบจัดการหลังร้านครบวงจร
                 </p>
@@ -269,22 +267,21 @@
             <div class="bg-white shadow rounded-xl p-6 text-left">
               <div class="flex items-center gap-3 mb-2">
                 <i class="ri-map-pin-line text-xl text-secondary"></i>
-                <span>123 ถนนบางเขน กรุงเทพฯ</span>
+                <span>{{storeModel?.address}}</span>
               </div>
               <div class="flex items-center gap-3 mb-2">
                 <i class="ri-phone-line text-xl text-green-600"></i>
-                <span>02-xxx-xxxx</span>
+                <span>{{storeModel?.phone}}</span>
               </div>
               <div class="flex items-center gap-3">
-                <i class="ri-mail-line text-xl text-primary"></i>
-                <span>ทดสอบ</span>
+                <i class="ri-timer-line text-xl text-primary"></i>
+                <span>{{storeModel?.open_time +'-'+storeModel?.close_time }}</span>
               </div>
             </div>
           </div>
           <div class="flex-1">
-            <iframe title="map"
-              src="https://maps.google.com/maps?q=dpu%20university&t=&z=15&ie=UTF8&iwloc=&output=embed" height="230"
-              class="w-full rounded-xl shadow border"></iframe>
+            <img [src]="storeModel?.getLayout()" alt="Contact Us"
+              class="rounded-lg shadow-md w-full h-64 object-cover">
           </div>
         </div>
 

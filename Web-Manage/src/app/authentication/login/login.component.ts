@@ -1,6 +1,6 @@
 import { Component, ElementRef, Inject, Renderer2 } from '@angular/core';
 // import { AuthService } from 'src/app/shared/services/auth.service';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule ,Validators  } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { CarouselModule, OwlOptions, SlidesOutputData } from 'ngx-owl-carousel-o';
 import { SharedModule } from '../../shared/shared.module';
@@ -13,6 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ProjectMemberService } from '../../DPU/services/project-members.service';
 import { ToastrService } from 'ngx-toastr';
 import swal from 'sweetalert';
+import { StoreProfile, StoreProfileService } from '../../DPU/services/store-profile.service';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -25,16 +26,22 @@ export class LoginComponent {
   form: FormGroup;
   loading = false;
   errorMessage: string = '';
-
+  storeModel: StoreProfile = new StoreProfile();
   constructor(
     private fb: FormBuilder,
     public authService: AuthService,
     private routes: Router,
     public tokenService: TokenService,
+    private storeService: StoreProfileService,
   ) {
     this.form = this.fb.group({
       phone: ['', [Validators.required]],
       password: ['', [Validators.required]]
+    });
+    this.storeService.getProfile().subscribe(result => {
+      this.storeModel = result;
+    }, (error) => {
+      console.error('Error fetching store profile:', error);
     });
   }
 

@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../shared/services/auth.service';
 import { TokenService } from '../../../shared/services/token.service';
 import { UserProfileModel } from '../../models/user.model';
+import { StoreProfile, StoreProfileService } from '../../services/store-profile.service';
 @Component({
   selector: 'app-customer-register',
   standalone: true,
@@ -17,18 +18,24 @@ import { UserProfileModel } from '../../models/user.model';
 export class CustomerRegisterComponent {
   form: FormGroup;
   loading = false;
-
+  storeModel: StoreProfile = new StoreProfile();
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
     public authService: AuthService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private storeService: StoreProfileService,
   ) {
     this.form = this.fb.group({
       phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       password: ['', [Validators.required, Validators.minLength(4)]],
       name: [''] // เผื่อสำหรับสมัครสมาชิก
+    });
+    this.storeService.getProfile().subscribe(result => {
+      this.storeModel = result;
+    }, (error) => {
+      console.error('Error fetching store profile:', error);
     });
   }
 
