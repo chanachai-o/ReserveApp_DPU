@@ -1,61 +1,59 @@
-<div class="container max-w-7xl mx-auto py-8 px-3">
-  <div class="mb-8 flex flex-col md:flex-row gap-4 md:items-end md:justify-between">
-    <!-- Search/Filter Bar -->
-    <div class="flex flex-col sm:flex-row gap-3 flex-1">
-      <input type="text" class="form-control w-36" placeholder="ค้นหาโต๊ะ/ห้อง (เช่น โต๊ะ 1, VIP, ห้องประชุม)"
-        [(ngModel)]="searchText" (ngModelChange)="filterAvailable()" />
-      <select class="form-control w-36" [(ngModel)]="filterType" (change)="filterAvailable()">
+<div class="booking-container">
+  <!-- Filter/Search Bar -->
+  <div class="booking-toolbar">
+    <div class="booking-toolbar__filters">
+      <input type="text" class="input" placeholder="ค้นหาโต๊ะ/ห้อง เช่น โต๊ะ 1, VIP" [(ngModel)]="searchText" (ngModelChange)="filterAvailable()" />
+      <select class="input" [(ngModel)]="filterType" (change)="filterAvailable()">
         <option value="">ทั้งหมด</option>
         <option value="table">เฉพาะโต๊ะ</option>
         <option value="room">เฉพาะห้อง</option>
       </select>
-      <select class="form-control w-36" [(ngModel)]="filterCapacity" (change)="filterAvailable()">
+      <select class="input" [(ngModel)]="filterCapacity" (change)="filterAvailable()">
         <option value="">ทุกขนาด</option>
         <option *ngFor="let n of [2, 4, 8, 10, 20, 50]" [value]="n">{{n}} คนขึ้นไป</option>
       </select>
     </div>
     <div>
-      <button class="ti-btn ti-btn-light flex items-center gap-1" (click)="showMap = !showMap">
+      <button class="btn btn-light" (click)="showMap = !showMap">
         <i class="ri-map-pin-line"></i> ดูแผนผังร้าน
       </button>
     </div>
   </div>
 
-  <!-- แผนผังร้าน -->
-  <div *ngIf="showMap" class="mb-8">
-    <img *ngIf="storeModel.getLayout()!=''" class="object-cover rounded-sm" [src]="storeModel.getLayout()"
-      alt="Image Description">
+  <!-- Floor Plan -->
+  <div *ngIf="showMap" class="booking-map">
+    <img *ngIf="storeModel.getLayout()!=''" class="booking-map__img" [src]="storeModel.getLayout()" alt="Image Description">
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-    <!-- เลือกจอง -->
-    <div class="lg:col-span-8">
-      <h2 class="title"><i class="ri-booking-line"></i> เลือกโต๊ะ/ห้องที่ต้องการจอง</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        <app-available-item-card *ngFor="let item of filteredAvailableList" [item]="item" (reserve)="onReserve(item)">
-        </app-available-item-card>
-        <div *ngIf="filteredAvailableList.length === 0" class="text-gray-400 col-span-full text-center py-12 text-xl">
-          ไม่มีโต๊ะหรือห้องตามเงื่อนไขที่เลือก</div>
+  <div class="booking-main">
+    <!-- Table/Room Selection -->
+    <div class="booking-select">
+      <h2 class="booking-title"><i class="ri-booking-line"></i> เลือกโต๊ะ/ห้องที่ต้องการจอง</h2>
+      <div class="booking-grid">
+        <app-available-item-card *ngFor="let item of filteredAvailableList" [item]="item" (reserve)="onReserve(item)"></app-available-item-card>
+        <div *ngIf="filteredAvailableList.length === 0" class="booking-empty">
+          ไม่มีโต๊ะหรือห้องตามเงื่อนไขที่เลือก
+        </div>
       </div>
     </div>
-    <!-- รายการจอง -->
-    <div class="lg:col-span-4">
-      <h3 class="subtitle"><i class="ri-calendar-check-line mr-2"></i> การจองของคุณ</h3>
+    <!-- Booking List -->
+    <div class="booking-sidebar">
+      <h3 class="booking-subtitle"><i class="ri-calendar-check-line"></i> การจองของคุณ</h3>
       <ng-container *ngIf="reservationList.length; else noReservation">
-        <app-cus-reservation-card *ngFor="let res of reservationList" [reservation]="res" (cancel)="onCancel(res)"
-          (order)="onOrder(res)" (viewBill)="onViewBill(res)">
+        <app-cus-reservation-card *ngFor="let res of reservationList" [reservation]="res"
+          (cancel)="onCancel(res)" (order)="onOrder(res)" (viewBill)="onViewBill(res)">
         </app-cus-reservation-card>
       </ng-container>
       <ng-template #noReservation>
-        <div class="no-reservation">
-          <i class="ri-calendar-event-line text-4xl"></i>
-          <div class="mt-2">คุณยังไม่มีการจอง</div>
+        <div class="booking-no-reservation">
+          <i class="ri-calendar-event-line"></i>
+          <span>คุณยังไม่มีการจอง</span>
         </div>
       </ng-template>
     </div>
   </div>
 
-  <!-- Modals -->
+  <!-- Modals (เหมือนเดิม) -->
   <app-table-reservation-modal [show]="showReserveModal" [item]="selectedItem" (reserved)="handleReserved($event)"
     (closed)="showReserveModal = false"></app-table-reservation-modal>
   <app-order-food-modal [show]="showOrderModal" [reservation]="selectedOrderRes" (submitted)="handleOrder($event)"
