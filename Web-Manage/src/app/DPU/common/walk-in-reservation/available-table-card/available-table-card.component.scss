@@ -1,117 +1,133 @@
-// เพิ่มลง global styles.scss หรือเฉพาะ component ก็ได้
-
-.kanban-tasks {
-  background: transparent;
-  box-shadow: none;
-  border: none;
-  transition: box-shadow .2s, transform .15s;
-
-  &:hover {
-    box-shadow: 0 6px 20px 0 rgba(80,80,120,0.06), 0 1.5px 6px 0 rgba(80,80,120,0.03);
-    transform: translateY(-2px) scale(1.015);
-    z-index: 1;
-  }
-
-  .box-body {
-    padding: 0;
-    border-radius: 1rem;
-  }
-
-  .kanban-board-head {
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-    min-height: 60px;
-    padding-bottom: 1rem;
-    padding-top: 1.25rem;
-  }
-}
-
-// ปุ่มเล็ก เนี๊ยบขึ้น
-.ti-btn-xs {
-  font-size: .82rem;
-  padding: .32rem .9rem;
-  border-radius: .5rem;
-  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.04);
-  font-weight: 500;
-  line-height: 1.1;
-}
-
-// Badge, Shadow, Rounded
-.badge {
-  border-radius: 0.5rem;
-  font-weight: 500;
-  font-size: 0.89em;
-  box-shadow: 0 1px 3px 0 rgba(50,60,80,0.03);
-}
-
-.box {
+.modern-card {
   background: #fff;
-  border-radius: 1.2rem;
-  box-shadow: 0 2px 24px 0 rgba(70,100,180,0.07);
-  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+  box-shadow: 0 4px 20px 0 rgba(80, 100, 180, 0.08), 0 1.5px 8px 0 rgba(60,80,140,0.05);
+  border: 1.5px solid #d3e3ff;
+  // min-width: 250px;
+  // max-width: 90%;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform .18s cubic-bezier(.4,2,.3,1);
+}
+.modern-card:hover {
+  transform: scale(1.045);
+  box-shadow: 0 12px 28px 0 rgba(30,64,175,0.16);
 }
 
-.dark .box {
-  background: #18181c;
-  border-color: #313142;
-}
-
-.bg-gradient-to-r {
-  background-size: 200% 200%;
-  animation: gradientmove 4s ease-in-out infinite;
-}
-
-@keyframes gradientmove {
-  0% { background-position: 0 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0 50%; }
-}
-
-// Card hover effect
-.kanban-tasks:hover {
-  box-shadow: 0 4px 28px 0 rgba(52, 144, 220, 0.11), 0 1.5px 10px 0 rgba(0,0,0,0.04);
-}
-
-// Responsive
-@media (max-width: 700px) {
-  .kanban-tasks, .box {
-    min-width: 94vw !important;
-    margin: 0 auto 1rem auto;
-  }
-  .kanban-content img {
-    max-height: 120px !important;
-  }
-}
-
-// สำหรับ Text truncate
-.truncate {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-// Avatar
-.avatar.avatar-md {
-  width: 42px;
-  height: 42px;
-  border-radius: 9999px;
+/* Header */
+.modern-card__header {
+  padding: 18px 20px 10px 20px;
+  background: linear-gradient(90deg, #e7f0ff 60%, #fafdff 100%);
+  border-bottom: 1.5px solid #d3e3ff;
+  border-radius: 22px 22px 0 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: #ececec;
+  justify-content: space-between;
+}
+.modern-card__head-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.modern-card .icon {
+  font-size: 28px;
+  color: #2196f3;
+  filter: drop-shadow(0 2px 2px rgba(50, 140, 255, 0.08));
+}
+.modern-card .label {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #2171b7;
+  letter-spacing: 0.5px;
+}
+.badge-num {
+  background: #e6effc;
+  color: #2270b6;
+  font-weight: 600;
+  border-radius: 9px;
+  font-size: 0.97em;
+  padding: 4px 16px;
+  box-shadow: 0 1.5px 6px 0 rgba(30,64,175,0.08);
 }
 
-// สีแบบ Soft BG
-.bg-info\/10 { background: rgba(24, 170, 255, 0.10) !important; }
-.bg-success\/10 { background: rgba(52, 211, 153, 0.12) !important; }
-.bg-warning\/10 { background: rgba(252, 211, 77, 0.12) !important; }
-.bg-secondary\/10 { background: rgba(100, 116, 139, 0.11) !important; }
+/* Image and Info */
+.modern-card__img-wrap {
+  padding: 28px 18px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+.img-main {
+  border-radius: 16px;
+  border: 1px solid #eef2fa;
+  object-fit: cover;
+  width: 90%;
+  height: 140px;
+  background: linear-gradient(135deg, #f1f5fa 35%, #fafcff 100%);
+  box-shadow: 0 6px 22px 0 rgba(90,120,200,0.07);
+  transition: transform .16s;
+}
+.img-main:hover {
+  transform: scale(1.06);
+}
+.title {
+  margin-top: 16px;
+  font-weight: 600;
+  color: #18344e;
+  font-size: 1.11rem;
+  text-align: center;
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.meta {
+  font-size: 0.97em;
+  color: #6882aa;
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 
-.dark .badge { color: #f3f3f3; }
-
-// For Icon placement
-.ri-table-fill, .ri-door-lock-fill, .ri-calendar-check-line, .ri-login-circle-line, .ri-restaurant-2-line, .ri-bill-line, .ri-file-list-3-line, .ri-check-double-line {
-  vertical-align: middle;
-  margin-right: 2px;
+/* Actions */
+.modern-card__action {
+  display: flex;
+  justify-content: space-between;
+  gap: 9px;
+  padding: 0 18px 18px 18px;
+}
+.btn-action {
+  border-radius: 13px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px 0 rgba(30,64,175,0.04);
+  font-size: 0.97em;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 18px;
+  border: none;
+  outline: none;
+  background: #f0f6fe;
+  color: #2563eb;
+  cursor: pointer;
+  transition: all .13s;
+}
+.btn-action.btn-success {
+  background: #e9fbe9;
+  color: #3a963a;
+  border: 1px solid #c4eac4;
+}
+.btn-action.btn-success:hover {
+  background: #cdf5cd;
+}
+.btn-action.btn-primary {
+  background: #eaf1ff;
+  color: #2251be;
+  border: 1px solid #c9dcff;
+}
+.btn-action.btn-primary:hover {
+  background: #c5e0fa;
 }

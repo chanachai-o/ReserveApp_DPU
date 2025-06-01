@@ -1,117 +1,170 @@
-// เพิ่มลง global styles.scss หรือเฉพาะ component ก็ได้
-
-.kanban-tasks {
-  background: transparent;
-  box-shadow: none;
-  border: none;
-  transition: box-shadow .2s, transform .15s;
+.modern-occupied-card {
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 4px 22px 0 rgba(242, 201, 76, 0.11), 0 1.5px 7px 0 rgba(242, 201, 76, 0.08);
+  border: 1.5px solid #fae49c;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.16s cubic-bezier(.4,2,.3,1);
+  overflow: hidden;
 
   &:hover {
-    box-shadow: 0 6px 20px 0 rgba(80,80,120,0.06), 0 1.5px 6px 0 rgba(80,80,120,0.03);
-    transform: translateY(-2px) scale(1.015);
-    z-index: 1;
+    transform: scale(1.045);
+    box-shadow: 0 14px 38px 0 rgba(242,201,76,0.16);
   }
 
-  .box-body {
-    padding: 0;
-    border-radius: 1rem;
+  &__header {
+    padding: 20px 20px 10px 20px;
+    background: linear-gradient(90deg, #fffbe1 70%, #fffef7 100%);
+    border-bottom: 1.5px solid #fae49c;
+    border-radius: 22px 22px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .modern-occupied-card__status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #bb8d13;
+      font-weight: 700;
+      font-size: 1.08rem;
+
+      i {
+        font-size: 23px;
+        color: #eccf44;
+      }
+    }
+    .badge-occupied {
+      background: #fff8c6;
+      color: #e4b91f;
+      font-weight: 600;
+      border-radius: 9px;
+      font-size: 0.95em;
+      padding: 5px 18px;
+      box-shadow: 0 1.5px 6px 0 rgba(242,201,76,0.07);
+    }
   }
 
-  .kanban-board-head {
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-    min-height: 60px;
-    padding-bottom: 1rem;
-    padding-top: 1.25rem;
+  &__main {
+    padding: 28px 20px 12px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+
+    .user-avatar {
+      border-radius: 100px;
+      border: 2.5px solid #fae49c;
+      object-fit: cover;
+      width: 80px;
+      height: 80px;
+      margin-bottom: 7px;
+      background: linear-gradient(135deg, #fffbe1 30%, #fff8d4 100%);
+      box-shadow: 0 3px 16px 0 rgba(242, 201, 76, 0.09);
+      transition: transform .15s;
+      &:hover { transform: scale(1.08); }
+    }
+    .user-name {
+      margin-top: 8px;
+      font-weight: 600;
+      color: #a58222;
+      font-size: 1.05rem;
+      text-align: center;
+      max-width: 185px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .meta {
+      font-size: 0.98em;
+      color: #ba970d;
+      margin-top: 1px;
+      text-align: center;
+    }
+  }
+
+  &__action {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 0 20px 15px 20px;
+
+    .btn-modern {
+      border-radius: 12px;
+      font-weight: 500;
+      box-shadow: 0 2px 8px 0 rgba(242, 201, 76, 0.07);
+      font-size: 0.99em;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 10px 18px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      transition: all .13s;
+
+      &.btn-primary {
+        background: #f4f9ff;
+        color: #3475d6;
+        border: 1px solid #a7d0f7;
+        &:hover { background: #dbeafe; }
+      }
+      &.btn-warning {
+        background: #fff8c6;
+        color: #be8a0b;
+        border: 1px solid #ffe89a;
+        &:hover { background: #ffe899; }
+      }
+    }
+  }
+
+  &__footer {
+    border-top: 1.5px dashed #fae49c;
+    background: #fffdf5;
+    border-radius: 0 0 22px 22px;
+    padding: 13px 20px 13px 20px;
+    font-size: 0.96em;
+    color: #ad984c;
+
+    .note {
+      font-style: italic;
+      background: #fffbe9;
+      border-radius: 7px;
+      padding: 5px 12px;
+      color: #a3821c;
+      margin-bottom: 7px;
+    }
+    .orders-title {
+      font-weight: 700;
+      color: #be8a0b;
+      margin-bottom: 2px;
+    }
+    ul {
+      margin-left: 18px;
+      margin-bottom: 4px;
+      li { margin-bottom: 2px; }
+    }
+    .payment {
+      margin-top: 6px;
+      color: #16a34a;
+      font-weight: 500;
+    }
   }
 }
 
-// ปุ่มเล็ก เนี๊ยบขึ้น
-.ti-btn-xs {
-  font-size: .82rem;
-  padding: .32rem .9rem;
-  border-radius: .5rem;
-  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.04);
-  font-weight: 500;
-  line-height: 1.1;
-}
-
-// Badge, Shadow, Rounded
-.badge {
-  border-radius: 0.5rem;
-  font-weight: 500;
-  font-size: 0.89em;
-  box-shadow: 0 1px 3px 0 rgba(50,60,80,0.03);
-}
-
-.box {
-  background: #fff;
-  border-radius: 1.2rem;
-  box-shadow: 0 2px 24px 0 rgba(70,100,180,0.07);
-  border: 1px solid #e5e7eb;
-  overflow: hidden;
-}
-
-.dark .box {
-  background: #18181c;
-  border-color: #313142;
-}
-
-.bg-gradient-to-r {
-  background-size: 200% 200%;
-  animation: gradientmove 4s ease-in-out infinite;
-}
-
-@keyframes gradientmove {
-  0% { background-position: 0 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0 50%; }
-}
-
-// Card hover effect
-.kanban-tasks:hover {
-  box-shadow: 0 4px 28px 0 rgba(52, 144, 220, 0.11), 0 1.5px 10px 0 rgba(0,0,0,0.04);
-}
-
-// Responsive
-@media (max-width: 700px) {
-  .kanban-tasks, .box {
-    min-width: 94vw !important;
-    margin: 0 auto 1rem auto;
+// Dark mode
+body.dark .modern-occupied-card {
+  background: #1b1c1d;
+  border: 1.5px solid #967a14;
+  .modern-occupied-card__header {
+    background: linear-gradient(90deg, #2d250e 70%, #191505 100%);
+    border-bottom: 1.5px solid #967a14;
   }
-  .kanban-content img {
-    max-height: 120px !important;
+  .modern-occupied-card__footer {
+    background: #2e2a1c;
+    border-top: 1.5px dashed #967a14;
+    color: #e8e1b4;
   }
-}
-
-// สำหรับ Text truncate
-.truncate {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-// Avatar
-.avatar.avatar-md {
-  width: 42px;
-  height: 42px;
-  border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ececec;
-}
-
-// สีแบบ Soft BG
-.bg-info\/10 { background: rgba(24, 170, 255, 0.10) !important; }
-.bg-success\/10 { background: rgba(52, 211, 153, 0.12) !important; }
-.bg-warning\/10 { background: rgba(252, 211, 77, 0.12) !important; }
-.bg-secondary\/10 { background: rgba(100, 116, 139, 0.11) !important; }
-
-.dark .badge { color: #f3f3f3; }
-
-// For Icon placement
-.ri-table-fill, .ri-door-lock-fill, .ri-calendar-check-line, .ri-login-circle-line, .ri-restaurant-2-line, .ri-bill-line, .ri-file-list-3-line, .ri-check-double-line {
-  vertical-align: middle;
-  margin-right: 2px;
+  .user-avatar { border-color: #bda243; }
 }
