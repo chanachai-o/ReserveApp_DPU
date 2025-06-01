@@ -10,7 +10,7 @@
   <div class="flex-1 flex flex-col justify-between gap-1 min-w-0">
     <!-- ชื่อ/สถานะ -->
     <div class="flex flex-wrap items-center gap-2 mb-1">
-      <span *ngIf="reservation.table" class="badge bg-blue-50 text-blue-700 px-2 py-1 rounded shadow-sm">
+      <span *ngIf="reservation.table" class="badge bg-amber-100 text-amber-700 px-2 py-1 rounded shadow-sm">
         <i class="ri-table-fill mr-1"></i> โต๊ะ {{ reservation.table.table_number }}
       </span>
       <span *ngIf="reservation.room" class="badge bg-amber-100 text-amber-700 px-2 py-1 rounded shadow-sm">
@@ -19,9 +19,9 @@
       <span class="badge px-2 py-1 rounded shadow-sm text-xs"
             [ngClass]="{
               'bg-primary/10 text-primary': reservation.status === 'pending',
-              'bg-green-100 text-green-700': reservation.status === 'checked_in',
-              'bg-gray-200 text-gray-400': reservation.status === 'completed',
-              'bg-rose-100 text-rose-500': reservation.status === 'cancelled'
+              'bg-warning text-green-700': reservation.status === 'checked_in',
+              'bg-success text-gray-400': reservation.status === 'completed',
+              'bg-danger text-rose-500': reservation.status === 'cancelled'
             }">
         {{ getStatusLabel(reservation.status) }}
       </span>
