@@ -27,22 +27,20 @@
     </button>
   </div>
   <div class="border-t border-dashed bg-gray-50 dark:bg-neutral-800 rounded-b-2xl px-4 py-2 text-xs text-gray-500">
-    <span>ถึง {{ occupied.end_time | date: 'HH:mm' }}</span>
-    <span class="ml-3 text-blue-600">{{ occupied.note }}</span>
-    <div class="flex flex-wrap gap-1">
-      <ng-container *ngIf="occupied.orders?.length; else noOrder">
-        <ng-container *ngFor="let order of occupied.orders.slice(-1)">
-          <ng-container *ngFor="let item of order.order_items">
-            <span class="badge bg-blue-100/60 text-blue-600 px-2 py-1 rounded shadow-sm">
-              {{ item.menu.name }}
-              <span *ngIf="item.quantity > 1" class="ml-1 text-xs text-gray-400">x{{ item.quantity }}</span>
-            </span>
-          </ng-container>
-        </ng-container>
-      </ng-container>
-      <ng-template #noOrder>
-        <span class="text-blue-600 italic">ยังไม่มีการสั่งอาหาร</span>
-      </ng-template>
+    <div *ngIf="occupied.note" class="italic bg-gray-100 dark:bg-neutral-800 px-2 py-1 rounded">หมายเหตุ: {{
+      occupied.note }}</div>
+    <div *ngIf="occupied.orders.length > 0" class="mb-2">
+      <div class="font-semibold text-xs text-gray-700 dark:text-gray-200 mb-1">รายการอาหารที่สั่ง:</div>
+      <ul class="list-disc ml-5">
+        <li *ngFor="let order of occupied.orders">
+          <span *ngFor="let oi of order.order_items">
+            {{ oi.menu.name }} <span *ngIf="oi.quantity > 1">x{{oi.quantity}}</span>
+          </span>
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="occupied.payments.length > 0">
+      <span class="text-xs text-green-500"><i class="ri-money-dollar-circle-line"></i> มีการชำระเงินแล้ว</span>
     </div>
   </div>
 </div>

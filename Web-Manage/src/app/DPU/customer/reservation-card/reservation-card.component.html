@@ -38,7 +38,7 @@
     <!-- Action ปุ่ม -->
     <div class="flex flex-wrap gap-2 mt-3">
       <button *ngIf="reservation.status === 'pending'" class="ti-btn ti-btn-warning ti-btn-xs"
-              (click)="preorder.emit(reservation)">
+              (click)="order.emit(reservation)">
         <i class="ri-restaurant-2-line"></i> สั่งอาหารล่วงหน้า
       </button>
       <button *ngIf="reservation.status === 'pending'" class="ti-btn ti-btn-danger ti-btn-xs"

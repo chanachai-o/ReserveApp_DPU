@@ -17,6 +17,7 @@ export class OrderFoodComponent implements OnInit, OnChanges {
   menuList: MenusModel[] = [];
   @Input() orderItems?: OrderItem[] = []; // <-- เพิ่ม input ตรงนี้
   @Output() submitOrder = new EventEmitter<any>();
+  @Input() isStaff = false
 
   form!: FormGroup;
 

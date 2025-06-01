@@ -55,7 +55,7 @@ export class CustomerReservationPageComponent implements OnInit {
   }
 
   getReserved() {
-    this.reserveService.getReservations({ user: this.tokenService.getUser().id}).subscribe(result => {
+    this.reserveService.getReservations({ user: this.tokenService.getUser().id }).subscribe(result => {
       this.reservationList = result
     })
 
@@ -192,10 +192,27 @@ export class CustomerReservationPageComponent implements OnInit {
   onOrder(res: any) {
     this.selectedOrderRes = res;
     this.showOrderModal = true;
+    console.log('Selected Reservation for Order:', res);
   }
-  handleOrder(e: any) {
+  handleOrder(item: any) {
     this.showOrderModal = false;
-    // reload data
+    console.log('Order data:', item);
+    swal({
+      title: "Are you sure?",
+      text: "คุณต้องการบันทึกออเดอร์นี้หรือไม่?",
+      icon: "warning",
+      dangerMode: true,
+      buttons: ["Cancel", "Yes, Save it!"],
+    })
+      .then((willDelete: any) => {
+        if (willDelete) {
+          this.http.post("http://127.0.0.1:8000/orders", item).subscribe(result => {
+            swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+            this.ngOnInit()
+          })
+        }
+      });
+
   }
   onViewBill(res: any) {
     this.selectedBillRes = res;
