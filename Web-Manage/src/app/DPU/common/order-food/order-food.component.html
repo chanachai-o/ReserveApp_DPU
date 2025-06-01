@@ -1,95 +1,59 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
-    <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div>
-      <label class="block mb-1 font-semibold">สถานะ</label>
-      <select formControlName="status" class="form-control w-full">
-        <option value="pending">รอดำเนินการ</option>
-        <option value="preparing">กำลังทำ</option>
-        <option value="cooked">ปรุงเสร็จ</option>
-        <option value="served">เสิร์ฟแล้ว</option>
-      </select>
-    </div>
-    <div>
-      <label class="block mb-1 font-semibold">เลขโต๊ะ / ห้อง</label>
-      <input type="text" class="form-control w-full bg-gray-50 dark:bg-neutral-800" [value]="reservationId" disabled />
-    </div>
-  </div> -->
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="order-form">
   <div>
-    <label class="block mb-2 font-semibold text-gray-700 dark:text-gray-200">รายการอาหาร</label>
-    <div formArrayName="items" class="space-y-3">
-      <div [formGroupName]="i" *ngFor="let item of items.controls; let i = index"
-        class="flex flex-col md:flex-row items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-neutral-800 shadow-sm transition hover:shadow-md">
-
-        <!-- รูปอาหาร -->
-        <div class="w-14 h-14 rounded-lg overflow-hidden border bg-white dark:bg-neutral-700 flex-shrink-0">
-          <img *ngIf="menuById(item.value.menu_id)?.picture" [src]="menuById(item.value.menu_id)?.getPicture()"
-            alt="menu" class="object-cover w-full h-full" />
-          <div *ngIf="!menuById(item.value.menu_id)?.picture"
-            class="w-full h-full flex items-center justify-center text-gray-300 dark:text-neutral-500">
-            <i class="ri-image-line text-xl"></i>
+    <label class="order-label">รายการอาหาร</label>
+    <div formArrayName="items" class="order-items-list">
+      <div [formGroupName]="i" *ngFor="let item of items.controls; let i = index" class="order-item-card">
+        <div class="order-item-img">
+          <img *ngIf="menuById(item.value.menu_id)?.picture" [src]="menuById(item.value.menu_id)?.getPicture()" alt="menu" />
+          <div *ngIf="!menuById(item.value.menu_id)?.picture" class="no-img">
+            <i class="ri-image-line"></i>
           </div>
         </div>
-
-        <!-- ข้อมูลเมนูและคำอธิบาย -->
-        <div class="flex-1 flex flex-col gap-1 min-w-0">
+        <div class="order-item-info">
           <ng-select [items]="menuList" bindLabel="name" bindValue="id" [searchable]="true" formControlName="menu_id"
-            placeholder="เลือกเมนู" class="w-full !rounded-md !bg-white dark:!bg-neutral-900 shadow-sm">
+            placeholder="เลือกเมนู" class="menu-select">
             <ng-template ng-option-tmp let-item="item">
-              <span class="flex items-center gap-2">
-                <img [src]="item.getPicture ? item.getPicture() : './assets/images/faces/111.jpg'"
-                  class="w-8 h-8 rounded object-cover border border-gray-200 bg-gray-100" alt="menu" />
+              <span class="option-flex">
+                <img [src]="item.getPicture ? item.getPicture() : './assets/images/faces/111.jpg'" class="option-img" alt="menu" />
                 <span>
                   {{item.name}}
-                  <span class="text-gray-400 text-xs">({{item.price | number:'1.2-2'}} ฿)</span>
+                  <span class="option-price">({{item.price | number:'1.2-2'}} ฿)</span>
                 </span>
               </span>
             </ng-template>
           </ng-select>
-          <!-- <span class="text-xs text-gray-500 mt-1 truncate" *ngIf="menuById(item.value.menu_id)?.description">
-            {{ menuById(item.value.menu_id)?.description }}
-          </span> -->
         </div>
-
-        <!-- จำนวน -->
-        <div class="flex flex-col items-center gap-1">
-          <input type="number" formControlName="quantity" min="1" class="form-control w-20 text-center !rounded-md" />
-
+        <div class="order-qty">
+          <input type="number" formControlName="quantity" min="1" class="qty-input" />
         </div>
-        <!-- {{item.value.status}} -->
-        <div class="flex flex-col items-center gap-1 min-w-[110px]" *ngIf="isStaff">
-          <select formControlName="status" class="form-control w-28 text-xs py-1 px-1">
+        <div class="order-status" *ngIf="isStaff">
+          <select formControlName="status" class="status-select">
             <option value="pending">รอดำเนินการ</option>
             <option value="preparing">กำลังทำ</option>
             <option value="cooked">ปรุงเสร็จ</option>
             <option value="served">เสิร์ฟแล้ว</option>
           </select>
         </div>
-        <!-- ปุ่มลบ -->
-
-        <button *ngIf="isStaff" type="button" class="ti-btn ti-btn-danger ti-btn-xs !rounded-full p-2"
-          (click)="removeItem(i)" [disabled]="items.length <= 1">
+        <button type="button" class="del-btn" (click)="removeItem(i)" [disabled]="items.length <= 1">
           <i class="ri-delete-bin-5-line"></i>
         </button>
       </div>
     </div>
-    <button type="button" class="ti-btn ti-btn-primary ti-btn-xs mt-4" (click)="addItem()">
+    <button type="button" class="add-menu-btn" (click)="addItem()">
       <i class="ri-add-line"></i> เพิ่มเมนู
     </button>
   </div>
 
-  <!-- ยอดรวม + สรุป -->
-  <div class="flex items-center justify-between mt-6 p-4 rounded-xl bg-gray-100 dark:bg-neutral-800">
-    <span class="font-semibold text-lg">ยอดรวม:</span>
-    <span class="text-green-600 font-bold text-2xl">{{ getTotal() | number:'1.2-2' }} ฿</span>
+  <div class="order-total-bar">
+    <span class="total-label">ยอดรวม:</span>
+    <span class="total-value">{{ getTotal() | number:'1.2-2' }} ฿</span>
   </div>
 
-  <!-- Action ปุ่ม -->
-  <div class="flex gap-2 mt-4 justify-end">
-    <button type="submit" class="ti-btn ti-btn-success flex items-center gap-2 !rounded-lg px-5 py-2"
-      [disabled]="!form.valid" data-hs-overlay="#add-order">
+  <div class="order-actions">
+    <button type="submit" class="order-submit-btn" [disabled]="!form.valid" data-hs-overlay="#add-order">
       <i class="ri-check-line"></i> ยืนยันการสั่งอาหาร
     </button>
-    <button type="button" class="ti-btn ti-btn-light !rounded-lg px-5 py-2" (click)="form.reset()">
+    <button type="button" class="order-reset-btn" (click)="form.reset()">
       <i class="ri-refresh-line"></i> ล้างข้อมูล
     </button>
   </div>

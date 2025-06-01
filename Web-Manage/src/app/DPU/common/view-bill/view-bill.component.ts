@@ -22,6 +22,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     useValue: DEFAULT_DROPZONE_CONFIG
   }],
   templateUrl: './view-bill.component.html',
+  styleUrls: ['./view-bill.component.scss']
 })
 export class ViewBillComponent {
   public type: string = 'component';

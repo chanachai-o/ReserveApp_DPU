@@ -9,6 +9,7 @@ import { MenusService } from '../../services/menu.service';
   selector: 'app-order-food',
   standalone: true,
   templateUrl: './order-food.component.html',
+  styleUrl: './order-food.component.scss',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule]
 })
 export class OrderFoodComponent implements OnInit, OnChanges {
