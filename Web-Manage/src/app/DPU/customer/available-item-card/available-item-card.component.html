@@ -1,22 +1,22 @@
-<div class="available-card box kanban-tasks new shadow-md rounded-xl border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 transition-all duration-150 hover:scale-[1.025]">
-  <div class="box-body !p-0">
-    <div class="p-4 kanban-board-head">
-      <div class="flex items-center gap-2 mb-2 text-lg">
-        <span *ngIf="item.type === 'table'" class="text-blue-500"><i class="ri-table-fill"></i></span>
-        <span *ngIf="item.type === 'room'" class="text-amber-500"><i class="ri-door-lock-fill"></i></span>
-        <span class="font-bold text-base">
+<div class="available-card">
+  <div class="available-card__body">
+    <div class="available-card__head">
+      <div class="available-card__title">
+        <span *ngIf="item.type === 'table'" class="icon-table"><i class="ri-table-fill"></i></span>
+        <span *ngIf="item.type === 'room'" class="icon-room"><i class="ri-door-lock-fill"></i></span>
+        <span class="main-title">
           {{ item.type === 'table' ? 'โต๊ะ' : 'ห้อง' }} {{ item.table_number || item.room_number || item.name }}
         </span>
       </div>
-      <div class="badge bg-info/10 text-info px-3 py-1 rounded-md mb-2 flex items-center gap-1 w-max">
+      <div class="badge badge-info">
         <i class="ri-user-fill"></i> {{ item.capacity }} คน
       </div>
     </div>
-    <div class="flex justify-center items-center h-36 bg-gray-100 dark:bg-neutral-800 rounded-lg overflow-hidden border border-dashed border-gray-300 mx-4 mb-2">
-      <img [src]="item.picture ? item.getPicture() : 'assets/images/placeholder-room.png'" class="object-cover w-full h-full max-h-36" alt="ภาพ" />
+    <div class="available-card__imgbox">
+      <img [src]="item.picture ? item.getPicture() : 'assets/images/placeholder-room.png'" alt="ภาพ" />
     </div>
-    <div class="p-4 flex justify-center">
-      <button class="ti-btn ti-btn-primary ti-btn-md !rounded shadow-sm w-full" (click)="reserve.emit(item)">
+    <div class="available-card__footer">
+      <button class="btn-primary" (click)="reserve.emit(item)">
         <i class="ri-calendar-check-line mr-1"></i> จอง{{ item.type === 'room' ? 'ห้อง' : 'โต๊ะ' }}
       </button>
     </div>

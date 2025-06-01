@@ -1,3 +1,104 @@
 .available-card {
-  min-height: 300px;
+  border-radius: 1.25rem; // 20px
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+  box-shadow: 0 2px 16px 0 rgba(40,50,65,0.07);
+  transition: box-shadow .18s, transform .15s;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: scale(1.025);
+    box-shadow: 0 8px 32px 0 rgba(44,130,230,.12);
+  }
+
+  &__body { padding: 0; }
+
+  &__head {
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+    border-radius: 1.25rem 1.25rem 0 0;
+    background: linear-gradient(90deg, #e3f0fc 65%, #fff 100%);
+    .available-card__title {
+      display: flex; align-items: center; gap: 0.5rem; font-size: 1.13rem; margin-bottom: 0.8rem;
+      .icon-table i { color: #2574f7; font-size: 1.4rem; }
+      .icon-room i { color: #ffba40; font-size: 1.4rem; }
+      .main-title { font-weight: 600; }
+    }
+    .badge-info {
+      background: #ebf4fa;
+      color: #277bc8;
+      padding: 4px 14px;
+      border-radius: 0.75rem;
+      font-size: 1em;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 0.5em;
+      width: max-content;
+      font-weight: 500;
+    }
+  }
+
+  &__imgbox {
+    display: flex; justify-content: center; align-items: center;
+    background: #f5f6fa;
+    border-radius: 1rem;
+    border: 1.5px dashed #e4e6ed;
+    margin: 1rem 1.2rem 1rem 1.2rem;
+    min-height: 140px; max-height: 150px; overflow: hidden;
+    img { width: 100%; height: 100%; max-height: 140px; object-fit: cover; transition: .2s; border-radius: 1rem; }
+  }
+
+  &__footer {
+    padding: 1.2rem;
+    display: flex;
+    justify-content: center;
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(90deg, #338eda 70%, #256dbe 100%);
+      color: #fff;
+      border-radius: 0.9rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      box-shadow: 0 2px 6px 0 rgba(51,158,220,.07);
+      padding: 0.7em 0;
+      transition: background .13s, box-shadow .13s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
+      cursor: pointer;
+      &:hover { background: linear-gradient(90deg, #256dbe 60%, #338eda 100%); }
+      i { font-size: 1.13em; }
+    }
+  }
+}
+
+// Dark mode
+body.dark, .dark {
+  .available-card {
+    background: #191d22;
+    border-color: #23272e;
+    box-shadow: 0 2px 14px 0 rgba(55,87,130,0.09);
+    &__head {
+      background: linear-gradient(90deg, #21283a 60%, #191d22 100%);
+      .main-title, .icon-table i, .icon-room i { color: #fff; }
+      .badge-info { background: #243246; color: #77baff; }
+    }
+    &__imgbox { background: #23272e; border-color: #283345; }
+    &__footer .btn-primary {
+      background: linear-gradient(90deg, #4788cf 70%, #1a304a 100%);
+      color: #fff;
+      &:hover { background: linear-gradient(90deg, #1a304a 60%, #4788cf 100%); }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 540px) {
+  .available-card__head, .available-card__footer { padding: 1rem 0.7rem; }
+  .available-card__imgbox { margin: 0 0.5rem 1rem 0.5rem; }
 }
