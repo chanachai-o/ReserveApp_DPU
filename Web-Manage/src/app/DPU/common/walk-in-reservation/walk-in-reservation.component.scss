@@ -1,0 +1,155 @@
+// Filter Bar
+.filter-bar {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 14px 0 rgba(38, 60, 94, 0.07);
+  border: 1.5px solid #e2e8f0;
+  margin-bottom: 2rem;
+  transition: box-shadow 0.2s;
+
+  &__body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    align-items: center;
+    padding: 1.3rem 1.7rem;
+  }
+
+  &__select {
+    min-width: 175px;
+    border-radius: 12px;
+    border: 1.5px solid #e5e7eb;
+    box-shadow: 0 2px 8px 0 rgba(97, 140, 200, 0.06);
+    font-weight: 500;
+    background: #f6f9ff;
+  }
+
+  &__date {
+    border-radius: 12px;
+    border: 1.5px solid #e5e7eb;
+    box-shadow: 0 2px 8px 0 rgba(97, 140, 200, 0.07);
+    font-weight: 500;
+    background: #f6f9ff;
+    padding: 8px 16px;
+    min-width: 170px;
+    outline: none;
+    transition: border .15s;
+    &:focus { border-color: #4782ea; }
+  }
+
+  &__clear {
+    border-radius: 12px;
+    background: #f8fafc;
+    box-shadow: 0 2px 8px 0 rgba(160,160,160,.05);
+    color: #475569;
+    border: 1.5px solid #e5e7eb;
+    font-weight: 500;
+    padding: 7px 22px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background .12s;
+    &:hover {
+      background: #f1f5f9;
+    }
+    i { font-size: 1.05rem; }
+  }
+}
+
+// Kanban Board
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.8rem;
+  @media (min-width: 768px) { grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 1280px) { grid-template-columns: repeat(4, 1fr); }
+}
+
+.kanban-column {
+  // border-radius: 22px;
+  // background: #fff;
+  // box-shadow: 0 3px 24px 0 rgba(20, 44, 75, 0.06), 0 1.5px 8px 0 rgba(20, 44, 75, 0.04);
+  overflow: hidden;
+  // display: flex;
+  flex-direction: column;
+  // min-height: 320px;
+  // border: 1.5px solid #e0e7ef;
+  transition: box-shadow 0.18s, border 0.18s;
+
+  // &:hover { box-shadow: 0 6px 32px 0 rgba(36, 80, 150, 0.12); }
+
+  &__header {
+    padding: 1.2rem 1.5rem 0.8rem 1.5rem;
+    font-weight: 700;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1.5px solid #f1f5f9;
+    background: linear-gradient(90deg, #f7fafc 65%, #f2f6fb 100%);
+    i { font-size: 1.3em; margin-right: 2px; }
+  }
+  &--available .kanban-column__header {
+    color: #2e7ef0;
+    background: linear-gradient(90deg, #dbeafe 70%, #fff 100%);
+  }
+  &--reserved .kanban-column__header {
+    color: #f43f5e;
+    background: linear-gradient(90deg, #ffe4e6 80%, #fff 100%);
+  }
+  &--active .kanban-column__header {
+    color: #f59e42;
+    background: linear-gradient(90deg, #fef9c3 80%, #fff 100%);
+  }
+  &--payment .kanban-column__header {
+    color: #22c55e;
+    background: linear-gradient(90deg, #d1fadf 80%, #fff 100%);
+  }
+
+  &__body {
+    padding: 0.8rem;
+    flex: 1 1 0;
+    overflow-y: auto;
+    max-height: 62vh;
+    .kanban-empty {
+      color: #94a3b8;
+      font-size: 1.04em;
+      text-align: center;
+      padding: 2.8em 0 2em 0;
+      font-style: italic;
+    }
+  }
+}
+
+// Dark mode
+body.dark {
+  .filter-bar {
+    background: #181f1a;
+    border: 1.5px solid #3a3d41;
+    &__body {}
+    &__select, &__date {
+      background: #222c35;
+      border: 1.5px solid #283345;
+      color: #c5d1e2;
+    }
+    &__clear { background: #23262b; color: #b6bac7; border: 1.5px solid #24262b;}
+  }
+  .kanban-column {
+    background: #16191d;
+    border: 1.5px solid #222b34;
+    box-shadow: 0 2px 12px 0 rgba(97,180,140,0.04);
+    &__header { border-bottom: 1.5px solid #283345; }
+    &--available .kanban-column__header { color: #54a5ff; background: linear-gradient(90deg, #102243 70%, #222c35 100%);}
+    &--reserved .kanban-column__header { color: #f67196; background: linear-gradient(90deg, #4b1f26 80%, #16191d 100%);}
+    &--active .kanban-column__header { color: #ffe177; background: linear-gradient(90deg, #383100 80%, #222c35 100%);}
+    &--payment .kanban-column__header { color: #52e380; background: linear-gradient(90deg, #183e23 80%, #16191d 100%);}
+    &__body .kanban-empty { color: #707a8a; }
+  }
+}
+
+// Responsive
+@media (max-width: 600px) {
+  .filter-bar__body { padding: 1rem 0.6rem; gap: 0.8rem; }
+  .kanban-board { gap: 1.1rem; }
+}

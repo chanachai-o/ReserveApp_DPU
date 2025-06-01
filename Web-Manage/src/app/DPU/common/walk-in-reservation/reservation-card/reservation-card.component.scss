@@ -7,7 +7,7 @@
   flex-direction: column;
   transition: transform 0.16s cubic-bezier(.4,2,.3,1);
   overflow: hidden;
-
+  margin-top: 1rem;
   &:hover {
     transform: scale(1.045);
     box-shadow: 0 12px 36px 0 rgba(230, 50, 100, 0.15);

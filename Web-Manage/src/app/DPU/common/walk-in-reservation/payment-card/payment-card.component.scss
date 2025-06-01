@@ -7,7 +7,7 @@
   flex-direction: column;
   transition: transform 0.16s cubic-bezier(.4,2,.3,1);
   overflow: hidden;
-
+  margin-top: 1rem;
   &:hover { transform: scale(1.035); }
 
   &__header {
