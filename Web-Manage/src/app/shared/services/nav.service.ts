@@ -141,6 +141,12 @@ export class NavService implements OnDestroy {
           type: 'link',
           show: false
         },
+        {
+          path: '/admin/reservation-history',
+          title: 'ประวัติการจอง',
+          type: 'link',
+          show: false
+        },
       ],
     },
     {
@@ -165,37 +171,37 @@ export class NavService implements OnDestroy {
       {
         icon: 'calendar-check', // ใช้ icon library ที่ใช้อยู่ เช่น RemixIcon, FontAwesome ฯลฯ
         path: '/customer/reservations',
-        title: 'การจองของฉัน',
+        title: 'ประวัติการจอง',
         type: 'link',
       },
       // สั่งอาหาร (สามารถลิงก์จาก reservation detail ได้ หรืออยู่ใน list ก็ได้)
-      {
-        icon: 'restaurant',
-        path: '/customer/orders',
-        title: 'สั่งอาหาร',
-        type: 'link',
-      },
-      // ดูบิล/ชำระเงิน
-      {
-        icon: 'calculator',
-        path: '/customer/bills',
-        title: 'บิล/ชำระเงิน',
-        type: 'link',
-      },
-      // โปรไฟล์ส่วนตัว
-      {
-        icon: 'user',
-        path: '/customer/profile',
-        title: 'โปรไฟล์',
-        type: 'link',
-      },
-      // แจ้งเตือน
-      {
-        icon: 'notification',
-        path: '/customer/notifications',
-        title: 'แจ้งเตือน',
-        type: 'link',
-      },
+      // {
+      //   icon: 'restaurant',
+      //   path: '/customer/orders',
+      //   title: 'สั่งอาหาร',
+      //   type: 'link',
+      // },
+      // // ดูบิล/ชำระเงิน
+      // {
+      //   icon: 'calculator',
+      //   path: '/customer/bills',
+      //   title: 'บิล/ชำระเงิน',
+      //   type: 'link',
+      // },
+      // // โปรไฟล์ส่วนตัว
+      // {
+      //   icon: 'user',
+      //   path: '/customer/profile',
+      //   title: 'โปรไฟล์',
+      //   type: 'link',
+      // },
+      // // แจ้งเตือน
+      // {
+      //   icon: 'notification',
+      //   path: '/customer/notifications',
+      //   title: 'แจ้งเตือน',
+      //   type: 'link',
+      // },
     ];
   }
 

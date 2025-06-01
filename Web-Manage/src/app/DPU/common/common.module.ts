@@ -40,20 +40,25 @@ export const admin: Routes = [
         import('./room-management/room-management.component').then((m) => m.RoomManagementComponent),
     },
     {
-        path: 'walk-in',
-        loadComponent: () =>
-          import('./walk-in-reservation/walk-in-reservation.component').then((m) => m.WalkInReservationComponent),
-      },
-      {
-        path: 'reserved',
-        loadComponent: () =>
-          import('./reserved-room-tables/reserved-room-tables.component').then((m) => m.ReservedRoomTablesComponent),
-      },
-      {
-        path: 'takehome',
-        loadComponent: () =>
-          import('./take-home/take-home.component').then((m) => m.TakeHomeComponent),
-      },
+      path: 'reservation-history',
+      loadComponent: () =>
+        import('./reserved-history/reserved-history.component').then((m) => m.ReservedHistoryComponent),
+    },
+    {
+      path: 'walk-in',
+      loadComponent: () =>
+        import('./walk-in-reservation/walk-in-reservation.component').then((m) => m.WalkInReservationComponent),
+    },
+    {
+      path: 'reserved',
+      loadComponent: () =>
+        import('./reserved-room-tables/reserved-room-tables.component').then((m) => m.ReservedRoomTablesComponent),
+    },
+    {
+      path: 'takehome',
+      loadComponent: () =>
+        import('./take-home/take-home.component').then((m) => m.TakeHomeComponent),
+    },
 
     ]
   },

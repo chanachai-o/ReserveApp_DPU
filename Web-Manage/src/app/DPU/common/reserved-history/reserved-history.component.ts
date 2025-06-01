@@ -1,29 +1,25 @@
-import { Component } from '@angular/core';
-import { AvailableItem, ReservationModel } from '../../models/all.model';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { forkJoin } from 'rxjs';
-import { TokenService } from '../../../shared/services/token.service';
-import { MenusService } from '../../services/menu.service';
-import { RoomService } from '../../services/room.service';
-import { TablesService } from '../../services/tables.service';
-import { ReservationCardComponent } from '../../common/walk-in-reservation/reservation-card/reservation-card.component';
-import { TableReservationComponent } from '../../common/table-reservation/table-reservation.component';
-import swal from 'sweetalert';
-import { ReservationService } from '../../services/reservation.service';
-import { UserProfileModel } from '../../models/user.model';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { TokenService } from '../../../shared/services/token.service';
+import { ReservationModel } from '../../models/all.model';
+import { UserProfileModel } from '../../models/user.model';
+import { MenusService } from '../../services/menu.service';
+import { ReservationService } from '../../services/reservation.service';
+import { RoomService } from '../../services/room.service';
+import { TablesService } from '../../services/tables.service';
 import { UserService } from '../../services/user.service';
 
 @Component({
-  selector: 'app-reservation-list',
+  selector: 'app-reserved-history',
   standalone: true,
   imports: [CommonModule, FormsModule, NgSelectModule],
-  templateUrl: './reservation-list.component.html',
-  styleUrl: './reservation-list.component.scss'
+  templateUrl: './reserved-history.component.html',
+  styleUrl: './reserved-history.component.scss'
 })
-export class ReservationListComponent {
+export class ReservedHistoryComponent {
   customerList: UserProfileModel[] = []; // {id,name,phone...}
   selectedCustomer?: number = this.tokenService.getUser().id; // เริ่มต้นแสดงข้อมูลของผู้ใช้ที่ล็อกอินอยู่
   dateFrom: string = '';
@@ -46,7 +42,7 @@ export class ReservationListComponent {
 
   ngOnInit() {
     // load allList, customerList ...
-    this.reservationService.getReservations({user : this.selectedCustomer}).subscribe(reservations => {
+    this.reservationService.getReservations({}).subscribe(reservations => {
       this.allList = reservations;
       this.filteredList = [...this.allList]; // เริ่มต้นแสดงทั้งหมด
     });
