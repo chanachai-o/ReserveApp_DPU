@@ -7,6 +7,7 @@ import { ReservationModel } from '../../models/all.model';
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './table-reservation.component.html',
+  styleUrls: ['./table-reservation.component.scss']
 })
 export class TableReservationComponent implements OnInit, OnChanges {
   @Input() tableId?: number;
