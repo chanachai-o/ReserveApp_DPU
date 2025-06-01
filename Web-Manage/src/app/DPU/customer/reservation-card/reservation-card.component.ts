@@ -20,6 +20,7 @@ export class ReservationCustomerCardComponent {
     switch (status) {
       case 'pending': return 'รอยืนยัน';
       case 'checked_in': return 'เข้าใช้บริการ';
+      case 'checked_out': return 'เรียกเก็บเงิน';
       case 'completed': return 'เสร็จสิ้น';
       case 'cancelled': return 'ยกเลิก';
       default: return status;

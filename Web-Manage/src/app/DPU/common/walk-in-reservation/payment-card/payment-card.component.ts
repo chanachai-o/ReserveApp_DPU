@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { ReservationModel } from '../../../models/all.model';
 
 @Component({
   selector: 'app-payment-card',
@@ -9,12 +10,12 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./payment-card.component.scss']
 })
 export class PaymentCardComponent {
-  @Input() checkout: any;         // ข้อมูลโต๊ะ
+  @Input() checkout: ReservationModel;         // ข้อมูลโต๊ะ
   @Input() bill: any;          // ข้อมูลบิลหรือ payment ที่ต้องชำระ
   @Input() customer: any;      // ข้อมูลลูกค้า (optional)
 
-  @Output() verifyPayment = new EventEmitter<number>();
-  @Output() viewBill = new EventEmitter<number>();
+  @Output() verifyPayment = new EventEmitter<ReservationModel>();
+  @Output() viewBill = new EventEmitter<ReservationModel>();
 
   onVerify() {
     this.verifyPayment.emit(this.checkout);

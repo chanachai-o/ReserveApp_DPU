@@ -1,82 +1,88 @@
-<!-- สรุปบิล -->
-<div class="mb-4">
-  <div class="flex justify-between text-gray-700 dark:text-gray-300 mb-1">
-    <span>ลูกค้า:</span>
-    <span>{{ reservation.user.name || reservation.user.phone || '-' }}</span>
-  </div>
-  <div class="flex justify-between text-gray-700 dark:text-gray-300 mb-1">
-    <span>หมายเลขโต๊ะ/ห้อง:</span>
-    <span>
-      <ng-container *ngIf="reservation.table">โต๊ะ {{ reservation.table.table_number }}</ng-container>
-      <ng-container *ngIf="reservation.room">ห้อง {{ reservation.room.name }}</ng-container>
-    </span>
-  </div>
-  <div class="flex justify-between font-semibold text-xl mt-2 text-green-600">
-    <span>ยอดรวม:</span>
-    <span>{{ getTotalAmount() | number:'1.2-2' }} ฿</span>
-  </div>
-</div>
-
-<!-- รายการอาหารทั้งหมด -->
-<div class="mb-4">
-  <h4 class="font-semibold text-base mb-2">รายการอาหาร</h4>
-  <ul class="divide-y divide-gray-200 dark:divide-neutral-700">
-    <li *ngFor="let item of getAllOrderItems()" class="flex items-center justify-between py-2">
+<!-- Bill Summary Modern Card -->
+<div class="max-w-md w-full mx-auto bg-white/80 dark:bg-neutral-900/80  dark:border-neutral-800 p-6">
+  <!-- Customer / Table / Amount -->
+  <div class="flex flex-col gap-1">
+    <div class="flex justify-between items-center text-base">
+      <span class="text-gray-600 dark:text-gray-300">ลูกค้า</span>
+      <span class="font-semibold text-primary">{{ reservation.user.name || reservation.user.phone || '-' }}</span>
+    </div>
+    <div class="flex justify-between items-center text-base">
+      <span class="text-gray-600 dark:text-gray-300">โต๊ะ/ห้อง</span>
       <span>
-        {{ item.menu.name || '-' }}
-        <span *ngIf="item.quantity > 1" class="ml-1 text-xs text-gray-500">x{{ item.quantity }}</span>
+        <ng-container *ngIf="reservation.table">โต๊ะ {{ reservation.table.table_number }}</ng-container>
+        <ng-container *ngIf="reservation.room">ห้อง {{ reservation.room.name }}</ng-container>
       </span>
-      <span class="text-gray-700 dark:text-gray-300">
-        {{ item.menu.price * item.quantity | number:'1.2-2' }} ฿
-      </span>
-    </li>
-  </ul>
-  <div *ngIf="getAllOrderItems().length === 0" class="text-gray-400 text-sm">ไม่มีข้อมูลรายการอาหาร</div>
-</div>
-
-<!-- ชำระเงิน & แนบสลิป -->
-<div class="mb-2" *ngIf="reservation.status=='checked_out' || reservation.status=='completed'">
-  <h4 class="font-semibold text-base mb-2">แนบใบเสร็จ/สลิป</h4>
-  <div *ngIf="reservation.payments">
-    <div class="mb-1 flex items-center gap-2">
-      <span class="text-green-600 font-medium">{{ reservation.payments[0].amount | number:'1.2-2' }} ฿</span>
-      <!-- <a *ngIf="reservation.payments[0].slip_url" [href]="reservation.payments[0].slip_url" target="_blank"
-        class="underline text-blue-600">ดูสลิป</a> -->
-      <span class="badge"
-        [ngClass]="reservation.payments[0].status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'">
-        {{ reservation.payments[0].status === 'completed' || reservation.status=='completed' ? 'ชำระแล้ว' : 'รอตรวจสอบ' }}
-      </span>
+    </div>
+    <div class="flex justify-between items-center mt-3">
+      <span class="font-bold text-xl text-gray-800 dark:text-white">ยอดรวม</span>
+      <span class="font-extrabold text-green-600 text-2xl">{{ getTotalAmount() | number:'1.2-2' }} ฿</span>
     </div>
   </div>
-  <div *ngIf="reservation.payments">
-    <div class="xl:col-span-12 col-span-12 blog-images-container" *ngIf="reservation.payments[0].slip_url==''">
-      <!-- <dropzone [config]="config" [message]="'Click or drag images here to upload'" (error)="onUploadError($event)" (success)="onUploadSuccess($event)"></dropzone> -->
-      @if(type === 'component'){
 
-      <dropzone class="dropzone-container" [config]="config" [disabled]="disabled" fxLayout="row"
-        fxLayoutAlign="start strech" fxFlex="auto" [message]="'Click or drag images here to upload'"
-        (init)="onUploadInit($event)" (error)="onUploadError($event)" (success)="onUploadSuccess($event)">
-      </dropzone>
-      }
+  <!-- Order Items -->
+  <div class="rounded-xl bg-gray-50 dark:bg-neutral-800/70 p-4 mt-4">
+    <h4 class="font-semibold text-lg text-gray-700 dark:text-gray-200 mb-2"><i class="ri-restaurant-line"></i>
+      รายการอาหาร</h4>
+    <ul class="divide-y divide-gray-200 dark:divide-neutral-700">
+      <li *ngFor="let item of getAllOrderItems()" class="flex items-center justify-between py-2">
+        <div class="flex items-center gap-2">
+         <img [src]="item.menu.picture ? item.menu.getPicture() : './assets/images/faces/111.jpg'"
+            class="w-8 h-8 rounded border" />
+                <span>
 
+          {{ item.menu.name }} <span *ngIf="item.quantity > 1" class="ml-1 text-xs text-gray-500">x{{ item.quantity
+            }} ({{ item.menu.price | number:'1.2-2' }} ฿)</span>
+        </span>
+        </div>
+
+        <span class="text-gray-700 dark:text-gray-300">
+          {{ item.menu.price * item.quantity | number:'1.2-2' }} ฿
+        </span>
+      </li>
+    </ul>
+    <div *ngIf="getAllOrderItems().length === 0" class="text-gray-400 text-sm py-4 text-center">
+      <i class="ri-alert-line mr-1"></i> ไม่มีข้อมูลรายการอาหาร
     </div>
-    <div class="mt-3 mb-6 sm:flex items-center w-full" *ngIf="reservation.payments[0].slip_url!=''">
-      <img class="object-cover rounded-sm"
-        src="{{reservation.payments[0].slip_url ? urlLink + reservation.payments[0].slip_url : './assets/images/faces/9.jpg'}}"
-        alt="Image Description">
-    </div>
-    <button type="button" class="ti-btn ti-btn-success ti-btn-xs" (click)="submitSlip()" *ngIf="reservation.payments[0].slip_url==''">
-      <i class="ri-upload-cloud-2-line mr-1"></i> อัปโหลดสลิป
-    </button>
   </div>
-</div>
 
-<div class="flex items-center justify-between mt-2" *ngIf="reservation.status=='checked_in'">
-  <div class="flex gap-2">
-    <button class="ti-btn ti-btn-success ti-btn-xs !rounded-md shadow-sm" (click)="checkBill()"
-      data-hs-overlay="#view-bill">
-      <i class="ri-login-circle-line mr-1"></i>
-      เช็คบิล
+  <!-- Payment & Slip -->
+  <div *ngIf="reservation.status === 'checked_out' || reservation.status === 'completed'"
+    class="bg-green-50 dark:bg-neutral-900 rounded-xl p-4 mt-2">
+    <h4 class="font-semibold text-lg text-green-600 dark:text-green-300 mb-3"><i
+        class="ri-money-dollar-circle-line"></i> ชำระเงิน</h4>
+    <div *ngIf="reservation.payments && reservation.payments[0]">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="font-bold text-lg text-green-600">{{ reservation.payments[0].amount | number:'1.2-2' }} ฿</span>
+        <span class="badge" [ngClass]="reservation.payments[0].status === 'completed' || reservation.status === 'completed'
+            ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'">
+          {{ reservation.payments[0].status === 'completed' || reservation.status === 'completed'
+          ? 'ชำระแล้ว' : 'รอตรวจสอบ' }}
+        </span>
+      </div>
+      <div *ngIf="reservation.payments[0].slip_url">
+        <div class="rounded-lg border bg-white dark:bg-neutral-800/70 mt-2 p-2 flex items-center justify-center">
+          <img class="object-cover rounded-md max-h-48 w-auto border shadow"
+            [src]="urlLink + reservation.payments[0].slip_url" alt="Slip" />
+        </div>
+      </div>
+      <div *ngIf="!reservation.payments[0].slip_url || reservation.status === 'checked_out'">
+        <dropzone class="dropzone-container mt-2" [config]="config" [disabled]="disabled"
+          [message]="'คลิกหรือวางไฟล์สลิปที่นี่เพื่ออัปโหลด'" (init)="onUploadInit($event)"
+          (error)="onUploadError($event)" (success)="onUploadSuccess($event)">
+        </dropzone>
+        <button type="button" class="ti-btn ti-btn-success ti-btn-xs mt-3 w-full" (click)="submitSlip()">
+          <i class="ri-upload-cloud-2-line mr-1"></i> อัปโหลดสลิป
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ปุ่มเช็คบิล สำหรับยังไม่เช็คบิล -->
+  <div *ngIf="reservation.status != 'completed' && reservation.status != 'checked_out' &&  reservation.orders.length > 0 " class="flex items-center justify-center mt-6">
+    <button
+      class="ti-btn ti-btn-success ti-btn-lg px-6 py-2 shadow-md !rounded-xl text-base font-bold flex gap-2 items-center"
+      (click)="checkBill()" data-hs-overlay="#view-bill">
+      <i class="ri-bill-line"></i> เช็คบิล/ชำระเงิน
     </button>
   </div>
 </div>

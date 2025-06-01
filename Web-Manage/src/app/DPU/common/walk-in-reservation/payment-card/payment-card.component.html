@@ -1,26 +1,71 @@
-<div class="box shadow-md rounded-2xl border border-green-200 dark:border-green-700 bg-white dark:bg-neutral-900 flex flex-col transition hover:scale-105">
-    <div class="p-4 bg-gradient-to-r from-green-100/60 to-white/80 dark:from-green-900/15 rounded-t-2xl flex items-center justify-between">
-      <div class="flex items-center gap-2 text-green-700">
-        <i class="ri-exchange-dollar-line text-2xl"></i>
-        <span class="font-bold text-base">ชำระเงิน</span>
-      </div>
-      <span class="badge bg-green-100 text-green-700 px-2 rounded">#D10</span>
+<div
+  class="box shadow-md rounded-2xl border border-green-200 dark:border-green-700 bg-white dark:bg-neutral-900 flex flex-col transition hover:scale-105">
+  <div
+    class="p-4 bg-gradient-to-r from-green/50 to-white/80 dark:from-green-900/15 rounded-t-2xl flex items-center justify-between">
+    <div class="flex items-center gap-2 text-green-700">
+      <i class="ri-exchange-dollar-line text-2xl"></i>
+      <span class="font-bold text-base">ชำระเงิน</span>
     </div>
+    <span class="badge bg-green-100 text-green-700 px-2 rounded">#{{ checkout.id}}</span>
+  </div>
+
+  <div class="flex flex-col items-center py-5 px-4 gap-2 flex-1">
+    <img *ngIf="checkout.payments[0].slip_url" [src]="checkout.payments[0].getSlipUrl()" alt="bill" class="rounded-xl w-32 h-32 object-cover border" />
     <div class="flex flex-col items-center py-5 px-4 gap-2 flex-1">
-      <img src="https://source.unsplash.com/320x200/?bill" alt="bill" class="rounded-xl w-32 h-32 object-cover border" />
-      <div class="mt-3 font-semibold text-gray-700 dark:text-white">โต๊ะโซน D</div>
-      <div class="text-xs text-gray-400">รวม 890.00 ฿</div>
+
+      <div class="mt-3 font-semibold text-gray-700 dark:text-white">{{ checkout.table ? 'โต๊ะ #' +
+        checkout.table.table_number : 'ห้อง: ' + (checkout.room?.name || '-') }}</div>
+      <div class="text-xs text-gray-400">เวลา {{ checkout.start_time | date: 'HH:mm' }}</div>
+      <div class="text-xs text-gray-400">{{ checkout.num_people || '-' }} คน ({{ checkout.user.name ||
+        checkout.user.phone || checkout.user_id || '-' }})</div>
     </div>
-    <div class="flex justify-between px-4 pb-4">
-      <button class="ti-btn ti-btn-primary ti-btn-xs rounded shadow" title="ดูบิล">
-        <i class="ri-file-list-3-line mr-1"></i> ดูบิล
-      </button>
-      <button class="ti-btn ti-btn-success ti-btn-xs rounded shadow" title="ยืนยันรับเงิน">
-        <i class="ri-check-double-line mr-1"></i> ยืนยันรับเงิน
-      </button>
-    </div>
-    <div class="border-t border-dashed bg-gray-50 dark:bg-neutral-800 rounded-b-2xl px-4 py-2 text-xs text-gray-500 flex items-center justify-between">
-      <span>เวลาคิดเงิน: 20:45 น.</span>
-      <span class="text-blue-600 underline cursor-pointer"><i class="ri-image-line"></i> ดูสลิป</span>
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-green-700 text-lg">
+          {{ getTotalAmount(checkout.orders) | number:'1.2-2' }} ฿
+        </span>
+        <span class="badge" [ngClass]="{
+              'bg-success text-green-700': checkout.status === 'completed',
+              'bg-warning text-yellow-700': checkout.status !== 'completed'
+            }">
+          <i class="ri-exchange-dollar-line mr-1"></i>
+          {{ checkout.status === 'completed' ? 'ชำระแล้ว' : 'รอชำระ' }}
+        </span>
+      </div>
     </div>
   </div>
+
+  <div class="flex justify-between px-4 pb-4">
+    <button class="ti-btn ti-btn-primary ti-btn-xs rounded shadow" title="ดูบิล" (click)="onViewBill()"
+      data-hs-overlay="#view-bill">
+      <i class="ri-file-list-3-line mr-1"></i> ดูบิล
+    </button>
+    <button class="ti-btn ti-btn-success ti-btn-xs rounded shadow" title="ยืนยันรับเงิน" (click)="onVerify()"
+      *ngIf="checkout.status !== 'completed'">
+      <i class="ri-check-double-line mr-1"></i> ยืนยันรับเงิน
+    </button>
+  </div>
+  <div class="px-4 py-3 bg-gray-50 dark:bg-neutral-800 border-t border-dashed dark:border-defaultborder/10">
+    <div class="font-semibold text-gray-600 dark:text-gray-200 text-xs mb-1 flex items-center gap-2">
+      <i class="ri-restaurant-line"></i> รายการอาหาร
+    </div>
+    <div class="flex flex-wrap gap-1">
+      <ng-container *ngFor="let order of checkout.orders">
+        <ng-container *ngFor="let item of order.order_items">
+          <span class="badge bg-blue-100/60 text-blue-600 px-2 py-1 rounded shadow-sm">
+            {{ item.menu.name }}
+            <span *ngIf="item.quantity > 1" class="ml-1 text-xs text-gray-400">x{{ item.quantity }}</span>
+          </span>
+        </ng-container>
+      </ng-container>
+    </div>
+    <div *ngIf="!checkout.orders?.length" class="text-gray-300 italic text-xs mt-2">ยังไม่มีข้อมูลอาหาร</div>
+  </div>
+  <div
+    class="border-t border-dashed bg-gray-50 dark:bg-neutral-800 rounded-b-2xl px-4 py-2 text-xs text-gray-500 flex items-center justify-between">
+    <!-- <span>เวลาคิดเงิน: 20:45 น.</span> -->
+    <!-- <span *ngIf="checkout.payments[0].slip_url" class="text-blue-600 underline cursor-pointer"><i
+        class="ri-image-line"></i> <a [href]="checkout.payments[0].slip_url" target="_blank"
+        class="underline text-blue-500"><i class="ri-image-line"></i> ดูสลิป</a></span> -->
+  </div>
+</div>

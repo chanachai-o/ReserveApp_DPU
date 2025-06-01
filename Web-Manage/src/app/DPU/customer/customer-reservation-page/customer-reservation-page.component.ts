@@ -218,4 +218,52 @@ export class CustomerReservationPageComponent implements OnInit {
     this.selectedBillRes = res;
     this.showBillModal = true;
   }
+
+  handleUploadSlip(item: any) {
+    this.showBillModal = false;
+    // ส่ง formData ไป backend (POST /payments หรือแล้วแต่ API)
+    this.http.put("http://127.0.0.1:8000/payments/orders/" + item.orders[0].id + "/payment", {
+      "amount": item.orders[0].total_amount,
+      "slip_url": item.payments[0].slip_url
+    }).subscribe(result => {
+      swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+      this.ngOnInit()
+    })
+  }
+
+  handleCheckOut(item: any) {
+    console.log(item);
+    this.showBillModal = false;
+    item.end_time = new Date().toISOString()
+    item.status = 'checked_out'
+
+    this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
+      console.log(result);
+      this.savePayment(item.orders[0].id)
+      // เช็คว่าเป็นการจองโต๊ะหรือห้อง เพื่อยกเลิกสถานะ
+      if (item.table_id) {
+        this.tableService.cancelReseave(item.table_id).subscribe(_ => {
+          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+          this.ngOnInit();
+        });
+      } else if (item.room_id) {
+        this.roomService.cancelReseave(item.room_id).subscribe(_ => {
+          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+          this.ngOnInit();
+        });
+      } else {
+        swal("Error", "ไม่พบข้อมูลโต๊ะหรือห้อง", "error");
+      }
+    });
+  }
+
+  savePayment(orderId: string) {
+    this.http.post("http://127.0.0.1:8000/payments/orders/" + orderId + "/payment", {
+      "amount": 0,
+      "slip_url": ""
+    }).subscribe(result => {
+      swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+      this.ngOnInit()
+    })
+  }
 }

@@ -136,6 +136,7 @@ export interface Menus {
   price: number;
   is_active: boolean;
   picture?: string | null;
+  getPicture(): string;
 }
 export class MenusModel extends BaseModel implements Menus {
   id = 0;
@@ -179,7 +180,7 @@ export class OrderItemModel extends BaseModel implements OrderItem {
   menu_id = 0;
   quantity = 1;
   status = OrderItemStatus.Pending;
-  menu: Menus = { id: 0, name: '', price: 0, is_active: false };
+  menu: Menus
   note?: string | null = null;
   constructor(data: Partial<OrderItem> = {}) {
     super(data);
@@ -187,7 +188,7 @@ export class OrderItemModel extends BaseModel implements OrderItem {
     this.menu_id = data.menu_id || 0;
     this.quantity = data.quantity || 1;
     this.status = data.status || OrderItemStatus.Pending;
-    this.menu = data.menu ? new MenusModel(data.menu) : { id: 0, name: '', price: 0, is_active: false };
+    this.menu = data.menu ? new MenusModel(data.menu) : new MenusModel();
     this.note = data.note || null;
   }
 }
@@ -225,6 +226,7 @@ export interface Payment {
   amount: number;
   slip_url: string | null;
   status: PaymentStatus;
+  getSlipUrl(): string;
 }
 export class PaymentModel extends BaseModel implements Payment {
   id = 0;
@@ -239,6 +241,9 @@ export class PaymentModel extends BaseModel implements Payment {
     this.amount = data.amount || 0;
     this.slip_url = data.slip_url || null;
     this.status = data.status || PaymentStatus.Pending;
+  }
+  getSlipUrl(): string {
+    return this.slip_url ? environment.baseUrl + '/images/' + this.slip_url : 'assets/img/no-image.png';
   }
 }
 
