@@ -69,7 +69,7 @@
   </div>
 
   <!-- ปุ่มเช็คบิล สำหรับยังไม่เช็คบิล -->
-  <div *ngIf="reservation.status != 'completed' && reservation.status != 'checked_out' &&  reservation.orders.length > 0 "
+  <div *ngIf="reservation.status != 'completed' && reservation.status != 'checked_out'"
     class="bill-checkout-btn-wrap">
     <button class="ti-btn ti-btn-success ti-btn-lg bill-checkout-btn"
       (click)="checkBill()" data-hs-overlay="#view-bill">

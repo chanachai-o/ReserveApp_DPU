@@ -272,7 +272,9 @@ export class WalkInReservationComponent {
 
     this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
       console.log(result);
-      this.savePayment(item.orders[0].id)
+      if (item.orders.length > 0) {
+        this.savePayment(item.orders[0].id)
+      }
       // เช็คว่าเป็นการจองโต๊ะหรือห้อง เพื่อยกเลิกสถานะ
       if (item.table_id) {
         this.tableService.cancelReseave(item.table_id).subscribe(_ => {

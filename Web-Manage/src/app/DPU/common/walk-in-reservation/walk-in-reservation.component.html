@@ -92,7 +92,7 @@
       <div class="ti-modal-body px-6 py-6 !overflow-visible">
         <app-table-reservation [tableId]="selectedTable?.type === 'table' ? selectedTable?.id : 0"
           [roomId]="selectedTable?.type === 'room' ? selectedTable?.id : 0" [type]="selectedTable?.type"
-          [status]="'checked_in'" (reserve)="reserveTable($event)">
+          [status]="'checked_in'" (reserve)="checkInTable($event)">
         </app-table-reservation>
       </div>
     </div>
