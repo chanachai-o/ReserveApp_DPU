@@ -108,3 +108,44 @@
   .booking-main { flex-direction: column; }
   .booking-select, .booking-sidebar { width: 100%; }
 }
+
+.booking-map-overlay {
+  position: fixed;
+  z-index: 1050;
+  inset: 0; // top:0; right:0; bottom:0; left:0
+  background: rgba(10,24,40,0.86);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s;
+
+  .booking-map-img {
+    max-width: 90vw;
+    max-height: 88vh;
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px rgba(30,50,70,0.18);
+    background: #fff;
+    object-fit: contain;
+    padding: 1.5rem;
+  }
+
+  .booking-map-close {
+    position: absolute;
+    top: 2rem; right: 2rem;
+    background: rgba(255,255,255,0.92);
+    border: none;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(30,40,60,0.10);
+    padding: 0.5rem 0.7rem;
+    cursor: pointer;
+    z-index: 1100;
+    font-size: 2rem;
+    transition: background .15s;
+    &:hover { background: #eee; }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
