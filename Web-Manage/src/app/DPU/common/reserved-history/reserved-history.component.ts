@@ -41,25 +41,42 @@ export class ReservedHistoryComponent {
   ) { }
 
   ngOnInit() {
-    // load allList, customerList ...
+
     this.reservationService.getReservations({}).subscribe(reservations => {
       this.allList = reservations;
-      this.filteredList = [...this.allList]; // เริ่มต้นแสดงทั้งหมด
+      this.dateFrom = '';
+      this.dateTo = '';
+      this.selectedCustomer = undefined;
+      this.filter()
     });
     this.userService.getLists().subscribe(result => {
       this.customerList = result.filter(e => e.role == 'customer')
-    })
-    this.filter();
+    });
   }
 
   filter() {
     this.filteredList = this.allList.filter(r => {
+      // เปรียบเทียบ customer
       let matchCustomer = !this.selectedCustomer || r.user_id === this.selectedCustomer;
-      let matchFrom = !this.dateFrom || r.start_time >= this.dateFrom;
-      let matchTo = !this.dateTo || r.start_time <= this.dateTo + 'T23:59:59';
+      // เปรียบเทียบวันที่เริ่ม (From)
+      let matchFrom = true, matchTo = true;
+
+      if (this.dateFrom) {
+        // แปลงทั้งสองเป็น date เทียบกัน (เอาแต่วันที่)
+        const from = new Date(this.dateFrom + 'T00:00:00');
+        const start = new Date(r.start_time);
+        matchFrom = start >= from;
+      }
+      if (this.dateTo) {
+        // dateTo จะปิดวัน ต้อง +1 วัน หรือ set เวลาเป็น 23:59:59
+        const to = new Date(this.dateTo + 'T23:59:59');
+        const start = new Date(r.start_time);
+        matchTo = start <= to;
+      }
       return matchCustomer && matchFrom && matchTo;
     });
   }
+
 
   getTotalAmount(res: ReservationModel): number {
     return res.orders?.reduce((sum, o) => sum + (o.total_amount || 0), 0) ?? 0;
