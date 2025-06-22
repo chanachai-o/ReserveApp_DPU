@@ -1,60 +1,144 @@
-# myproject/routes/menus_routes.py
+# src/routes/menu_routes.py
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from typing import List
-from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
+from typing import List, Optional
 
+# --- Local Imports ---
 from ..config.database import get_db
-from ..controllers.menu_controller import (
-    get_all_menus,
-    get_menu_by_id,
-    create_menu,
-    update_menu,
-    delete_menu
-)
-from ..schemas.menu_schema import (
-    MenuCreate,
-    MenuUpdate,
-    MenuResponse
-)
+from ..models import Menu, MenuCategory
+from ..schemas import MenuCreate, MenuUpdate, MenuOut
+# from ..middlewares.auth_middleware import require_role # หากต้องการใช้ auth
 
-router = APIRouter()
+menu_router = APIRouter()
 
-# GET ALL
-@router.get("/", response_model=List[MenuResponse])
-async def read_menus(db: AsyncSession = Depends(get_db)):
-    return await get_all_menus(db)
+# ================================================================
+#                       Menu Endpoints
+# ================================================================
 
-# GET ONE
-@router.get("/{menusId}", response_model=MenuResponse)
-async def read_menus(menusId: UUID, db: AsyncSession = Depends(get_db)):
-    eq_db = await get_menu_by_id(menusId, db)
-    if not eq_db:
-        raise HTTPException(status_code=404, detail="Menus not found")
-    return eq_db
-
-# CREATE
-@router.post("/", response_model=MenuResponse, status_code=status.HTTP_201_CREATED)
-async def create_new_menus(
-    menus_in: MenuCreate,
+@menu_router.post("/menus", response_model=MenuOut, status_code=status.HTTP_201_CREATED)
+async def create_new_menu(
+    menu_in: MenuCreate,
     db: AsyncSession = Depends(get_db)
 ):
-    return await create_menu(menus_in, db)
+    """
+    สร้างรายการเมนูใหม่
+    """
+    # ตรวจสอบว่า category_id ที่ระบุมามีอยู่จริงหรือไม่
+    category = await db.get(MenuCategory, menu_in.category_id)
+    if not category:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"MenuCategory with id {menu_in.category_id} not found."
+        )
 
-# UPDATE
-@router.put("/{menusId}", response_model=MenuResponse)
-async def update_existing_menus(
-    menusId: UUID,
-    menus_in: MenuUpdate,
+    db_menu = Menu(**menu_in.model_dump())
+    db.add(db_menu)
+    await db.commit()
+    
+    # Eager load the 'category' relationship before returning
+    await db.refresh(db_menu, ["category"])
+    
+    return db_menu
+
+
+@menu_router.get("/menus", response_model=List[MenuOut])
+async def get_all_menus(
+    category_id: Optional[int] = None,
+    available_only: bool = True,
     db: AsyncSession = Depends(get_db)
 ):
-    return await update_menu(menusId, menus_in, db)
+    """
+    ดึงข้อมูลเมนูทั้งหมด สามารถกรองตามหมวดหมู่ (category_id)
+    และสถานะความพร้อมใช้งาน (available_only)
+    """
+    stmt = (
+        select(Menu)
+        .options(selectinload(Menu.category)) # Eager load category data
+        .order_by(Menu.id)
+    )
+    
+    if category_id:
+        stmt = stmt.where(Menu.category_id == category_id)
+    
+    if available_only:
+        stmt = stmt.where(Menu.is_active == True)
 
-# DELETE
-@router.delete("/{menusId}")
-async def delete_existing_menus(
-    menusId: UUID,
+    result = await db.execute(stmt)
+    menus = result.scalars().all()
+    return menus
+
+
+@menu_router.get("/menus/{menu_id}", response_model=MenuOut)
+async def get_menu_by_id(
+    menu_id: int,
     db: AsyncSession = Depends(get_db)
 ):
-    return await delete_menu(menusId, db)
+    """
+    ดึงข้อมูลเมนูตาม ID
+    """
+    stmt = (
+        select(Menu)
+        .where(Menu.id == menu_id)
+        .options(selectinload(Menu.category))
+    )
+    result = await db.execute(stmt)
+    menu = result.scalars().first()
+    
+    if not menu:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Menu not found")
+    return menu
+
+
+@menu_router.put("/menus/{menu_id}", response_model=MenuOut)
+async def update_existing_menu(
+    menu_id: int,
+    menu_in: MenuUpdate,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    อัปเดตข้อมูลเมนู
+    """
+    db_menu = await db.get(Menu, menu_id)
+    if not db_menu:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Menu not found")
+
+    update_data = menu_in.model_dump(exclude_unset=True)
+
+    # ตรวจสอบ category_id ใหม่ (ถ้ามีการส่งมา)
+    if 'category_id' in update_data:
+        category = await db.get(MenuCategory, update_data['category_id'])
+        if not category:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"MenuCategory with id {update_data['category_id']} not found."
+            )
+
+    for key, value in update_data.items():
+        setattr(db_menu, key, value)
+    
+    await db.commit()
+    
+    # Eager load the 'category' relationship before returning
+    await db.refresh(db_menu, ["category"])
+    
+    return db_menu
+
+
+@menu_router.delete("/menus/{menu_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_existing_menu(
+    menu_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    ลบเมนู
+    """
+    db_menu = await db.get(Menu, menu_id)
+    if not db_menu:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Menu not found")
+    
+    await db.delete(db_menu)
+    await db.commit()
+    return None
