@@ -9,7 +9,8 @@ from decimal import Decimal
 
 # --- Local Imports ---
 from ..config.database import get_db
-from ..models import Order, OrderItem, Reservation, Menu, User, OrderStatus, MenuCategory
+# เพิ่ม Notification model เข้ามา
+from ..models import Order, OrderItem, Reservation, Menu, User, OrderStatus, MenuCategory, Notification
 from ..schemas import OrderCreate, OrderUpdate, OrderOut
 # from ..middlewares.auth_middleware import require_role
 
@@ -29,7 +30,6 @@ async def get_full_order(order_id: int, db: AsyncSession) -> Optional[Order]:
         .options(
             selectinload(Order.user),
             selectinload(Order.reservation),
-            # --- แก้ไขจุดนี้: เพิ่มการโหลด category ที่ซ้อนอยู่ใน menu ---
             selectinload(Order.order_items).options(
                 selectinload(OrderItem.menu).selectinload(Menu.category)
             ),
@@ -51,7 +51,6 @@ async def create_new_order(
     """
     สร้างออเดอร์ใหม่ สามารถผูกกับ reservation ที่มีอยู่หรือสร้างเป็นออเดอร์ลอยๆ ก็ได้
     """
-    # ตรวจสอบว่า user และ reservation (ถ้ามี) อยู่จริงหรือไม่
     user = await db.get(User, order_in.user_id)
     if not user:
         raise HTTPException(status_code=404, detail=f"User with id {order_in.user_id} not found")
@@ -61,7 +60,6 @@ async def create_new_order(
         if not reservation:
             raise HTTPException(status_code=404, detail=f"Reservation with id {order_in.reservation_id} not found")
 
-    # สร้าง Order หลัก
     db_order = Order(
         user_id=order_in.user_id,
         reservation_id=order_in.reservation_id,
@@ -73,7 +71,6 @@ async def create_new_order(
     total_amount = Decimal("0.0")
     order_item_objects = []
 
-    # วนลูปสร้าง OrderItem และคำนวณราคารวม
     for item_in in order_in.order_items:
         menu_item = await db.get(Menu, item_in.menu_id)
         if not menu_item or not menu_item.is_active:
@@ -94,9 +91,18 @@ async def create_new_order(
     db.add_all(order_item_objects)
     db_order.total_amount = total_amount
     
+    # --- เพิ่มการสร้าง Notification ---
+    notification_for_customer = Notification(
+        user_id=db_order.user_id,
+        title="รับออเดอร์แล้ว",
+        message=f"เราได้รับออเดอร์ #{db_order.id} ของคุณแล้ว และกำลังส่งรายการอาหารไปที่ครัว",
+        type="order_created"
+    )
+    db.add(notification_for_customer)
+    # --- สิ้นสุดการสร้าง Notification ---
+    
     await db.commit()
     
-    # ดึงข้อมูลทั้งหมดกลับมาเพื่อ return response ที่สมบูรณ์
     return await get_full_order(db_order.id, db)
 
 
@@ -112,7 +118,6 @@ async def get_all_orders(
     stmt = (
         select(Order)
         .options(
-            # --- แก้ไขจุดนี้: เพิ่มการโหลด category ที่ซ้อนอยู่ใน menu ---
             selectinload(Order.user),
             selectinload(Order.reservation),
             selectinload(Order.order_items).options(
@@ -146,8 +151,6 @@ async def get_order_by_id(
     return order
 
 
-# --- Endpoint ที่เพิ่มใหม่ ---
-
 @orders_router.post("/{order_id}/status", response_model=OrderOut)
 async def update_order_status(
     order_id: int,
@@ -163,6 +166,29 @@ async def update_order_status(
 
     if order_in.status is not None:
         db_order.status = order_in.status
+        
+        # --- เพิ่มการสร้าง Notification ตามสถานะ ---
+        title = ""
+        message = ""
+        if order_in.status == OrderStatus.PREPARING:
+            title = "กำลังเตรียมออเดอร์"
+            message = f"ครัวกำลังเริ่มทำออเดอร์ #{db_order.id} ของคุณ"
+        elif order_in.status == OrderStatus.READY:
+            title = "อาหารพร้อมเสิร์ฟ"
+            message = f"อาหารสำหรับออเดอร์ #{db_order.id} ของคุณพร้อมเสิร์ฟแล้ว"
+        elif order_in.status == OrderStatus.CANCELLED:
+            title = "ออเดอร์ถูกยกเลิก"
+            message = f"ออเดอร์ #{db_order.id} ของคุณถูกยกเลิกแล้ว"
+
+        if title and message:
+            notification = Notification(
+                user_id=db_order.user_id,
+                title=title,
+                message=message,
+                type="order_status_update"
+            )
+            db.add(notification)
+        # --- สิ้นสุดการสร้าง Notification ---
 
     await db.commit()
     return await get_full_order(order_id, db)
@@ -180,8 +206,6 @@ async def delete_order(
     if not db_order:
         raise HTTPException(status_code=404, detail="Order not found")
     
-    # TODO: เพิ่มเงื่อนไขว่าสามารถลบได้เฉพาะบางสถานะเท่านั้น เช่น CANCELLED
-
     await db.delete(db_order)
     await db.commit()
     return None

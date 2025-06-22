@@ -9,7 +9,7 @@ from decimal import Decimal
 
 # --- Local Imports ---
 from ..config.database import get_db
-from ..models import Reservation, Order, OrderItem, Menu, User, Table, Room, OrderStatus, UserRole
+from ..models import Reservation, Order, OrderItem, Menu, User, Table, Room, OrderStatus, UserRole, Notification
 from ..schemas import ReservationCreate, ReservationOut, TakeawayOrderCreate, OrderOut
 # from ..middlewares.auth_middleware import get_current_user
 # from passlib.context import CryptContext # หากต้องการสร้าง user on-the-fly
@@ -74,6 +74,18 @@ async def create_dine_in_reservation(
 
     db_reservation = Reservation(**reservation_in.model_dump())
     db.add(db_reservation)
+    
+    # --- เพิ่มการสร้าง Notification ---
+    reservation_time_str = db_reservation.start_time.strftime('%d/%m/%Y %H:%M')
+    notification_for_customer = Notification(
+        user_id=db_reservation.user_id,
+        title="การจองสำเร็จ",
+        message=f"การจองของคุณสำหรับวันที่ {reservation_time_str} ได้รับการยืนยันแล้ว",
+        type="reservation"
+    )
+    db.add(notification_for_customer)
+    # --- สิ้นสุดการสร้าง Notification ---
+
     await db.commit()
     await db.refresh(db_reservation, ["customer", "table", "room"])
     return db_reservation
@@ -124,8 +136,20 @@ async def create_takeaway_order(
         )
         db.add(db_order_item)
 
-    # 4. อัปเดตราคารวมและบันทึก
+    # 4. อัปเดตราคารวม
     db_order.total_amount = total_amount
+    
+    # --- เพิ่มการสร้าง Notification ---
+    pickup_time_str = order_in.expected_pickup_time.strftime('%H:%M')
+    notification_for_takeaway = Notification(
+        user_id=guest_user.id,
+        title="รับออเดอร์แล้ว",
+        message=f"ออเดอร์สั่งกลับบ้านของคุณ (ID: {db_order.id}) ได้รับการยืนยันแล้ว สามารถรับได้เวลาประมาณ {pickup_time_str} น.",
+        type="order"
+    )
+    db.add(notification_for_takeaway)
+    # --- สิ้นสุดการสร้าง Notification ---
+    
     await db.commit()
 
     # 5. Query ข้อมูลทั้งหมดกลับมาเพื่อ return response ที่สมบูรณ์
@@ -135,7 +159,6 @@ async def create_takeaway_order(
         .options(
             selectinload(Order.user),
             selectinload(Order.order_items).selectinload(OrderItem.menu).selectinload(Menu.category),
-            # --- แก้ไขจุดนี้: เพิ่มการโหลด payments ---
             selectinload(Order.payments) 
         )
     )

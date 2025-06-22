@@ -3,13 +3,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 from typing import List, Optional
 
 # --- Local Imports ---
 from ..config.database import get_db
-from ..models import Payment, Order, PaymentStatus
-from ..schemas import PaymentCreate, PaymentUpdate, PaymentOut
-from src.schemas import PaymentVerify
+# เพิ่ม Notification และ User models เข้ามา
+from ..models import Payment, Order, PaymentStatus, Notification, User
+from ..schemas import PaymentCreate, PaymentUpdate, PaymentOut, PaymentVerify
 # from ..middlewares.auth_middleware import require_role # หากต้องการใช้ auth
 
 payments_router = APIRouter()
@@ -87,8 +88,17 @@ async def verify_payment(
 ):
     """
     ยืนยันหรือปฏิเสธการชำระเงิน (สำหรับ Cashier/Manager)
+    และส่งการแจ้งเตือนไปยังลูกค้า
     """
-    payment = await db.get(Payment, payment_id)
+    # Eager load the order and user relationship to get the user_id for notification
+    stmt = (
+        select(Payment)
+        .where(Payment.id == payment_id)
+        .options(selectinload(Payment.order).selectinload(Order.user))
+    )
+    result = await db.execute(stmt)
+    payment = result.scalars().first()
+    
     if not payment:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payment not found")
 
@@ -97,10 +107,28 @@ async def verify_payment(
 
     payment.status = verify_data.status
     
-    # หากการชำระเงินสำเร็จ (COMPLETED), อาจจะต้องอัปเดตสถานะของ Order หรือ Reservation ด้วย
-    if verify_data.status == PaymentStatus.COMPLETED:
-        # TODO: เพิ่ม Logic อัปเดตสถานะ Order/Reservation ที่เกี่ยวข้อง
-        pass
+    # --- เพิ่มการสร้าง Notification ---
+    if payment.order and payment.order.user:
+        title = ""
+        message = ""
+        if payment.status == PaymentStatus.COMPLETED:
+            title = "การชำระเงินสำเร็จ"
+            message = f"การชำระเงินสำหรับออเดอร์ #{payment.order_id} จำนวน {payment.amount} บาท สำเร็จแล้ว"
+            # TODO: เพิ่ม Logic อัปเดตสถานะ Order/Reservation ที่เกี่ยวข้องเป็น COMPLETED
+            
+        elif payment.status == PaymentStatus.FAILED:
+            title = "การชำระเงินล้มเหลว"
+            message = f"การชำระเงินสำหรับออเดอร์ #{payment.order_id} ล้มเหลว กรุณาติดต่อพนักงาน"
+            
+        if title and message:
+            notification = Notification(
+                user_id=payment.order.user.id,
+                title=title,
+                message=message,
+                type="payment_update"
+            )
+            db.add(notification)
+    # --- สิ้นสุดการสร้าง Notification ---
 
     await db.commit()
     await db.refresh(payment)

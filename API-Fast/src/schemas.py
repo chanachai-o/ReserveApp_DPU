@@ -170,6 +170,7 @@ class OrderItemOut(OrderItemBase):
 class PaymentBase(BaseModel):
     amount: Decimal
     payment_method: str
+    slip_url: str
     status: Optional[PaymentStatus] = PaymentStatus.PENDING
 
 class PaymentCreate(PaymentBase):

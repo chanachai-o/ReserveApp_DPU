@@ -9,7 +9,8 @@ from datetime import datetime
 
 # --- Local Imports ---
 from ..config.database import get_db
-from ..models import Reservation, User, Table, Room, Order, OrderItem, Payment, ReservationStatus, TableStatus, RoomStatus
+# เพิ่ม Notification model เข้ามา
+from ..models import Reservation, User, Table, Room, Order, OrderItem, Payment, ReservationStatus, TableStatus, RoomStatus, Notification
 from ..schemas import ReservationCreate, ReservationUpdate, ReservationOut, OrderOut, PaymentOut
 # from ..middlewares.auth_middleware import require_role # หากต้องการใช้ auth
 
@@ -74,6 +75,18 @@ async def create_new_reservation(
 
     db_reservation = Reservation(**reservation_in.model_dump())
     db.add(db_reservation)
+    
+    # --- เพิ่มการสร้าง Notification ---
+    reservation_time_str = db_reservation.start_time.strftime('%d %b %Y, %H:%M')
+    notification_for_customer = Notification(
+        user_id=db_reservation.user_id,
+        title="การจองของคุณได้รับการยืนยัน",
+        message=f"การจองสำหรับวันที่ {reservation_time_str} ได้รับการยืนยันเรียบร้อยแล้ว",
+        type="reservation_confirmed"
+    )
+    db.add(notification_for_customer)
+    # --- สิ้นสุดการสร้าง Notification ---
+
     await db.commit()
     
     # แก้ไข: re-query ข้อมูลทั้งหมดเพื่อป้องกัน MissingGreenlet error
@@ -168,9 +181,20 @@ async def update_reservation_details(
     for key, value in update_data.items():
         setattr(db_reservation, key, value)
     
+    # --- เพิ่มการสร้าง Notification เมื่อสถานะเปลี่ยน ---
+    if 'status' in update_data:
+        new_status = update_data['status']
+        notification = Notification(
+            user_id=db_reservation.user_id,
+            title=f"การจองของคุณอัปเดตแล้ว",
+            message=f"สถานะการจอง #{db_reservation.id} ได้เปลี่ยนเป็น {new_status.value}",
+            type="reservation_update"
+        )
+        db.add(notification)
+    # --- สิ้นสุดการสร้าง Notification ---
+        
     await db.commit()
     
-    # แก้ไข: re-query ข้อมูลทั้งหมดเพื่อป้องกัน MissingGreenlet error
     return await get_full_reservation(reservation_id, db)
 
 
@@ -196,10 +220,19 @@ async def checkin_reservation(reservation_id: int, db: AsyncSession = Depends(ge
         room = await db.get(Room, reservation.room_id)
         if room:
             room.status = RoomStatus.occupied
+    
+    # --- เพิ่มการสร้าง Notification ---
+    notification = Notification(
+        user_id=reservation.user_id,
+        title="เช็คอินสำเร็จ",
+        message=f"คุณได้ทำการเช็คอินสำหรับการจอง #{reservation.id} เรียบร้อยแล้ว",
+        type="check_in"
+    )
+    db.add(notification)
+    # --- สิ้นสุดการสร้าง Notification ---
             
     await db.commit()
     
-    # แก้ไข: re-query ข้อมูลทั้งหมดเพื่อป้องกัน MissingGreenlet error
     return await get_full_reservation(reservation_id, db)
 
 
@@ -228,9 +261,18 @@ async def checkout_reservation(reservation_id: int, db: AsyncSession = Depends(g
         if room:
             room.status = RoomStatus.available
 
+    # --- เพิ่มการสร้าง Notification ---
+    notification = Notification(
+        user_id=reservation.user_id,
+        title="ขอบคุณที่ใช้บริการ",
+        message=f"การเช็คเอาท์ของคุณเสร็จสมบูรณ์ ขอบคุณที่มาใช้บริการกับเรา",
+        type="check_out"
+    )
+    db.add(notification)
+    # --- สิ้นสุดการสร้าง Notification ---
+            
     await db.commit()
     
-    # แก้ไข: re-query ข้อมูลทั้งหมดเพื่อป้องกัน MissingGreenlet error
     return await get_full_reservation(reservation_id, db)
 
 
@@ -243,6 +285,19 @@ async def delete_reservation(reservation_id: int, db: AsyncSession = Depends(get
     if not reservation:
         raise HTTPException(status_code=404, detail="Reservation not found")
     
+    # --- เพิ่มการสร้าง Notification ก่อนลบ ---
+    # เราต้องสร้างและ commit notification ก่อนที่จะลบ reservation เพราะ user_id จะหายไป
+    if reservation.user_id:
+        notification = Notification(
+            user_id=reservation.user_id,
+            title="การจองถูกยกเลิก",
+            message=f"การจอง #{reservation.id} ของคุณได้ถูกยกเลิกโดยผู้ดูแลระบบ",
+            type="reservation_cancelled_by_admin"
+        )
+        db.add(notification)
+        await db.commit()
+    # --- สิ้นสุดการสร้าง Notification ---
+
     await db.delete(reservation)
     await db.commit()
     return None
