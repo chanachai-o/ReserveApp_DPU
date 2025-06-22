@@ -1,58 +1,130 @@
-# src/routers/customers.py
+# src/routes/customers_router.py (ฉบับปรับปรุงตาม Schemas ล่าสุด)
+
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
+from typing import List, Optional
+from decimal import Decimal
 
-from ..models import User, UserRole, Reservation, Order
-from ..schemas import CustomerHistoryOut, CustomerBanUpdate, ReservationBrief, OrderBrief
+# --- Local Imports ---
 from ..config.database import get_db
+from ..models import Reservation, Order, OrderItem, Menu, User, Table, Room, OrderStatus
+from ..schemas import ReservationCreate, ReservationOut, OrderCreate, OrderOut
+# from ..middlewares.auth_middleware import get_current_user # หากต้องการใช้ auth
 
+customers_router = APIRouter()
 
-customers_router = APIRouter(prefix="/customers", tags=["Customers"])
+# ================================================================
+#                       Reservations Endpoint
+# ================================================================
 
-# ──────────────────────────────────────────────────────────────
-@customers_router.get("/{customer_id}/history", response_model=CustomerHistoryOut)
-async def get_customer_history(
-    customer_id: int,
+@customers_router.post("/reservations", response_model=ReservationOut, status_code=status.HTTP_201_CREATED)
+async def create_reservation(
+    reservation_in: ReservationCreate, 
     db: AsyncSession = Depends(get_db)
+    # current_user: User = Depends(get_current_user) # สามารถใช้ user ที่ login อยู่ได้
 ):
-    # ✅ Manager only
+    """
+    สร้างการจองโต๊ะหรือห้อง (Dine-in Reservation).
+    - ต้องระบุ user_id ของลูกค้า
+    - ต้องระบุ table_id หรือ room_id อย่างน้อยหนึ่งอย่าง
+    """
+    # ตรวจสอบว่ามี user อยู่จริงหรือไม่
+    user = await db.get(User, reservation_in.user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-    # ── 1. ดึง User (ต้องเป็นลูกค้า)
-    stmt_user = select(User).where(User.id == customer_id)
-    user = (await db.execute(stmt_user)).scalars().first()
-    if not user or user.role != UserRole.customer:
-        raise HTTPException(status_code=404, detail="Customer not found")
+    # ตรวจสอบว่ามีการเลือกโต๊ะหรือห้อง
+    if not reservation_in.table_id and not reservation_in.room_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Either a table_id or a room_id must be provided for a reservation."
+        )
 
-    # ── 2. ดึง Reservations
-    stmt_res = select(Reservation).where(Reservation.user_id == customer_id).order_by(Reservation.start_time.desc())
-    reservations = (await db.execute(stmt_res)).scalars().all()
+    # TODO: ควรเพิ่ม Logic ตรวจสอบว่าโต๊ะหรือห้องว่างในช่วงเวลาที่จองหรือไม่
 
-    # ── 3. ดึง Orders
-    stmt_ord = select(Order).where(Order.user_id == customer_id).order_by(Order.id.desc())
-    orders = (await db.execute(stmt_ord)).scalars().all()
-
-    return CustomerHistoryOut(
-        customer_id=user.id,
-        name=user.name,
-        phone=user.phone,
-        reservations=reservations,
-        orders=orders,
-    )
-
-# ──────────────────────────────────────────────────────────────
-@customers_router.patch("/{customer_id}/ban", response_model=dict)
-async def ban_or_unban_customer(
-    customer_id: int,
-    payload: CustomerBanUpdate,
-    db: AsyncSession = Depends(get_db)
-):
-
-    stmt = select(User).where(User.id == customer_id)
-    user = (await db.execute(stmt)).scalars().first()
-    if not user or user.role != UserRole.customer:
-        raise HTTPException(status_code=404, detail="Customer not found")
-
-    user.is_active = payload.is_active
+    db_reservation = Reservation(**reservation_in.model_dump())
+    db.add(db_reservation)
     await db.commit()
-    return {"detail": "Updated", "is_active": user.is_active}
+    
+    # Eager load relationships เพื่อให้ response สมบูรณ์
+    await db.refresh(db_reservation, ["customer", "table", "room"])
+    
+    return db_reservation
+
+# ================================================================
+#                       Orders Endpoint
+# ================================================================
+
+@customers_router.post("/orders", response_model=OrderOut, status_code=status.HTTP_201_CREATED)
+async def create_order(
+    order_in: OrderCreate, 
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    สร้างออเดอร์ใหม่ (สำหรับสั่งอาหาร)
+    - สามารถผูกกับ reservation_id ที่มีอยู่ (สำหรับลูกค้าที่จองโต๊ะ)
+    - หรือสร้างเป็นออเดอร์ลอยๆ (สำหรับ Takeaway หรือ Walk-in)
+    """
+    # ตรวจสอบว่า user_id มีอยู่จริง
+    user = await db.get(User, order_in.user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    # ถ้ามี reservation_id, ตรวจสอบว่ามีอยู่จริง
+    if order_in.reservation_id:
+        reservation = await db.get(Reservation, order_in.reservation_id)
+        if not reservation:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Reservation not found")
+
+    # สร้าง Order หลัก
+    db_order = Order(
+        user_id=order_in.user_id,
+        reservation_id=order_in.reservation_id,
+        status=OrderStatus.PENDING
+    )
+    db.add(db_order)
+    await db.flush() # เพื่อให้ได้ db_order.id
+
+    total_amount = Decimal("0.0")
+    
+    # วนลูปสร้าง OrderItem
+    for item_in in order_in.order_items:
+        menu_item = await db.get(Menu, item_in.menu_id)
+        if not menu_item or not menu_item.is_available:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Menu item with ID {item_in.menu_id} is not available.")
+        
+        # ราคาของรายการ = ราคาต่อหน่วย * จำนวน
+        item_total_price = menu_item.price * item_in.quantity
+        total_amount += item_total_price
+
+        # สร้าง OrderItem และผูกกับ Order
+        db_order_item = OrderItem(
+            order_id=db_order.id,
+            menu_id=item_in.menu_id,
+            quantity=item_in.quantity,
+            price=item_total_price, # บันทึกราคารวมของรายการนี้
+            status=OrderStatus.PENDING # ใช้ OrderStatus จาก models
+        )
+        db.add(db_order_item)
+
+    # อัปเดตราคารวมใน Order หลัก
+    db_order.total_amount = total_amount
+    
+    await db.commit()
+    
+    # Query ข้อมูลทั้งหมดกลับมาเพื่อ return response ที่สมบูรณ์
+    stmt = (
+        select(Order)
+        .where(Order.id == db_order.id)
+        .options(
+            selectinload(Order.user),
+            selectinload(Order.order_items).selectinload(OrderItem.menu),
+            selectinload(Order.payments)
+        )
+    )
+    result = await db.execute(stmt)
+    final_order = result.scalars().first()
+
+    return final_order
