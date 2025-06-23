@@ -26,7 +26,7 @@ import { ReservationModel } from '../models/all.model';
 })
 export class ReservationService {
   /** URL ต้นทาง:  https://api.example.com/reservations */
-  private readonly BASE_URL = `${environment.apiBaseUrl}/reservations`;
+  private readonly BASE_URL = `${environment.apiBaseUrl}/api/reservations`;
 
   constructor(private http: HttpClient) { }
 

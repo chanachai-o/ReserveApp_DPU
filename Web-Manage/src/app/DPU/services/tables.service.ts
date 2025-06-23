@@ -10,7 +10,7 @@ import { AvailableItem } from '../models/all.model';
 export class TablesService {
 
 
-  apiBaseUrl = "/tables";
+  apiBaseUrl = "/api/tables";
   constructor(
     private http: HttpClient
   ) { }

@@ -9,7 +9,7 @@ import { MenusModel } from '../models/all.model';
 export class MenusService {
 
 
-  apiBaseUrl = "/menus";
+  apiBaseUrl = "/api/menus";
   constructor(
     private http: HttpClient
   ) { }

@@ -10,7 +10,7 @@ import { AvailableItem } from '../models/all.model';
 export class RoomService {
 
 
-  apiBaseUrl = "/rooms";
+  apiBaseUrl = "/api/rooms";
   constructor(
     private http: HttpClient
   ) { }
