@@ -49,7 +49,7 @@ export class ReservedHistoryComponent {
       this.selectedCustomer = undefined;
       this.filter()
     });
-    this.userService.getLists().subscribe(result => {
+    this.userService.getUsers().subscribe(result => {
       this.customerList = result.filter(e => e.role == 'customer')
     });
   }

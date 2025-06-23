@@ -118,7 +118,7 @@ export class UserSettingComponent {
 
 
   ngOnInit(): void {
-    this.userService.getLists().subscribe(result => {
+    this.userService.getUsers().subscribe(result => {
       this.itemsList = result.filter(e => e.role != 'customer')
       this.updatePagedItems()
     })
@@ -145,7 +145,7 @@ export class UserSettingComponent {
     })
       .then((willDelete: any) => {
         if (willDelete) {
-          this.userService.delete(item).subscribe(result => {
+          this.userService.deleteUser(item.id).subscribe(result => {
             swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
             this.ngOnInit()
           })
@@ -178,14 +178,14 @@ export class UserSettingComponent {
       .then((willDelete: any) => {
         if (willDelete) {
           if (this.action == 'add') {
-            this.userService.save(this.selectModel).subscribe(result => {
+            this.userService.createUser(this.selectModel).subscribe(result => {
               console.log(result)
               swal("Save Success!!", "บันทึกข้อมูลสมาชิก", "success");
               this.ngOnInit()
               this.childModal?.nativeElement.click()
             })
           } else if (this.action == 'edit') {
-            this.userService.update(this.selectModel).subscribe(result => {
+            this.userService.updateUser(this.selectModel.id,this.selectModel).subscribe(result => {
               console.log(result)
               swal("Update Success!!", "บันทึกข้อมูลสมาชิก", "success");
               this.ngOnInit()
@@ -246,7 +246,7 @@ export class UserSettingComponent {
             if (isSelected) {
               const user = this.itemsList.find(user => user.id === id);
               if (user) {
-                this.userService.delete(user).subscribe(result => {
+                this.userService.deleteUser(user.id).subscribe(result => {
                   swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
                   this.ngOnInit();
                 });
@@ -282,7 +282,7 @@ export class UserSettingComponent {
               const user = this.itemsList.find(user => user.id === id);
               if (user) {
                 user.is_active = status
-                this.userService.update(user).subscribe(result => {
+                this.userService.updateUser(user.id, user).subscribe(result => {
                   swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
                   this.ngOnInit();
                 });

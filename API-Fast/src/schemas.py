@@ -36,6 +36,7 @@ class UserBase(BaseModel):
     phone: str
     role: UserRole
     picture: Optional[str] = None
+    is_active: bool
 
 class UserCreate(UserBase):
     password: str = Field(..., min_length=8)

@@ -45,7 +45,6 @@ app.add_middleware(
         "http://localhost:4201",
         "https://61a8-49-228-101-141.ngrok-free.app",
     ],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -89,7 +88,7 @@ async def logout(token: str):
     return {"detail": "Logged out successfully"}
 
 ### User Endpoints
-users_router = APIRouter(prefix="/users", tags=["Users"])
+users_router = APIRouter()
 
 @users_router.get("/me", response_model=UserOut)
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
@@ -294,14 +293,19 @@ async def quick_change_room_status(
 
 # รวม routers ทั้งหมดเข้ากับ app
 app.include_router(auth_router ,prefix="/api", tags=["Authentication"])
-app.include_router(users_router ,prefix="/api", tags=["Users"])
+app.include_router(users_router ,prefix="/api/users", tags=["Users"])
 app.include_router(tables_router ,prefix="/api", tags=["Tables"])
 app.include_router(rooms_router ,prefix="/api", tags=["Rooms"])
 app.include_router(reservations_router ,prefix="/api", tags=["Reservations"])
 app.include_router(menu_router ,prefix="/api", tags=["Menus"])
 app.include_router(orders_router ,prefix="/api", tags=["Orders"])
 app.include_router(payments_router ,prefix="/api", tags=["Payments"])
-app.include_router(store_router, prefix="/api", tags=["Store"])
+app.include_router(# The `store_router` is a router that handles endpoints related to store operations
+# in the FastAPI application. It likely contains routes for managing store
+# information, such as creating, updating, deleting, and retrieving store data.
+# This router would be responsible for handling requests related to store
+# management within the API.
+store_router, prefix="/api", tags=["Store"])
 app.include_router(customers_router, prefix="/api/customers", tags=["Customers"])
 app.include_router(file_upload_router.router, prefix="/api", tags=["File Upload"])
 @app.get("/")

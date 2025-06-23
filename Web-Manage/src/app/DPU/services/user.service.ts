@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { TokenService } from '../../shared/services/token.service';
@@ -6,124 +6,70 @@ import { UserProfileModel } from '../models/user.model';
 import { map, tap, switchMap, filter, reduce } from "rxjs/operators";
 import { PageResponseModel, ResponseModel } from '../models/base.model';
 import { forkJoin, Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { UserRole } from '../models/all.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  apiBaseUrl = "/users";
-  constructor(
-    private http: HttpClient,
-    private translateService: TranslateService
-  ) { }
+  // แก้ไข: กำหนด URL ของ API ให้ถูกต้อง
+  private apiUrl = `${environment.apiBaseUrl}/api/users`;
 
-  getById(id: Number) {
-    return this.http
-      .get<UserProfileModel>(this.apiBaseUrl + "/" + id)
-      .pipe(map((e) => new UserProfileModel(e, this.translateService)));
-  }
+  constructor(private http: HttpClient) { }
 
-  getByUsername(username: string) {
-    return this.http
-      .get<UserProfileModel>(this.apiBaseUrl + "/username/" + username)
-  }
-
-
-  getLists() {
-    return this.http
-      .get<UserProfileModel[]>(this.apiBaseUrl)
-      .pipe(
-        map((e) => e.map((e) => new UserProfileModel(e, this.translateService)))
-      );
-  }
-
-  getListByPageSize(body: { page: number; size: number }) {
-    return this.http
-      .get<PageResponseModel<UserProfileModel>>(this.apiBaseUrl, {
-        params: body,
-      })
-      .pipe(
-        map((page) => {
-          return {
-            ...page,
-            content: page.content.map(
-              (e) => new UserProfileModel(e, this.translateService)
-            ),
-          };
-        })
-      );
-  }
-
-  getListAllPageSize(): Observable<UserProfileModel[]> {
-    return this.http
-      .get<PageResponseModel<UserProfileModel>>(this.apiBaseUrl, {
-        params: { page: 0, size: 1 },
-      })
-      .pipe(
-        switchMap((checkData: any) => {
-          //console.log("checkData="+checkData)
-          const size = 500;
-
-          const numOfPages = checkData.totalElements / size;
-          const parallelList: Observable<PageResponseModel<UserProfileModel>>[] = [];
-
-          for (let page = 0; page < numOfPages; page++) {
-            parallelList.push(
-              this.getListByPageSize({
-                page,
-                size,
-              })
-            );
-          }
-          return forkJoin(parallelList).pipe(
-            map((response) => {
-              let data: UserProfileModel[] = [];
-              for (let i = 0; i < response.length; i++) {
-                data = data.concat(response[i].content);
-              }
-              return data;
-            })
-          );
-
-        })
-
-
-      );
-  }
-
-  save(body: UserProfileModel) {
-    return this.http.post<ResponseModel>(this.apiBaseUrl, new UserProfileModel(body));
-  }
-
-  update(body: UserProfileModel) {
-    return this.http.put<ResponseModel>(this.apiBaseUrl + "/" + body.id, new UserProfileModel(body));
-  }
-
-
-  resetPass(email: string) {
-    let tempBody = {
-      "email": email
+  /**
+   * ดึงรายชื่อผู้ใช้ทั้งหมด สามารถกรองตาม role ได้
+   * @param role (Optional) บทบาทของผู้ใช้ที่ต้องการกรอง
+   * @returns Observable ของ Array of User
+   */
+  getUsers(role?: string): Observable<UserProfileModel[]> {
+    let params = new HttpParams();
+    if (role) {
+      params = params.set('role', role);
     }
-    return this.http.put<ResponseModel>(this.apiBaseUrl + "/send-reset-password", tempBody);
+    // แก้ไข: เพิ่ม / ต่อท้าย และใช้ HttpParams ในการส่ง filter
+    // ไม่จำเป็นต้องส่ง Token เอง เพราะ Interceptor จัดการให้แล้ว
+    return this.http.get<UserProfileModel[]>(`${this.apiUrl}/`, { params }).pipe(
+      map((e) => e.map((e) => new UserProfileModel(e)))
+    );
   }
 
-  resetPassUser(oldPassword: string, password: string) {
-    let tempBody = {
-      "oldPassword": oldPassword,
-      "password": password
-    }
-    return this.http.put<ResponseModel>(this.apiBaseUrl + "/reset-password", tempBody);
+  /**
+   * ดึงข้อมูลผู้ใช้ตาม ID
+   * @param id ID ของผู้ใช้
+   * @returns Observable ของ User
+   */
+  getUserById(id: number): Observable<UserProfileModel> {
+    return this.http.get<UserProfileModel>(`${this.apiUrl}/${id}`).pipe(map((e) => new UserProfileModel(e)));
   }
 
+  /**
+   * สร้างผู้ใช้ใหม่
+   * @param userData ข้อมูลของผู้ใช้ที่จะสร้าง
+   * @returns Observable ของ User ที่ถูกสร้างขึ้น
+   */
+  createUser(userData: UserProfileModel): Observable<UserProfileModel> {
+    // ใช้ POST และ URL ที่มี / ต่อท้าย
+    return this.http.post<UserProfileModel>(`${this.apiUrl}/`, userData);
+  }
 
+  /**
+   * อัปเดตข้อมูลผู้ใช้
+   * @param id ID ของผู้ใช้ที่จะอัปเดต
+   * @param userData ข้อมูลที่ต้องการอัปเดต
+   * @returns Observable ของ User ที่อัปเดตแล้ว
+   */
+  updateUser(id: number, userData: UserProfileModel): Observable<UserProfileModel> {
+    return this.http.put<UserProfileModel>(`${this.apiUrl}/${id}`, userData);
+  }
 
-  delete(body: UserProfileModel) {
-    const options = {
-      headers: new HttpHeaders({
-        "Content-Type": "application/json",
-      }),
-      body: new UserProfileModel(body),
-    };
-    return this.http.delete<ResponseModel>(this.apiBaseUrl + "/" + body.id);
+  /**
+   * ลบผู้ใช้
+   * @param id ID ของผู้ใช้ที่จะลบ
+   * @returns Observable<void> (ไม่มีข้อมูลตอบกลับเมื่อสำเร็จ)
+   */
+  deleteUser(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

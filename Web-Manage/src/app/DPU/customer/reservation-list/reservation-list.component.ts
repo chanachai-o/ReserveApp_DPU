@@ -50,8 +50,8 @@ export class ReservationListComponent {
       this.allList = reservations;
       this.filteredList = [...this.allList]; // เริ่มต้นแสดงทั้งหมด
     });
-    this.userService.getLists().subscribe(result => {
-      this.customerList = result.filter(e => e.role == 'customer')
+    this.userService.getUsers('customer').subscribe(result => {
+      this.customerList = result
     })
     this.filter();
   }

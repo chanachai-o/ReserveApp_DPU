@@ -40,9 +40,9 @@ export class UserProfileModel extends BaseModel {
 
   getStatus(): string {
     if (this.is_active) {
-      return this.translateService.instant('Active')
+      return "Active"
     } else {
-      return this.translateService.instant('Unactive')
+      return "Unactive"
     }
   }
 

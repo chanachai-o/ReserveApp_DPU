@@ -13,9 +13,8 @@ Base = declarative_base()
 # --- Enum Definitions ---
 class UserRole(str, enum.Enum):
     customer = "customer"
-    waiter = "waiter"
-    cashier = "cashier"
-    kitchen = "kitchen"
+    staff = "staff"
+    chef = "chef"
     manager = "manager"
 
 class TableStatus(str, enum.Enum):
