@@ -68,7 +68,7 @@ export class CompanyManageComponent {
 
   uploadConfig() {
     this.uploaderProfile = new FileUploader({
-      url: environment.baseUrl + "/api/upload-image",
+      url: environment.baseUrl + "/api/files/upload-image",
       isHTML5: true,
       authToken: this.tokenService.getToken()!,
     });

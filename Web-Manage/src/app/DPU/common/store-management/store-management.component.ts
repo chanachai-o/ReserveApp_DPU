@@ -15,7 +15,7 @@ import { StoreProfile, StoreProfileService } from '../../services/store-profile.
 import { DROPZONE_CONFIG, DropzoneConfigInterface, DropzoneModule } from 'ngx-dropzone-wrapper';
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
-  url: environment.baseUrl + "/api/upload-image",
+  url: environment.baseUrl + "/api/files/upload-image",
   acceptedFiles: 'image/*',
   createImageThumbnails: true
 };
@@ -61,13 +61,13 @@ export class StoreManagementComponent {
 
   uploadConfig() {
     this.uploaderProfile = new FileUploader({
-      url: environment.baseUrl + "/api/upload-image",
+      url: environment.baseUrl + "/api/files/upload-image",
       isHTML5: true,
       authToken: this.tokenService.getToken()!,
     });
 
     this.uploaderLayout = new FileUploader({
-      url: environment.baseUrl + "/api/upload-image",
+      url: environment.baseUrl + "/api/files/upload-image",
       isHTML5: true,
       authToken: this.tokenService.getToken()!,
     });

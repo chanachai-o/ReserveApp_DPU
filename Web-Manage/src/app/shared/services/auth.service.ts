@@ -6,7 +6,7 @@ import { UserProfileModel } from '../../DPU/models/user.model';
   providedIn: 'root',
 })
 export class AuthService {
-  apiBaseUrl = "/auth";
+  apiBaseUrl = "/api/auth";
   constructor(
     private http: HttpClient,
   ) {

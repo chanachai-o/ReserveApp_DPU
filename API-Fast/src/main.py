@@ -307,7 +307,7 @@ app.include_router(# The `store_router` is a router that handles endpoints relat
 # management within the API.
 store_router, prefix="/api", tags=["Store"])
 app.include_router(customers_router, prefix="/api/customers", tags=["Customers"])
-app.include_router(file_upload_router.router, prefix="/api", tags=["File Upload"])
+app.include_router(file_upload_router.router, prefix="/api/files", tags=["File Upload"])
 @app.get("/")
 async def root():
     logging.debug("This is a debug message")

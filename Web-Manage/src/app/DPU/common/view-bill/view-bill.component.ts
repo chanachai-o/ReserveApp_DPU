@@ -9,7 +9,7 @@ import swal from 'sweetalert';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
-  url: environment.baseUrl + "/api/upload-image",
+  url: environment.baseUrl + "/api/files/upload-image",
   acceptedFiles: 'image/*',
   createImageThumbnails: true
 };
@@ -51,7 +51,7 @@ export class ViewBillComponent {
   uploadConfig() {
 
     this.uploaderSlip = new FileUploader({
-      url: environment.baseUrl + "/api/upload-image",
+      url: environment.baseUrl + "/api/files/upload-image",
       isHTML5: true,
       authToken: this.tokenService.getToken()!,
     });

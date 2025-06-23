@@ -149,7 +149,7 @@ export class EnrollFaceComponent {
     const file = this.dataURLtoFile(this.capturedImage!, 'face.jpg');
     const formData = new FormData();
     formData.append('file', file);
-    this.http.post(environment.baseUrl + `/api/upload-image/`, formData).subscribe({
+    this.http.post(environment.baseUrl + `/api/files/upload-image/`, formData).subscribe({
       next: (response: any) => {
         console.log('Upload successful:', response);
         this.timestampModel.photoTimestamp = response.filename
