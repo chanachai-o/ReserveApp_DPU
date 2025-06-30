@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, Depends, HTTPException, status,Query
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, status, Query
 from fastapi.staticfiles import StaticFiles
 from typing import List, Optional
 from datetime import datetime
@@ -12,8 +12,6 @@ from .routes.reservations_router import reservations_router
 from .routes.menu_routes import menu_router
 from .routes.orders_router import orders_router
 
-
-
 # Import AsyncSession จาก sqlalchemy.ext.asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -23,16 +21,14 @@ from sqlalchemy import select, delete
 # สมมติว่าใน config.database มีการสร้าง engine และ get_db แบบ async
 from src.config.database import engine, get_db
 
-from .models import Base, User, Table, Room,TableStatus
+from .models import Base, User, Table, Room, TableStatus
 from .schemas import (
     UserCreate, UserUpdate, UserOut,
     TableCreate, TableUpdate, TableOut,
-    RoomCreate, RoomUpdate, RoomOut,TableQuickStatus
+    RoomCreate, RoomUpdate, RoomOut, TableQuickStatus
 )
 from src.schemas import RoomQuickStatus
 from src.models import RoomStatus
-
-
 
 logging.basicConfig(level=logging.DEBUG)
 app = FastAPI()
@@ -49,25 +45,31 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # สร้างตารางในฐานข้อมูลแบบ async เมื่อแอปเริ่มทำงาน
 @app.on_event("startup")
 async def startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
+
 UPLOAD_DIR = "./uploaded_images"
 if not os.path.exists(UPLOAD_DIR):
     os.makedirs(UPLOAD_DIR)
 
+
 def get_current_active_user():
     # ตัวอย่าง placeholder – ควร implement JWT หรือวิธีการ auth ที่ปลอดภัย
     pass
+
+
 app.mount("/images", StaticFiles(directory=UPLOAD_DIR), name="images")
-### Authentication Endpoints
-auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
+# ## Authentication Endpoints
+auth_router = APIRouter()
+
 
 @auth_router.post("/login")
-async def login(phone: str, password: str, db: AsyncSession = Depends(get_db)):
+async def login(phone: str, password: str, db: AsyncSession=Depends(get_db)):
     # ตัวอย่าง: ใช้ select(...) แทน db.query
     stmt = select(User).where(User.phone == phone)
     result = await db.execute(stmt)
@@ -82,28 +84,33 @@ async def login(phone: str, password: str, db: AsyncSession = Depends(get_db)):
 
     return user
 
+
 @auth_router.post("/logout")
 async def logout(token: str):
     # logic สำหรับ logout (เช่น ลบ token จาก blacklist)
     return {"detail": "Logged out successfully"}
 
-### User Endpoints
+
+# ## User Endpoints
 users_router = APIRouter()
 
+
 @users_router.get("/me", response_model=UserOut)
-async def read_users_me(current_user: User = Depends(get_current_active_user)):
+async def read_users_me(current_user: User=Depends(get_current_active_user)):
     return current_user
 
+
 @users_router.get("/", response_model=List[UserOut])
-async def get_users(role: Optional[str] = None, db: AsyncSession = Depends(get_db)):
+async def get_users(role: Optional[str]=None, db: AsyncSession=Depends(get_db)):
     stmt = select(User)
     if role:
         stmt = stmt.where(User.role == role)
     result = await db.execute(stmt)
     return result.scalars().all()
 
+
 @users_router.post("/", response_model=UserOut)
-async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
+async def create_user(user: UserCreate, db: AsyncSession=Depends(get_db)):
     fake_hashed_password = "fakehashed" + user.password
     db_user = User(
         phone=user.phone,
@@ -116,8 +123,9 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
     await db.refresh(db_user)
     return db_user
 
+
 @users_router.put("/{id}", response_model=UserOut)
-async def update_user(id: int, user: UserUpdate, db: AsyncSession = Depends(get_db)):
+async def update_user(id: int, user: UserUpdate, db: AsyncSession=Depends(get_db)):
     stmt = select(User).where(User.id == id)
     result = await db.execute(stmt)
     db_user = result.scalars().first()
@@ -132,8 +140,9 @@ async def update_user(id: int, user: UserUpdate, db: AsyncSession = Depends(get_
     await db.refresh(db_user)
     return db_user
 
+
 @users_router.delete("/{id}")
-async def delete_user(id: int, db: AsyncSession = Depends(get_db)):
+async def delete_user(id: int, db: AsyncSession=Depends(get_db)):
     stmt = select(User).where(User.id == id)
     result = await db.execute(stmt)
     db_user = result.scalars().first()
@@ -145,27 +154,31 @@ async def delete_user(id: int, db: AsyncSession = Depends(get_db)):
     await db.commit()
     return {"detail": "User deleted"}
 
-### Tables Endpoints
-tables_router = APIRouter(prefix="/tables", tags=["Tables"])
+
+# ## Tables Endpoints
+tables_router = APIRouter()
+
 
 @tables_router.get("/", response_model=List[TableOut])
-async def get_tables(status: Optional[str] = None, db: AsyncSession = Depends(get_db)):
+async def get_tables(status: Optional[str]=None, db: AsyncSession=Depends(get_db)):
     stmt = select(Table)
     if status:
         stmt = stmt.where(Table.status == status)
     result = await db.execute(stmt)
     return result.scalars().all()
 
+
 @tables_router.post("/", response_model=TableOut)
-async def create_table(table: TableCreate, db: AsyncSession = Depends(get_db)):
+async def create_table(table: TableCreate, db: AsyncSession=Depends(get_db)):
     new_table = Table(**table.dict())
     db.add(new_table)
     await db.commit()
     await db.refresh(new_table)
     return new_table
 
+
 @tables_router.put("/{id}", response_model=TableOut)
-async def update_table(id: int, table: TableUpdate, db: AsyncSession = Depends(get_db)):
+async def update_table(id: int, table: TableUpdate, db: AsyncSession=Depends(get_db)):
     stmt = select(Table).where(Table.id == id)
     result = await db.execute(stmt)
     db_table = result.scalars().first()
@@ -180,8 +193,9 @@ async def update_table(id: int, table: TableUpdate, db: AsyncSession = Depends(g
     await db.refresh(db_table)
     return db_table
 
+
 @tables_router.delete("/{id}")
-async def delete_table(id: int, db: AsyncSession = Depends(get_db)):
+async def delete_table(id: int, db: AsyncSession=Depends(get_db)):
     stmt = select(Table).where(Table.id == id)
     result = await db.execute(stmt)
     db_table = result.scalars().first()
@@ -193,11 +207,12 @@ async def delete_table(id: int, db: AsyncSession = Depends(get_db)):
     await db.commit()
     return {"detail": "Table deleted"}
 
+
 @tables_router.patch("/{table_id}/status", response_model=TableOut)
 async def quick_change_table_status(
     table_id: int,
     payload: TableQuickStatus,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession=Depends(get_db)
 ):
     """เปลี่ยนสถานะโต๊ะรวดเร็ว (cleaning / maintenance / occupied …)"""
 
@@ -212,27 +227,31 @@ async def quick_change_table_status(
     await db.refresh(table)
     return table
 
-### Rooms Endpoints
-rooms_router = APIRouter(prefix="/rooms", tags=["Rooms"])
+
+# ## Rooms Endpoints
+rooms_router = APIRouter()
+
 
 @rooms_router.get("/", response_model=List[RoomOut])
-async def get_rooms(status: Optional[str] = None, db: AsyncSession = Depends(get_db)):
+async def get_rooms(status: Optional[str]=None, db: AsyncSession=Depends(get_db)):
     stmt = select(Room)
     if status:
         stmt = stmt.where(Room.status == status)
     result = await db.execute(stmt)
     return result.scalars().all()
 
+
 @rooms_router.post("/", response_model=RoomOut)
-async def create_room(room: RoomCreate, db: AsyncSession = Depends(get_db)):
+async def create_room(room: RoomCreate, db: AsyncSession=Depends(get_db)):
     new_room = Room(**room.dict())
     db.add(new_room)
     await db.commit()
     await db.refresh(new_room)
     return new_room
 
+
 @rooms_router.put("/{id}", response_model=RoomOut)
-async def update_room(id: int, room: RoomUpdate, db: AsyncSession = Depends(get_db)):
+async def update_room(id: int, room: RoomUpdate, db: AsyncSession=Depends(get_db)):
     stmt = select(Room).where(Room.id == id)
     result = await db.execute(stmt)
     db_room = result.scalars().first()
@@ -247,8 +266,9 @@ async def update_room(id: int, room: RoomUpdate, db: AsyncSession = Depends(get_
     await db.refresh(db_room)
     return db_room
 
+
 @rooms_router.delete("/{id}")
-async def delete_room(id: int, db: AsyncSession = Depends(get_db)):
+async def delete_room(id: int, db: AsyncSession=Depends(get_db)):
     stmt = select(Room).where(Room.id == id)
     result = await db.execute(stmt)
     db_room = result.scalars().first()
@@ -260,11 +280,12 @@ async def delete_room(id: int, db: AsyncSession = Depends(get_db)):
     await db.commit()
     return {"detail": "Room deleted"}
 
+
 @rooms_router.patch("/{room_id}/status", response_model=RoomOut)
 async def quick_change_room_status(
     room_id: int,
     payload: RoomQuickStatus,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession=Depends(get_db)
 ):
     """เปลี่ยนสถานะห้องรวดเร็ว (cleaning / maintenance / occupied / available)"""
 
@@ -292,22 +313,19 @@ async def quick_change_room_status(
 
 
 # รวม routers ทั้งหมดเข้ากับ app
-app.include_router(auth_router ,prefix="/api", tags=["Authentication"])
-app.include_router(users_router ,prefix="/api/users", tags=["Users"])
-app.include_router(tables_router ,prefix="/api", tags=["Tables"])
-app.include_router(rooms_router ,prefix="/api", tags=["Rooms"])
-app.include_router(reservations_router ,prefix="/api", tags=["Reservations"])
-app.include_router(menu_router ,prefix="/api", tags=["Menus"])
-app.include_router(orders_router ,prefix="/api", tags=["Orders"])
-app.include_router(payments_router ,prefix="/api", tags=["Payments"])
-app.include_router(# The `store_router` is a router that handles endpoints related to store operations
-# in the FastAPI application. It likely contains routes for managing store
-# information, such as creating, updating, deleting, and retrieving store data.
-# This router would be responsible for handling requests related to store
-# management within the API.
-store_router, prefix="/api", tags=["Store"])
+app.include_router(auth_router , prefix="/api/auth", tags=["Authentication"])
+app.include_router(users_router , prefix="/api/users", tags=["Users"])
+app.include_router(tables_router , prefix="/api/tables", tags=["Tables"])
+app.include_router(rooms_router , prefix="/api/rooms", tags=["Rooms"])
+app.include_router(reservations_router , prefix="/api", tags=["Reservations"])
+app.include_router(menu_router , prefix="/api", tags=["Menus"])
+app.include_router(orders_router , prefix="/api", tags=["Orders"])
+app.include_router(payments_router , prefix="/api", tags=["Payments"])
+app.include_router(store_router, prefix="/api/store/profile", tags=["Store"])
 app.include_router(customers_router, prefix="/api/customers", tags=["Customers"])
 app.include_router(file_upload_router.router, prefix="/api/files", tags=["File Upload"])
+
+
 @app.get("/")
 async def root():
     logging.debug("This is a debug message")
