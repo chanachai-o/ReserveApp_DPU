@@ -171,6 +171,12 @@ export class NavService implements OnDestroy {
         type: 'link',
       },
       {
+        icon: 'take-away', // ใช้ icon library ที่ใช้อยู่ เช่น RemixIcon, FontAwesome ฯลฯ
+        path: '/customer/take-away',
+        title: 'บริการนำกลับบ้าน',
+        type: 'link',
+      },
+      {
         icon: 'calendar-check', // ใช้ icon library ที่ใช้อยู่ เช่น RemixIcon, FontAwesome ฯลฯ
         path: '/customer/reservations',
         title: 'ประวัติการจอง',

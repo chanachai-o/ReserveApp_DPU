@@ -1,1 +1,52 @@
-<p>take-home works!</p>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="order-form">
+  <div>
+    <label class="order-label">รายการอาหาร</label>
+    <div formArrayName="order_items" class="order-items-list">
+      <div [formGroupName]="i" *ngFor="let item of items.controls; let i = index" class="order-item-card">
+        <div class="order-item-img">
+          <img *ngIf="menuById(item.value.menu_id)?.image_url" [src]="menuById(item.value.menu_id)?.getPicture()" alt="menu" />
+          <div *ngIf="!menuById(item.value.menu_id)?.image_url" class="no-img">
+            <i class="ri-image-line"></i>
+          </div>
+        </div>
+        <div class="order-item-info">
+          <ng-select [items]="menuList" bindLabel="name" bindValue="id" [searchable]="true" formControlName="menu_id"
+            placeholder="เลือกเมนู" class="menu-select">
+            <ng-template ng-option-tmp let-item="item">
+              <span class="option-flex">
+                <img [src]="item.getPicture ? item.getPicture() : './assets/images/faces/111.jpg'" class="option-img" alt="menu" />
+                <span>
+                  {{item.name}}
+                  <span class="option-price">({{item.price | number:'1.2-2'}} ฿)</span>
+                </span>
+              </span>
+            </ng-template>
+          </ng-select>
+        </div>
+        <div class="order-qty">
+          <input type="number" formControlName="quantity" min="1" class="qty-input" />
+        </div>
+        <button type="button" class="del-btn" (click)="removeItem(i)" [disabled]="items.length <= 1">
+          <i class="ri-delete-bin-5-line"></i>
+        </button>
+      </div>
+    </div>
+    <button type="button" class="add-menu-btn" (click)="addItem()">
+      <i class="ri-add-line"></i> เพิ่มเมนู
+    </button>
+  </div>
+
+  <div class="order-total-bar">
+    <span class="total-label">ยอดรวม:</span>
+    <span class="total-value">{{ getTotal() | number:'1.2-2' }} ฿</span>
+  </div>
+
+  <div class="order-actions">
+    <button type="submit" class="order-submit-btn" [disabled]="!form.valid || items.length < 1">
+      <i class="ri-check-line"></i> ยืนยันการสั่งอาหาร
+    </button>
+    <button type="button" class="order-reset-btn" (click)="form.reset()">
+      <i class="ri-refresh-line"></i> ล้างข้อมูล
+    </button>
+  </div>
+</form>

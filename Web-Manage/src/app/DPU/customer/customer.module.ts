@@ -9,10 +9,12 @@ import { BillComponent } from './bill/bill.component';
 import { ProfileComponent } from './profile/profile.component';
 import { NotificationComponent } from './notification/notification.component';
 import { CustomerReservationPageComponent } from './customer-reservation-page/customer-reservation-page.component';
+import { TakeHomeComponent } from '../common/take-home/take-home.component';
 export const customerRoutes: Routes = [
   {
     path: 'customer', children: [
       { path: 'home-customer', component: CustomerReservationPageComponent },
+      { path: 'take-away', component: TakeHomeComponent },
       { path: 'reservations', component: ReservationListComponent },
       { path: 'reservations/:id', component: ReservationDetailComponent },
       { path: 'reservations/:id/order', component: OrderFoodComponent },
