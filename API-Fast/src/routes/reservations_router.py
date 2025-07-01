@@ -33,8 +33,14 @@ async def get_full_reservation(reservation_id: int, db: AsyncSession) -> Optiona
             selectinload(Reservation.customer),
             selectinload(Reservation.table),
             selectinload(Reservation.room),
+            # --- แก้ไข синтаксисการโหลดข้อมูลที่ซ้อนกัน ---
             selectinload(Reservation.orders).options(
-                selectinload(Order.order_items).selectinload(OrderItem.menu),
+                selectinload(Order.order_items).options(
+                    # โหลด menu และจาก menu ให้โหลด category ต่อ
+                    selectinload(OrderItem.menu).options(
+                        selectinload(Menu.category)
+                    )
+                ),
                 selectinload(Order.payments)
             )
         )
@@ -42,20 +48,19 @@ async def get_full_reservation(reservation_id: int, db: AsyncSession) -> Optiona
     result = await db.execute(stmt)
     return result.scalars().unique().first()
 
+
 # ================================================================
 #                       Reservation Endpoints
 # ================================================================
 
-
 @reservations_router.post("/reservations", response_model=ReservationOut, status_code=status.HTTP_201_CREATED)
 async def create_new_reservation(
     reservation_in: ReservationCreate,
-    db: AsyncSession=Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """
     สร้างการจองโต๊ะหรือห้องใหม่ (Dine-in Reservation)
     """
-    # --- เพิ่มการตรวจสอบ Foreign Key ---
     user = await db.get(User, reservation_in.user_id)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with id {reservation_in.user_id} not found")
@@ -73,26 +78,62 @@ async def create_new_reservation(
         if not room:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Room with id {reservation_in.room_id} not found")
     
-    # TODO: เพิ่ม Logic ตรวจสอบว่าโต๊ะ/ห้องว่างในช่วงเวลาที่ต้องการหรือไม่
-
     db_reservation = Reservation(**reservation_in.model_dump())
     db.add(db_reservation)
-    
-    # --- เพิ่มการสร้าง Notification ---
-    reservation_time_str = db_reservation.start_time.strftime('%d %b %Y, %H:%M')
-    notification_for_customer = Notification(
-        user_id=db_reservation.user_id,
-        title="การจองของคุณได้รับการยืนยัน",
-        message=f"การจองสำหรับวันที่ {reservation_time_str} ได้รับการยืนยันเรียบร้อยแล้ว",
-        type="reservation_confirmed"
-    )
-    db.add(notification_for_customer)
-    # --- สิ้นสุดการสร้าง Notification ---
-
     await db.commit()
     
-    # แก้ไข: re-query ข้อมูลทั้งหมดเพื่อป้องกัน MissingGreenlet error
     return await get_full_reservation(db_reservation.id, db)
+
+
+@reservations_router.get("/reservations", response_model=List[ReservationOut])
+async def get_all_reservations(
+    user_id: Optional[int] = None,
+    status: Optional[ReservationStatus] = None,
+    table_id: Optional[int] = None,
+    room_id: Optional[int] = None,
+    start_time: Optional[datetime] = Query(None, description="Filter reservations starting after this time"),
+    end_time: Optional[datetime] = Query(None, description="Filter reservations ending before this time"),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    ดึงข้อมูลการจองทั้งหมด พร้อมความสามารถในการกรองข้อมูล
+    """
+    stmt = (
+        select(Reservation)
+        .options(
+            # --- แก้ไข синтаксисการโหลดข้อมูลที่ซ้อนกัน ---
+            selectinload(Reservation.customer),
+            selectinload(Reservation.table),
+            selectinload(Reservation.room),
+            selectinload(Reservation.orders).options(
+                selectinload(Order.order_items).options(
+                    selectinload(OrderItem.menu).options(
+                        selectinload(Menu.category)
+                    )
+                ),
+                selectinload(Order.payments)
+            )
+        )
+        .order_by(Reservation.start_time.desc())
+    )
+
+    if user_id:
+        stmt = stmt.where(Reservation.user_id == user_id)
+    if status:
+        stmt = stmt.where(Reservation.status == status)
+    if table_id:
+        stmt = stmt.where(Reservation.table_id == table_id)
+    if room_id:
+        stmt = stmt.where(Reservation.room_id == room_id)
+    if start_time:
+        stmt = stmt.where(Reservation.start_time >= start_time)
+    if end_time:
+        stmt = stmt.where(Reservation.end_time <= end_time)
+
+    result = await db.execute(stmt)
+    reservations = result.scalars().unique().all()
+    
+    return reservations
 
 
 @reservations_router.get("/reservations", response_model=List[ReservationOut])
@@ -144,20 +185,6 @@ async def get_all_reservations(
     reservations = result.scalars().unique().all()
     
     return reservations
-
-
-@reservations_router.get("/reservations/{reservation_id}", response_model=ReservationOut)
-async def get_reservation_by_id(
-    reservation_id: int,
-    db: AsyncSession=Depends(get_db)
-):
-    """
-    ดึงข้อมูลการจองตาม ID พร้อมรายละเอียดทั้งหมด
-    """
-    reservation = await get_full_reservation(reservation_id, db)
-    if not reservation:
-        raise HTTPException(status_code=404, detail="Reservation not found")
-    return reservation
 
 
 @reservations_router.put("/reservations/{reservation_id}", response_model=ReservationOut)

@@ -35,7 +35,7 @@ export class ViewBillComponent {
     autoReset: null,
     errorReset: null,
     cancelReset: null,
-    maxFilesize: 1
+    maxFilesize: 5000
   };
   @Input() reservation!: ReservationModel;
   @Output() uploadSlip = new EventEmitter<ReservationModel>();
@@ -84,7 +84,7 @@ export class ViewBillComponent {
     this.uploaderSlip.onCompleteItem = (
       item: FileItem,
 
- response: string,
+      response: string,
       status: number,
       headers: ParsedResponseHeaders
     ) => {
@@ -109,6 +109,23 @@ export class ViewBillComponent {
     }
 
   }
+
+  getSlipUrl(): string | null {
+    // แก้ไข: ตรวจสอบให้แน่ใจว่าเข้าถึง payments array ได้ถูกต้อง
+    const firstOrderWithPayment = this.reservation?.orders?.find(o => o.payments && o.payments.length > 0);
+    const slipUrl = firstOrderWithPayment?.payments[0]?.slip_url;
+
+    if (slipUrl) {
+      // ตรวจสอบว่า slipUrl เป็น URL เต็มแล้วหรือยัง
+      if (slipUrl.startsWith('http')) {
+        return slipUrl;
+      }
+      // ถ้าเป็นแค่ path ให้เติม API URL เข้าไปข้างหน้า
+      return `${this.urlLink}${slipUrl}`;
+    }
+    return null;
+  }
+
 
   getTotalAmount() {
     return this.reservation.orders
@@ -144,5 +161,73 @@ export class ViewBillComponent {
   public onUploadSuccess(args: any): void {
     console.log('onUploadSuccess:', args);
     this.reservation.orders[0].payments[0].slip_url = args[1].filename
+  }
+
+  getPaymentStatus(reservation: ReservationModel): { status: 'Paid' | 'Partial' | 'Unpaid'; paidAmount: number; totalAmount: number } {
+
+    // วิธีที่ 1: ตรวจสอบจากสถานะของการจองโดยตรง (ง่ายและแนะนำ)
+    // if (reservation.status === 'COMPLETED') {
+    //   const totalAmount = this.getTotalOrderAmount(reservation);
+    //   return { status: 'Paid', paidAmount: totalAmount, totalAmount: totalAmount };
+    // }
+
+    // วิธีที่ 2: คำนวณจากยอดชำระจริง (ละเอียดกว่า)
+    const totalAmount = this.getTotalOrderAmount(reservation);
+    const paidAmount = this.getTotalPaidAmount(reservation);
+
+    if (totalAmount === 0) {
+      return { status: 'Unpaid', paidAmount: 0, totalAmount: 0 };
+    }
+
+    if (paidAmount >= totalAmount) {
+      return { status: 'Paid', paidAmount: paidAmount, totalAmount: totalAmount };
+    } else if (paidAmount > 0) {
+      return { status: 'Partial', paidAmount: paidAmount, totalAmount: totalAmount };
+    } else {
+      return { status: 'Unpaid', paidAmount: 0, totalAmount: totalAmount };
+    }
+  }
+
+  getTotalOrderAmount(reservation: ReservationModel): number {
+    if (!reservation.orders || reservation.orders.length === 0) {
+      return 0;
+    }
+    return reservation.orders.reduce((sum, order) => sum + Number(order.total_amount), 0);
+  }
+
+  /**
+   * Helper: คำนวณยอดที่ชำระแล้วทั้งหมด (เฉพาะที่ COMPLETED)
+   */
+  getTotalPaidAmount(reservation: ReservationModel): number {
+    if (!reservation.orders || reservation.orders.length === 0) {
+      return 0;
+    }
+    let totalPaid = 0;
+    reservation.orders.forEach(order => {
+      if (order.payments && order.payments.length > 0) {
+        const paidInOrder = order.payments
+          .filter(p => p.status === 'COMPLETED')
+          .reduce((sum, payment) => sum + Number(payment.amount), 0);
+        totalPaid += paidInOrder;
+      }
+    });
+    return totalPaid;
+  }
+
+  getOverallPaymentStatus(): 'COMPLETED' | 'PENDING' {
+    if (!this.reservation || !this.reservation.orders || this.reservation.orders.length === 0) {
+      return 'PENDING';
+    }
+    // เช็คว่าทุก payment ในทุก order มีสถานะเป็น COMPLETED หรือไม่
+    const allPaid = this.reservation.orders.every(order =>
+      order.payments && order.payments.every(p => p.status === 'COMPLETED')
+    );
+
+    // หรืออาจจะเช็คจากสถานะของ Reservation โดยตรง
+    if (this.reservation.status === 'COMPLETED') {
+      return 'COMPLETED';
+    }
+
+    return 'PENDING';
   }
 }

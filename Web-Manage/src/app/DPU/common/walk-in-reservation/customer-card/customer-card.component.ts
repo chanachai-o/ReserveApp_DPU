@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ReservationModel } from '../../../models/all.model';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-customer-card',
@@ -37,6 +38,22 @@ export class CustomerCardComponent {
     const mins = Math.floor(diffMs / 60000) % 60;
     const hrs = Math.floor(diffMs / 3600000);
     return hrs ? `${hrs} ชม. ${mins} นาที` : `${mins} นาที`;
+  }
+
+  getSlipUrl(): string | null {
+    // แก้ไข: ตรวจสอบให้แน่ใจว่าเข้าถึง payments array ได้ถูกต้อง
+    const firstOrderWithPayment = this.occupied?.orders?.find(o => o.payments && o.payments.length > 0);
+    const slipUrl = firstOrderWithPayment?.payments[0]?.slip_url;
+
+    if (slipUrl) {
+      // ตรวจสอบว่า slipUrl เป็น URL เต็มแล้วหรือยัง
+      if (slipUrl.startsWith('http')) {
+        return slipUrl;
+      }
+      // ถ้าเป็นแค่ path ให้เติม API URL เข้าไปข้างหน้า
+      return `${environment.apiBaseUrl}/static/images/${slipUrl}`;
+    }
+    return null;
   }
 
   getOverallPaymentStatus(): 'COMPLETED' | 'PENDING' {

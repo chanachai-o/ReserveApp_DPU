@@ -170,7 +170,7 @@ class Payment(Base):
     status = Column(Enum(PaymentStatus), default=PaymentStatus.PENDING)
     transaction_id = Column(String, nullable=True)
     created_at = Column(DateTime, default=func.now())
-    slip_url = Column(String, nullable=False)  # URL สำหรับสลิปการโอน
+    slip_url = Column(String, nullable=True)  # URL สำหรับสลิปการโอน
     
     order = relationship("Order", back_populates="payments")
 

@@ -53,7 +53,7 @@ export class ReservationCardComponent {
   /**
    * Helper: คำนวณยอดรวมของทุกออเดอร์ในการจอง
    */
-  private getTotalOrderAmount(reservation: ReservationModel): number {
+  getTotalOrderAmount(reservation: ReservationModel): number {
     if (!reservation.orders || reservation.orders.length === 0) {
       return 0;
     }
@@ -63,7 +63,7 @@ export class ReservationCardComponent {
   /**
    * Helper: คำนวณยอดที่ชำระแล้วทั้งหมด (เฉพาะที่ COMPLETED)
    */
-  private getTotalPaidAmount(reservation: ReservationModel): number {
+  getTotalPaidAmount(reservation: ReservationModel): number {
     if (!reservation.orders || reservation.orders.length === 0) {
       return 0;
     }

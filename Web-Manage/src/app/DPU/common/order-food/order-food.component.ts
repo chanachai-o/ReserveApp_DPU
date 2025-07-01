@@ -65,13 +65,13 @@ export class OrderFoodComponent implements OnInit, OnChanges {
     });
 
     // ถ้ามี orderItems เดิม preload เข้า FormArray
-    if (this.orderItems && this.orderItems.length) {
-      this.orderItems.forEach(item => {
-        this.items.push(this.createItem(item));
-      });
-    } else {
-      this.items.push(this.createItem());
-    }
+    // if (this.orderItems && this.orderItems.length) {
+    //   this.orderItems.forEach(item => {
+    //     this.items.push(this.createItem(item));
+    //   });
+    // } else {
+    //   this.items.push(this.createItem());
+    // }
   }
 
   get items(): FormArray {

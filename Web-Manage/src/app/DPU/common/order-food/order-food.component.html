@@ -50,7 +50,7 @@
   </div>
 
   <div class="order-actions">
-    <button type="submit" class="order-submit-btn" [disabled]="!form.valid" data-hs-overlay="#add-order">
+    <button type="submit" class="order-submit-btn" [disabled]="!form.valid || items.length < 1" data-hs-overlay="#add-order">
       <i class="ri-check-line"></i> ยืนยันการสั่งอาหาร
     </button>
     <button type="button" class="order-reset-btn" (click)="form.reset()">

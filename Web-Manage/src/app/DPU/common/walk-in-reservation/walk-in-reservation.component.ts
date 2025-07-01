@@ -247,9 +247,13 @@ export class WalkInReservationComponent {
 
   handleUploadSlip(item: any) {
     // ส่ง formData ไป backend (POST /payments หรือแล้วแต่ API)
-    this.http.put("http://127.0.0.1:8000/payments/orders/" + item.orders[0].id + "/payment", {
-      "amount": item.orders[0].total_amount,
-      "slip_url": item.payments[0].slip_url
+    // this.savePayment(item.orders[0].id);
+    this.http.post("http://127.0.0.1:8000/api/payments", {
+      "amount": this.getTotalOrderAmount(item),
+      "payment_method": "",
+      "slip_url": item.orders[0].payments[0].slip_url,
+      "status": "PENDING",
+      "order_id": item.orders[0].id
     }).subscribe(result => {
       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
       this.ngOnInit()
@@ -259,12 +263,9 @@ export class WalkInReservationComponent {
   handleCheckOut(item: any) {
     console.log(item);
     item.end_time = new Date().toISOString()
-    item.status = 'checked_out'
+    item.status = 'COMPLETED'
     this.reserveService.checkOut(item.id).subscribe(result => {
-      console.log(result);
-      if (item.orders.length > 0) {
-        this.savePayment(item.orders[0].id)
-      }
+
       // เช็คว่าเป็นการจองโต๊ะหรือห้อง เพื่อยกเลิกสถานะ
       if (item.table_id) {
         this.tableService.cancelReseave(item.table_id).subscribe(_ => {
@@ -280,33 +281,15 @@ export class WalkInReservationComponent {
         swal("Error", "ไม่พบข้อมูลโต๊ะหรือห้อง", "error");
       }
     });
-
-    // this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
-    //   console.log(result);
-    //   if (item.orders.length > 0) {
-    //     this.savePayment(item.orders[0].id)
-    //   }
-    //   // เช็คว่าเป็นการจองโต๊ะหรือห้อง เพื่อยกเลิกสถานะ
-    //   if (item.table_id) {
-    //     this.tableService.cancelReseave(item.table_id).subscribe(_ => {
-    //       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-    //       this.ngOnInit();
-    //     });
-    //   } else if (item.room_id) {
-    //     this.roomService.cancelReseave(item.room_id).subscribe(_ => {
-    //       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-    //       this.ngOnInit();
-    //     });
-    //   } else {
-    //     swal("Error", "ไม่พบข้อมูลโต๊ะหรือห้อง", "error");
-    //   }
-    // });
   }
 
   savePayment(orderId: string) {
-    this.http.post("http://127.0.0.1:8000/payments/orders/" + orderId + "/payment", {
+    this.http.post("http://127.0.0.1:8000/api/payments", {
       "amount": 0,
-      "slip_url": ""
+      "payment_method": "",
+      "slip_url": "",
+      "status": "PENDING",
+      "order_id": orderId
     }).subscribe(result => {
       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
       this.ngOnInit()
@@ -329,17 +312,19 @@ export class WalkInReservationComponent {
 
   onVerifyPayment(item: any) {
     console.log(item)
-    item.status = 'completed'
+    item.status = 'COMPLETED'
     console.log(item)
-    this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
+    this.http.put("http://127.0.0.1:8000/api/reservations/" + item.id, item).subscribe(result => {
       console.log(result)
       this.tableService.cancelReseave(item.table_id).subscribe(result => {
         swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
         this.ngOnInit()
       })
     })
-    this.http.post("http://127.0.0.1:8000/payments/orders/" + item.orders[0].id + "/verify", {
-      "status": "completed"
+    this.http.post("http://127.0.0.1:8000/api/payments/" + item.orders[0].payments[0].id + "/verify", {
+      "payment_id": item.orders[0].payments[0].id,
+      "transaction_id": "string",
+      "status": "COMPLETED"
     }).subscribe(result => {
       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
       this.ngOnInit()
@@ -363,5 +348,53 @@ export class WalkInReservationComponent {
     }
     console.log("filter", this.filteredAvailable)
 
+  }
+
+  getPaymentStatus(reservation: ReservationModel): { status: 'Paid' | 'Partial' | 'Unpaid'; paidAmount: number; totalAmount: number } {
+
+    // วิธีที่ 1: ตรวจสอบจากสถานะของการจองโดยตรง (ง่ายและแนะนำ)
+    // if (reservation.status === 'COMPLETED') {
+    //   const totalAmount = this.getTotalOrderAmount(reservation);
+    //   return { status: 'Paid', paidAmount: totalAmount, totalAmount: totalAmount };
+    // }
+
+    // วิธีที่ 2: คำนวณจากยอดชำระจริง (ละเอียดกว่า)
+    const totalAmount = this.getTotalOrderAmount(reservation);
+    const paidAmount = this.getTotalPaidAmount(reservation);
+
+    if (totalAmount === 0) {
+      return { status: 'Unpaid', paidAmount: 0, totalAmount: 0 };
+    }
+
+    if (paidAmount >= totalAmount) {
+      return { status: 'Paid', paidAmount: paidAmount, totalAmount: totalAmount };
+    } else if (paidAmount > 0) {
+      return { status: 'Partial', paidAmount: paidAmount, totalAmount: totalAmount };
+    } else {
+      return { status: 'Unpaid', paidAmount: 0, totalAmount: totalAmount };
+    }
+  }
+
+  getTotalOrderAmount(reservation: ReservationModel): number {
+    if (!reservation.orders || reservation.orders.length === 0) {
+      return 0;
+    }
+    return reservation.orders.reduce((sum, order) => sum + Number(order.total_amount), 0);
+  }
+
+  getTotalPaidAmount(reservation: ReservationModel): number {
+    if (!reservation.orders || reservation.orders.length === 0) {
+      return 0;
+    }
+    let totalPaid = 0;
+    reservation.orders.forEach(order => {
+      if (order.payments && order.payments.length > 0) {
+        const paidInOrder = order.payments
+          .filter(p => p.status === 'COMPLETED')
+          .reduce((sum, payment) => sum + Number(payment.amount), 0);
+        totalPaid += paidInOrder;
+      }
+    });
+    return totalPaid;
   }
 }
