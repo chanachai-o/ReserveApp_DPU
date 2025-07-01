@@ -135,7 +135,7 @@ export class RoomManagementComponent {
     this.pageIndex = 0;
     return this.itemsList?.filter(
       (x) =>
-        x.name.toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
+        x.room_name.toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
         x.status?.toLowerCase().indexOf(v.toLowerCase()) !== -1
     );
   }

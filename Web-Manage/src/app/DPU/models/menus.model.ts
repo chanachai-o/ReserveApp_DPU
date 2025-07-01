@@ -47,20 +47,20 @@ export class TablesModel {
 }
 
 export class RoomModel {
-  name: string;
+  room_name: string;
   picture?: any;
   capacity: number;
-  equipment: string;
+  // equipment: string;
   status: string;
   id: number;
 
   constructor(data?: Partial<RoomModel>) {
     this.picture = data?.picture ?? '';
-    this.name = data?.name!
+    this.room_name = data?.room_name!
     this.capacity = data?.capacity!
     this.status = data?.status!
     this.id = data?.id!
-    this.equipment = data?.equipment!
+    // this.equipment = data?.equipment!
   }
 
   getPicture(): string {

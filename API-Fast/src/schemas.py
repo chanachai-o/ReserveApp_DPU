@@ -63,6 +63,7 @@ class TableBase(BaseModel):
     table_number: str
     capacity: int = Field(..., gt=0)
     status: Optional[TableStatus] = TableStatus.available
+    picture: Optional[str] = None
 
 class TableCreate(TableBase):
     pass
@@ -71,6 +72,8 @@ class TableUpdate(BaseModel):
     table_number: Optional[str] = None
     capacity: Optional[int] = Field(None, gt=0)
     status: Optional[TableStatus] = None
+    picture: Optional[str] = None
+    
 
 class TableOut(TableBase):
     id: int
@@ -82,6 +85,7 @@ class RoomBase(BaseModel):
     room_name: str
     capacity: int = Field(..., gt=0)
     status: Optional[RoomStatus] = RoomStatus.available
+    picture: Optional[str] = None
 
 class RoomCreate(RoomBase):
     pass
@@ -90,6 +94,7 @@ class RoomUpdate(BaseModel):
     room_name: Optional[str] = None
     capacity: Optional[int] = Field(None, gt=0)
     status: Optional[RoomStatus] = None
+    picture: Optional[str] = None
 
 class RoomOut(RoomBase):
     id: int

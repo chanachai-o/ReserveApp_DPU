@@ -117,7 +117,7 @@ export class MenusManagementComponent {
       if (item.isSuccess) {
         const res = JSON.parse(response);
         console.log("res", res);
-        this.selectModel.picture = res.filename
+        this.selectModel.image_url = res.filename
         swal(res.message, "บันทึกสำเร็จ", "success");
 
       } else {

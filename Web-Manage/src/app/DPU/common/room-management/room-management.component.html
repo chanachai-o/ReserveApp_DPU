@@ -32,8 +32,8 @@
               {{ item?.getStatus() }}
             </span>
           </div>
-          <h3 class="text-lg font-bold mb-1 truncate">ห้อง: {{ item.name }}</h3>
-          <p class="mb-1 text-xs text-gray-400 break-all">อุปกรณ์: {{ item.equipment }}</p>
+          <h3 class="text-lg font-bold mb-1 truncate">ห้อง: {{ item.room_name }}</h3>
+          <!-- <p class="mb-1 text-xs text-gray-400 break-all">อุปกรณ์: {{ item.equipment }}</p> -->
           <p class="mb-3 text-sm text-gray-500">ความจุ: <b>{{ item.capacity }}</b> คน</p>
           <div class="mt-auto flex gap-2">
             <button type="button" data-hs-overlay="#modal-detail" (click)="view(item)"
@@ -83,12 +83,12 @@
           </div>
           <div class="col-span-12">
             <label class="form-label font-medium">ชื่อห้อง</label>
-            <input type="text" class="form-control" placeholder="ชื่อห้อง" [(ngModel)]="selectModel.name">
+            <input type="text" class="form-control" placeholder="ชื่อห้อง" [(ngModel)]="selectModel.room_name">
           </div>
-          <div class="col-span-12">
+          <!-- <div class="col-span-12">
             <label class="form-label font-medium">อุปกรณ์</label>
             <input type="text" class="form-control" placeholder="อุปกรณ์ เช่น Projector, TV, Board" [(ngModel)]="selectModel.equipment">
-          </div>
+          </div> -->
           <div class="col-span-12">
             <label class="form-label font-medium">จำนวนคนที่จุได้</label>
             <input type="number" class="form-control" placeholder="จำนวนคนที่จุได้" [(ngModel)]="selectModel.capacity">

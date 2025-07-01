@@ -141,7 +141,7 @@ export interface Menus {
   };
   price: number;
   is_active: boolean;
-  picture?: string | null;
+  image_url?: string | null;
   getPicture(): string;
 }
 export class MenusModel extends BaseModel implements Menus {
@@ -152,7 +152,7 @@ export class MenusModel extends BaseModel implements Menus {
   category?
   price = 0;
   is_active = false;
-  picture?: string | null = null;
+  image_url?: string | null = null;
   constructor(data: Partial<Menus> = {}) {
     super(data);
     this.id = data.id || 0;
@@ -167,11 +167,11 @@ export class MenusModel extends BaseModel implements Menus {
     } : undefined;
     this.price = data.price || 0;
     this.is_active = data.is_active || false;
-    this.picture = data.picture || null;
+    this.image_url = data.image_url || null;
   }
   getPicture(): string {
-    return this.picture
-      ? `${environment.baseUrl}/images/${this.picture}`
+    return this.image_url
+      ? `${environment.baseUrl}/images/${this.image_url}`
       : './assets/images/faces/111.jpg';
   }
   getStatus(): string {
