@@ -108,6 +108,14 @@ async def get_users(role: Optional[str]=None, db: AsyncSession=Depends(get_db)):
     result = await db.execute(stmt)
     return result.scalars().all()
 
+@users_router.get("/{id}", response_model=UserOut)
+async def get_user_by_id(id: int, db: AsyncSession = Depends(get_db)):
+    stmt = select(User).where(User.id == id)
+    result = await db.execute(stmt)
+    user = result.scalars().first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
 
 @users_router.post("/", response_model=UserOut)
 async def create_user(user: UserCreate, db: AsyncSession=Depends(get_db)):

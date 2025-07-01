@@ -1,0 +1,67 @@
+<app-page-header [title]="'ข้อมูลส่วนตัว'" [title1]="'ข้อมูลส่วนตัว'"></app-page-header>
+
+
+<!-- Start::row-1 -->
+<div class="grid grid-cols-12 gap-6">
+  <div class="xl:col-span-8 col-span-12">
+    <div class="box custom-box">
+      <div class="box-header justify-between flex">
+        <div class="box-title">
+          ข้อมูลส่วนตัว
+        </div>
+        <div>
+        </div>
+      </div>
+      <div class="box-body">
+        <div class="sm:p-4 p-0">
+          <h6 class="font-semibold mb-4 text-[1rem]">
+            รูปภาพ :
+          </h6>
+          <div class="mb-6 sm:flex items-center">
+            <div class="mb-0 me-[3rem]">
+              <span class="avatar avatar-xxl avatar-rounded">
+                <img [src]="selectModel.getPicture()" alt="" id="profile-img">
+                <a aria-label="anchor" href="javascript:void(0);" class="badge rounded-full bg-primary avatar-badge">
+                  <input ng2FileSelect [uploader]="uploaderProfile" type="file" name="photo"
+                    class="absolute w-full h-full opacity-0" id="profile-image">
+                  <i class="fe fe-camera !text-[0.65rem]"></i>
+                </a>
+              </span>
+            </div>
+            <!-- <div class="inline-flex">
+              <button type="button" class="ti-btn bg-primary text-white !rounded-e-none !font-medium">แก้ไข</button>
+              <button type="button" class="ti-btn ti-btn-light !font-medium !rounded-s-none">ลบ</button>
+            </div> -->
+          </div>
+          <div class="sm:grid grid-cols-12 gap-6 mb-6">
+            <div class="xl:col-span-6 col-span-12">
+              <label for="first-name" class="form-label">ชื่อ-สกุล</label>
+              <input type="text" class="form-control w-full !rounded-md" id="first-name" [(ngModel)]="selectModel.name"
+                placeholder="ชื่อ-สกุล">
+            </div>
+
+            <div class="xl:col-span-6 col-span-12">
+              <label for="bio" class="form-label">เบอร์ติดต่อ :</label>
+              <input type="text" class="form-control w-full !rounded-md" id="first-name" [(ngModel)]="selectModel.phone"
+                placeholder="เบอร์ติดต่อ">
+            </div>
+
+          </div>
+
+
+        </div>
+      </div>
+      <div class="box-footer">
+        <div class="ltr:float-right rtl:float-left">
+          <button type="button" class="ti-btn bg-primary text-white m-1" (click)="save()">
+            บันทึกการเปลี่ยนแปลง
+          </button>
+          <button type="button" class="ti-btn ti-btn-ghost-secondary ti-btn-wave" (click)="reset()">ยกเลิก</button>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!--End::row-1 -->
