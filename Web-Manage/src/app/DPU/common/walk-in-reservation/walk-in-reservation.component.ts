@@ -96,7 +96,7 @@ export class WalkInReservationComponent {
       next: (result) => {
         this.reservationList = result.filter(e => e.status === 'PENDING');
         this.activeTableList = result.filter(e => e.status === 'CHECKED_IN');
-        this.paymentList = result.filter(e => ['checked_out', 'completed'].includes(e.status));
+        this.paymentList = result.filter(e => ['COMPLETED'].includes(e.status));
         this.isLoading = false;
         console.log(this.reservationList)
       },
@@ -260,8 +260,7 @@ export class WalkInReservationComponent {
     console.log(item);
     item.end_time = new Date().toISOString()
     item.status = 'checked_out'
-
-    this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
+    this.reserveService.checkOut(item.id).subscribe(result => {
       console.log(result);
       if (item.orders.length > 0) {
         this.savePayment(item.orders[0].id)
@@ -281,6 +280,27 @@ export class WalkInReservationComponent {
         swal("Error", "ไม่พบข้อมูลโต๊ะหรือห้อง", "error");
       }
     });
+
+    // this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
+    //   console.log(result);
+    //   if (item.orders.length > 0) {
+    //     this.savePayment(item.orders[0].id)
+    //   }
+    //   // เช็คว่าเป็นการจองโต๊ะหรือห้อง เพื่อยกเลิกสถานะ
+    //   if (item.table_id) {
+    //     this.tableService.cancelReseave(item.table_id).subscribe(_ => {
+    //       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+    //       this.ngOnInit();
+    //     });
+    //   } else if (item.room_id) {
+    //     this.roomService.cancelReseave(item.room_id).subscribe(_ => {
+    //       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+    //       this.ngOnInit();
+    //     });
+    //   } else {
+    //     swal("Error", "ไม่พบข้อมูลโต๊ะหรือห้อง", "error");
+    //   }
+    // });
   }
 
   savePayment(orderId: string) {
@@ -349,15 +369,6 @@ export class WalkInReservationComponent {
   onViewBill(item: any) {
     console.log(item)
     this.reservation = item
-    // item.status = 'completed'
-    // console.log(item)
-    // this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
-    //   console.log(result)
-    //   this.tableService.cancelReseave(item.table_id).subscribe(result => {
-    //     swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-    //     this.ngOnInit()
-    //   })
-    // })
   }
 
   onTypeChange() {
