@@ -65,7 +65,7 @@
                 id="notification-icon-badge">{{ notificationCount }}</span>
             </span>
           </button>
-          <div
+          <div style="height: 100%;"
             class="main-header-dropdown !-mt-3 !p-0 hs-dropdown-menu ti-dropdown-menu bg-white !w-[22rem] border-0 border-defaultborder hidden !m-0"
             aria-labelledby="dropdown-notification">
 
@@ -78,127 +78,29 @@
                 id="notifiation-data">{{ notificationCount }} Unread</span>
             </div>
             <div class="dropdown-divider"></div>
-            <ul class="list-none !m-0 !p-0 end-0" id="header-notification-scroll" (click)="handleCardClick($event)">
-              <li class="ti-dropdown-item dropdown-item " id="not1">
+            <ul class="list-none !m-0 !p-0 end-0" id="header-notification-scroll">
+              <li *ngFor="let noti of notifications" class="ti-dropdown-item dropdown-item" [id]="'not' + noti.id">
                 <div class="flex items-start">
                   <div class="pe-2">
                     <span
-                      class="inline-flex text-primary justify-center items-center !w-[2.5rem] !h-[2.5rem] !leading-[2.5rem] !text-[0.8rem] !bg-primary/10 !rounded-[50%]"><i
-                        class="ti ti-gift text-[1.125rem]"></i></span>
+                      class="inline-flex justify-center items-center !w-[2.5rem] !h-[2.5rem] !leading-[2.5rem] !text-[0.8rem] !rounded-[50%]"
+                      [ngClass]="[getIcon(noti).color, getIcon(noti).bg]">
+                      <i [class]="getIcon(noti).icon + ' text-[1.125rem]'"></i>
+                    </span>
                   </div>
                   <div class="grow flex items-center justify-between">
                     <div>
                       <p
                         class="mb-0 text-defaulttextcolor dark:text-[#8c9097] dark:text-white/50 text-[0.8125rem] font-semibold">
-                        <a routerLink="/pages/notifications">Your Order Has Been Shipped</a></p>
+                        <a routerLink="/pages/notifications">{{ noti.title }}</a>
+                      </p>
                       <span
-                        class="text-[#8c9097] dark:text-white/50 font-normal text-[0.75rem] header-notification-text">Order
-                        No: 123456
-                        Has Shipped To Your Delivery Address</span>
+                        class="text-[#8c9097] dark:text-white/50 font-normal text-[0.75rem] header-notification-text">
+                        {{ noti.message }}
+                      </span>
                     </div>
                     <div>
-                      <a aria-label="anchor" (click)="removeNotify('not1')"
-                        class="min-w-fit text-[#8c9097] dark:text-white/50 me-1 dropdown-item-close1"><i
-                          class="ti ti-x text-[1rem]"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li class="ti-dropdown-item dropdown-item !flex-none" id="not2">
-                <div class="flex items-start">
-                  <div class="pe-2">
-                    <span
-                      class="inline-flex text-secondary justify-center items-center !w-[2.5rem] !h-[2.5rem] !leading-[2.5rem] !text-[0.8rem]  bg-secondary/10 rounded-[50%]"><i
-                        class="ti ti-discount-2 text-[1.125rem]"></i></span>
-                  </div>
-                  <div class="grow flex items-center justify-between">
-                    <div>
-                      <p
-                        class="mb-0 text-defaulttextcolor dark:text-[#8c9097] dark:text-white/50 text-[0.8125rem]  font-semibold">
-                        <a routerLink="/pages/notifications">Discount Available</a></p>
-                      <span
-                        class="text-[#8c9097] dark:text-white/50 font-normal text-[0.75rem] header-notification-text">Discount
-                        Available On Selected Products</span>
-                    </div>
-                    <div>
-                      <a aria-label="anchor" (click)="removeNotify('not2')"
-                        class="min-w-fit  text-[#8c9097] dark:text-white/50 me-1 dropdown-item-close1"><i
-                          class="ti ti-x text-[1rem]"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li class="ti-dropdown-item dropdown-item" id="not3">
-                <div class="flex items-start">
-                  <div class="pe-2">
-                    <span
-                      class="inline-flex text-pink justify-center items-center !w-[2.5rem] !h-[2.5rem] !leading-[2.5rem] !text-[0.8rem]  bg-pink/10 rounded-[50%]"><i
-                        class="ti ti-user-check text-[1.125rem]"></i></span>
-                  </div>
-                  <div class="grow flex items-center justify-between">
-                    <div>
-                      <p
-                        class="mb-0 text-defaulttextcolor dark:text-[#8c9097] dark:text-white/50 text-[0.8125rem]  font-semibold">
-                        <a routerLink="/pages/notifications">Account Has Been Verified</a></p>
-                      <span
-                        class="text-[#8c9097] dark:text-white/50 font-normal text-[0.75rem] header-notification-text">Your
-                        Account Has
-                        Been Verified Sucessfully</span>
-                    </div>
-                    <div>
-                      <a aria-label="anchor" (click)="removeNotify('not3')"
-                        class="min-w-fit text-[#8c9097] dark:text-white/50 me-1 dropdown-item-close1"><i
-                          class="ti ti-x text-[1rem]"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li class="ti-dropdown-item dropdown-item" id="not4">
-                <div class="flex items-start">
-                  <div class="pe-2">
-                    <span
-                      class="inline-flex text-warning justify-center items-center !w-[2.5rem] !h-[2.5rem] !leading-[2.5rem] !text-[0.8rem]  bg-warning/10 rounded-[50%]"><i
-                        class="ti ti-circle-check text-[1.125rem]"></i></span>
-                  </div>
-                  <div class="grow flex items-center justify-between">
-                    <div>
-                      <p
-                        class="mb-0 text-defaulttextcolor dark:text-[#8c9097] dark:text-white/50  text-[0.8125rem]  font-semibold">
-                        <a routerLink="/pages/notifications">Order Placed <span class="text-warning">ID:
-                            #1116773</span></a></p>
-                      <span
-                        class="text-[#8c9097] dark:text-white/50 font-normal text-[0.75rem] header-notification-text">Order
-                        Placed
-                        Successfully</span>
-                    </div>
-                    <div>
-                      <a aria-label="anchor" (click)="removeNotify('not4')"
-                        class="min-w-fit text-[#8c9097] dark:text-white/50 me-1 dropdown-item-close1"><i
-                          class="ti ti-x text-[1rem]"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li class="ti-dropdown-item dropdown-item" id="not5">
-                <div class="flex items-start">
-                  <div class="pe-2">
-                    <span
-                      class="inline-flex text-success justify-center items-center !w-[2.5rem] !h-[2.5rem] !leading-[2.5rem] !text-[0.8rem]  bg-success/10 rounded-[50%]"><i
-                        class="ti ti-clock text-[1.125rem]"></i></span>
-                  </div>
-                  <div class="grow flex items-center justify-between">
-                    <div>
-                      <p
-                        class="mb-0 text-defaulttextcolor dark:text-[#8c9097] dark:text-white/50  text-[0.8125rem]  font-semibold">
-                        <a routerLink="/pages/notifications">Order Delayed <span class="text-success">ID:
-                            7731116</span></a></p>
-                      <span
-                        class="text-[#8c9097] dark:text-white/50 font-normal text-[0.75rem] header-notification-text">Order
-                        Delayed
-                        Unfortunately</span>
-                    </div>
-                    <div>
-                      <a aria-label="anchor" (click)="removeNotify('not5')"
+                      <a aria-label="anchor" (click)="removeNotify(noti.id)"
                         class="min-w-fit text-[#8c9097] dark:text-white/50 me-1 dropdown-item-close1"><i
                           class="ti ti-x text-[1rem]"></i></a>
                     </div>
@@ -208,11 +110,11 @@
             </ul>
             @if(!isNotifyEmpty){
 
-            <div class="p-4 empty-header-item1 border-t mt-2">
+            <!-- <div class="p-4 empty-header-item1 border-t mt-2">
               <div class="grid">
                 <a routerLink="/pages/notifications" class="ti-btn ti-btn-primary-full !m-0 w-full p-2">View All</a>
               </div>
-            </div>
+            </div> -->
             }
             <div class="p-[3rem] empty-item1 " [class.hidden]="!isNotifyEmpty">
               <div class="text-center">

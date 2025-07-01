@@ -11,6 +11,7 @@ from .routes.payments_router import payments_router
 from .routes.reservations_router import reservations_router
 from .routes.menu_routes import menu_router
 from .routes.orders_router import orders_router
+from .routes.notifications_router import notifications_router
 
 # Import AsyncSession จาก sqlalchemy.ext.asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -332,6 +333,7 @@ app.include_router(payments_router , prefix="/api", tags=["Payments"])
 app.include_router(store_router, prefix="/api", tags=["Store"])
 app.include_router(customers_router, prefix="/api/customers", tags=["Customers"])
 app.include_router(file_upload_router.router, prefix="/api/files", tags=["File Upload"])
+app.include_router(notifications_router, prefix="/api", tags=["Notifications"])
 
 
 @app.get("/")

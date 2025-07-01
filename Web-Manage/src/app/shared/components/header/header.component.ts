@@ -3,6 +3,8 @@ import { Menu, NavService } from '../../services/nav.service';
 import { TokenService } from '../../services/token.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UserProfileModel } from '../../../DPU/models/user.model';
+import { NotificationService } from '../../../DPU/services/notification.service';
+import { Notification } from '../../../DPU/models/all.model';
 interface Item {
   id: number;
   name: string;
@@ -17,15 +19,17 @@ interface Item {
 })
 
 export class HeaderComponent {
-  userModel : UserProfileModel = new UserProfileModel(this.tokenService.getUser())
+  userModel: UserProfileModel = new UserProfileModel(this.tokenService.getUser())
   adminRole = false
   cartItemCount: number = 5;
-  notificationCount: number = 5;
+  notificationCount: number = 0;
+  notifications: Notification[] = [];
   public isCollapsed = true;
   public selectedLanguage = "";
   constructor(public navServices: NavService,
     private elementRef: ElementRef, private renderer: Renderer2,
     private tokenService: TokenService,
+    private notiService: NotificationService,
     private translate: TranslateService) {
 
     this.translate.use(
@@ -144,10 +148,28 @@ export class HeaderComponent {
   public SearchResultEmpty: boolean = false;
   ngOnInit() {
     // this.adminRole = this.tokenService.getUser().member.role == 99 ? true : false
-    console.log("Admin",this.adminRole)
+    console.log("Admin", this.adminRole)
     this.navServices.items.subscribe((menuItems) => {
       this.items = menuItems;
     });
+
+    this.notiService.getUserNotifications(this.userModel.id).subscribe((result) => {
+      this.notifications = result;
+      this.notificationCount = result.length;
+      this.isNotifyEmpty = this.notificationCount === 0;
+      console.log("Notification Count", this.notificationCount);
+    })
+  }
+
+  getIcon(noti: Notification) {
+    switch (noti.type) {
+      case 'order': return { icon: 'ti ti-gift', color: 'text-primary', bg: 'bg-primary/10' };
+      case 'discount': return { icon: 'ti ti-discount-2', color: 'text-secondary', bg: 'bg-secondary/10' };
+      case 'verified': return { icon: 'ti ti-user-check', color: 'text-pink', bg: 'bg-pink/10' };
+      case 'placed': return { icon: 'ti ti-circle-check', color: 'text-warning', bg: 'bg-warning/10' };
+      case 'delayed': return { icon: 'ti ti-clock', color: 'text-success', bg: 'bg-success/10' };
+      default: return { icon: 'ti ti-notification', color: 'text-gray-400', bg: 'bg-gray-100' };
+    }
   }
 
   Search(searchText: string) {
@@ -228,15 +250,13 @@ export class HeaderComponent {
 
     }
   }
-  removeNotify(rowId: string) {
-    const rowElement = document.getElementById(rowId);
-    if (rowElement) {
-      rowElement.remove();
-
-
-    }
-    this.notificationCount--;
-    this.isNotifyEmpty = this.notificationCount === 0;
+  removeNotify(id: number) {
+    this.notiService.deleteNotification(id).subscribe(() => {
+      this.notifications = this.notifications.filter(noti => noti.id !== id);
+      this.notificationCount = this.notifications.length;
+      this.isNotifyEmpty = this.notificationCount === 0;
+      console.log("Notification Count after delete", this.notificationCount);
+    })
   }
   handleCardClick(event: MouseEvent) {
     // Prevent the click event from propagating to the container
