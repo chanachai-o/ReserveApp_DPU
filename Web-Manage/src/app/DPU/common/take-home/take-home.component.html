@@ -1,52 +1,99 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="order-form">
-  <div>
-    <label class="order-label">รายการอาหาร</label>
-    <div formArrayName="order_items" class="order-items-list">
-      <div [formGroupName]="i" *ngFor="let item of items.controls; let i = index" class="order-item-card">
-        <div class="order-item-img">
-          <img *ngIf="menuById(item.value.menu_id)?.image_url" [src]="menuById(item.value.menu_id)?.getPicture()" alt="menu" />
-          <div *ngIf="!menuById(item.value.menu_id)?.image_url" class="no-img">
-            <i class="ri-image-line"></i>
+<!-- src/app/DPU/take-home/take-home.component.html -->
+<div class="page-container">
+
+  <!-- Main Content: Order Form -->
+  <div class="main-content">
+    <h1 class="page-title">สั่งอาหารกลับบ้าน</h1>
+    <p class="page-subtitle">เลือกเมนูที่ต้องการแล้วกดยืนยันการสั่งซื้อ</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="order-form">
+      <div>
+        <label class="order-label">รายการอาหาร</label>
+        <div formArrayName="order_items" class="order-items-list">
+          <div [formGroupName]="i" *ngFor="let item of items.controls; let i = index" class="order-item-card">
+            <div class="order-item-img">
+              <img [src]="getImageUrl(menuById(item.value.menu_id)?.image_url ?? undefined)" alt="menu" />
+            </div>
+            <div class="order-item-info">
+              <ng-select [items]="menuList" bindLabel="name" bindValue="id" [searchable]="true" formControlName="menu_id"
+                placeholder="เลือกเมนู" class="menu-select">
+                <ng-template ng-option-tmp let-item="item">
+                  <span class="option-flex">
+                    <img [src]="getImageUrl(item.image_url)" class="option-img" alt="menu" />
+                    <span>
+                      {{item.name}}
+                      <span class="option-price">({{item.price | number:'1.2-2'}} ฿)</span>
+                    </span>
+                  </span>
+                </ng-template>
+              </ng-select>
+            </div>
+            <div class="order-qty">
+              <input type="number" formControlName="quantity" min="1" class="qty-input" />
+            </div>
+            <button type="button" class="del-btn" (click)="removeItem(i)" [disabled]="items.length <= 1">
+              <i class="ri-delete-bin-5-line"></i>
+            </button>
           </div>
         </div>
-        <div class="order-item-info">
-          <ng-select [items]="menuList" bindLabel="name" bindValue="id" [searchable]="true" formControlName="menu_id"
-            placeholder="เลือกเมนู" class="menu-select">
-            <ng-template ng-option-tmp let-item="item">
-              <span class="option-flex">
-                <img [src]="item.getPicture ? item.getPicture() : './assets/images/faces/111.jpg'" class="option-img" alt="menu" />
-                <span>
-                  {{item.name}}
-                  <span class="option-price">({{item.price | number:'1.2-2'}} ฿)</span>
-                </span>
-              </span>
-            </ng-template>
-          </ng-select>
-        </div>
-        <div class="order-qty">
-          <input type="number" formControlName="quantity" min="1" class="qty-input" />
-        </div>
-        <button type="button" class="del-btn" (click)="removeItem(i)" [disabled]="items.length <= 1">
-          <i class="ri-delete-bin-5-line"></i>
+        <button type="button" class="add-menu-btn" (click)="addItem()">
+          <i class="ri-add-line"></i> เพิ่มเมนู
         </button>
       </div>
+
+      <div class="order-total-bar">
+        <span class="total-label">ยอดรวม:</span>
+        <span class="total-value">{{ getTotal() | number:'1.2-2' }} ฿</span>
+      </div>
+
+      <div class="order-actions">
+        <button type="submit" class="order-submit-btn" [disabled]="!form.valid || items.length < 1 || isSubmitting">
+          <i class="ri-check-line"></i>
+          <span *ngIf="!isSubmitting">ยืนยันการสั่งอาหาร</span>
+          <span *ngIf="isSubmitting">กำลังส่งออเดอร์...</span>
+        </button>
+        <button type="button" class="order-reset-btn" (click)="initForm()">
+          <i class="ri-refresh-line"></i> ล้างข้อมูล
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Sidebar: Order History & Status -->
+  <aside class="sidebar-content">
+    <div class="history-card">
+      <div class="history-header">
+        <h2 class="history-title">ประวัติการสั่งซื้อล่าสุด</h2>
+        <button class="refresh-btn" (click)="getOrderHistory()" [disabled]="isLoadingHistory">
+          <i class="ri-refresh-line" [class.spin]="isLoadingHistory"></i>
+        </button>
+      </div>
+
+      <div *ngIf="isLoadingHistory" class="loading-history">
+        <p>กำลังโหลดประวัติ...</p>
+      </div>
+
+      <div *ngIf="!isLoadingHistory && orderHistory.length === 0" class="no-history">
+        <p>ยังไม่มีประวัติการสั่งซื้อ</p>
+      </div>
+
+      <ul *ngIf="!isLoadingHistory && orderHistory.length > 0" class="history-list">
+        <li *ngFor="let order of orderHistory" class="history-item">
+          <div class="history-item__main">
+            <div class="history-item__id">ออเดอร์ #{{ order.id }}</div>
+            <div class="history-item__date">{{ order.created_at | date:'dd/MM/yy HH:mm' }}</div>
+          </div>
+          <div class="history-item__details">
+            <div class="history-item__summary">
+              {{ order.order_items.length }} รายการ · {{ order.total_amount | currency:'฿' }}
+            </div>
+            <div class="history-item__status" [ngClass]="getStatusClass(order.status)">
+              {{ order.status }}
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
-    <button type="button" class="add-menu-btn" (click)="addItem()">
-      <i class="ri-add-line"></i> เพิ่มเมนู
-    </button>
-  </div>
+  </aside>
 
-  <div class="order-total-bar">
-    <span class="total-label">ยอดรวม:</span>
-    <span class="total-value">{{ getTotal() | number:'1.2-2' }} ฿</span>
-  </div>
-
-  <div class="order-actions">
-    <button type="submit" class="order-submit-btn" [disabled]="!form.valid || items.length < 1">
-      <i class="ri-check-line"></i> ยืนยันการสั่งอาหาร
-    </button>
-    <button type="button" class="order-reset-btn" (click)="form.reset()">
-      <i class="ri-refresh-line"></i> ล้างข้อมูล
-    </button>
-  </div>
-</form>
+</div>

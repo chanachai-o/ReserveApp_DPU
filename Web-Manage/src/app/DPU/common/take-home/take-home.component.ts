@@ -1,99 +1,185 @@
-import { Component } from '@angular/core';
-import { OrderFoodModalComponent } from '../../customer/order-food-modal/order-food-modal.component';
-import { MenusModel, OrderItem } from '../../models/all.model';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MenusService } from '../../services/menu.service';
+// src/app/DPU/take-home/take-home.component.ts
+
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { finalize, Subject, takeUntil, timer } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+
+import { MenusModel, Order } from '../../models/all.model';
+import { UserProfileModel } from '../../models/user.model';
+import { OrderCreatePayload, OrderHistoryItem } from '../../models/take-home.models';
+import { TakeHomeService } from '../../services/take-home.service';
+import { AuthService } from '../../../shared/services/auth.service';
+import { TokenService } from '../../../shared/services/token.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-take-home',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule],
   templateUrl: './take-home.component.html',
-  styleUrl: './take-home.component.scss'
+  styleUrls: ['./take-home.component.scss']
 })
-export class TakeHomeComponent {
-  userId!: number;
-  reservationId!: number;
+export class TakeHomeComponent implements OnInit, OnDestroy {
+
+  // --- Component State ---
+  currentUser: UserProfileModel | null = null;
   menuList: MenusModel[] = [];
-  orderItems?: OrderItem[] = []; // <-- เพิ่ม input ตรงนี้
-
   form!: FormGroup;
+  orderHistory: OrderHistoryItem[] = [];
 
-  constructor(private fb: FormBuilder, private menuService: MenusService) { }
+  isLoadingMenu = true;
+  isSubmitting = false;
+  isLoadingHistory = true;
 
-  ngOnInit() {
-    this.getMenu();
+  private destroy$ = new Subject<void>();
+  private statusRefreshTimer$ = timer(0, 30000); // รีเฟรชสถานะทุก 30 วินาที
+
+  constructor(
+    private fb: FormBuilder,
+    private takeHomeService: TakeHomeService,
+    private tokenService: TokenService
+  ) { }
+
+  ngOnInit(): void {
+    this.currentUser = this.tokenService.getUser();
     this.initForm();
+    this.loadMenuAndHistory();
+    this.startStatusRefresh();
   }
 
-
-  getMenu() {
-    this.menuService.getLists().subscribe(result => {
-      this.menuList = result
-    })
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  initForm() {
+  // --- Data Loading and Refreshing ---
+  loadMenuAndHistory(): void {
+    this.getMenuList();
+    this.getOrderHistory();
+  }
+
+  getMenuList(): void {
+    this.isLoadingMenu = true;
+    this.takeHomeService.getAvailableMenus().pipe(
+      finalize(() => this.isLoadingMenu = false)
+    ).subscribe(result => this.menuList = result);
+  }
+
+  getOrderHistory(showLoading = true): void {
+    if (!this.currentUser) return;
+    if (showLoading) this.isLoadingHistory = true;
+
+    this.takeHomeService.getOrderHistory(this.currentUser.id).pipe(
+      finalize(() => this.isLoadingHistory = false)
+    ).subscribe(history => this.orderHistory = history);
+  }
+
+  startStatusRefresh(): void {
+    this.statusRefreshTimer$.pipe(
+      takeUntil(this.destroy$),
+      switchMap(() => {
+        if (this.currentUser) {
+          return this.takeHomeService.getOrderHistory(this.currentUser.id);
+        }
+        return [];
+      })
+    ).subscribe(history => this.orderHistory = history);
+  }
+
+  // --- Form Management ---
+  initForm(): void {
     this.form = this.fb.group({
-      status: ['pending', Validators.required],
-      user_id: [this.userId, Validators.required],
-      reservation_id: [this.reservationId, Validators.required],
-      order_items: this.fb.array([])
+      order_items: this.fb.array([this.createItem()])
     });
-
-    // ถ้ามี orderItems เดิม preload เข้า FormArray
-    // if (this.orderItems && this.orderItems.length) {
-    //   this.orderItems.forEach(item => {
-    //     this.items.push(this.createItem(item));
-    //   });
-    // } else {
-    //   this.items.push(this.createItem());
-    // }
   }
 
   get items(): FormArray {
     return this.form.get('order_items') as FormArray;
   }
 
-  createItem(item?: OrderItem): FormGroup {
+  createItem(): FormGroup {
     return this.fb.group({
-      menu_id: [item?.menu_id ?? null, Validators.required],
-      quantity: [item?.quantity ?? 1, [Validators.required, Validators.min(1)]],
-      status: [item?.status ?? 'pending', Validators.required] // เพิ่มสถานะอาหารแต่ละรายการ
+      menu_id: [null, Validators.required],
+      quantity: [1, [Validators.required, Validators.min(1)]]
     });
   }
 
-  addItem(item?: any) {
-    this.items.push(this.createItem(item));
+  addItem(): void {
+    this.items.push(this.createItem());
   }
 
-  removeItem(i: number) {
+  removeItem(index: number): void {
     if (this.items.length > 1) {
-      this.items.removeAt(i);
+      this.items.removeAt(index);
     }
   }
 
+  // --- UI Logic ---
   menuById(id: number): MenusModel | undefined {
     return this.menuList.find(m => m.id === id);
   }
 
-  // รวมยอดเงินอัตโนมัติ
+  getImageUrl(path?: string): string {
+    if (!path) return 'https://placehold.co/100x100/e2e8f0/64748b?text=No+Image';
+    return path.startsWith('http') ? path : `${environment.baseUrl}/images/${path}`;
+  }
+
   getTotal(): number {
-    return this.items.controls.reduce((sum, ctrl) => {
-      const menuId = ctrl.value.menu_id;
-      const qty = ctrl.value.quantity || 1;
-      const menu = this.menuById(menuId);
-      return sum + ((menu?.price || 0) * qty);
+    return this.items.controls.reduce((sum, itemControl) => {
+      const menu = this.menuById(itemControl.value.menu_id);
+      const quantity = itemControl.value.quantity || 0;
+      const price = menu?.price || 0;
+      return sum + (price * quantity);
     }, 0);
   }
 
-  onSubmit() {
-    // if (this.form.valid) {
-    //   this.submitOrder.emit(this.form.value);
-    // } else {
-    //   this.form.markAllAsTouched();
-    // }
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'PENDING': return 'status-pending';
+      case 'PREPARING': return 'status-preparing';
+      case 'READY': return 'status-ready';
+      case 'SERVED': // or COMPLETED
+      case 'COMPLETED':
+        return 'status-completed';
+      case 'CANCELLED': return 'status-cancelled';
+      default: return '';
+    }
+  }
+
+  // --- Form Submission ---
+  onSubmit(): void {
+    if (this.form.invalid || !this.currentUser) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    const formValue = this.form.getRawValue();
+    const payload: OrderCreatePayload = {
+      user_id: this.currentUser.id,
+      order_items: formValue.order_items
+    };
+
+    this.takeHomeService.submitOrder(payload).pipe(
+      finalize(() => this.isSubmitting = false)
+    ).subscribe({
+      next: (createdOrder) => {
+        alert(`สั่งอาหารสำเร็จ! หมายเลขออเดอร์ของคุณคือ #${createdOrder.id}`);
+        this.form.reset();
+        this.items.clear();
+        this.addItem();
+        this.getOrderHistory(); // Refresh history after submitting
+      },
+      error: (err: any) => {
+        console.error("Order submission failed:", err);
+        alert(`เกิดข้อผิดพลาด: ${err.error?.detail || 'ไม่สามารถสั่งอาหารได้'}`);
+      }
+    });
   }
 }
