@@ -159,7 +159,7 @@ async def delete_user(id: int, db: AsyncSession=Depends(get_db)):
 tables_router = APIRouter()
 
 
-@tables_router.get("/", response_model=List[TableOut])
+@tables_router.get("/tables", response_model=List[TableOut])
 async def get_tables(status: Optional[str]=None, db: AsyncSession=Depends(get_db)):
     stmt = select(Table)
     if status:
@@ -168,7 +168,7 @@ async def get_tables(status: Optional[str]=None, db: AsyncSession=Depends(get_db
     return result.scalars().all()
 
 
-@tables_router.post("/", response_model=TableOut)
+@tables_router.post("/tables", response_model=TableOut)
 async def create_table(table: TableCreate, db: AsyncSession=Depends(get_db)):
     new_table = Table(**table.dict())
     db.add(new_table)
@@ -177,7 +177,7 @@ async def create_table(table: TableCreate, db: AsyncSession=Depends(get_db)):
     return new_table
 
 
-@tables_router.put("/{id}", response_model=TableOut)
+@tables_router.put("/tables/{id}", response_model=TableOut)
 async def update_table(id: int, table: TableUpdate, db: AsyncSession=Depends(get_db)):
     stmt = select(Table).where(Table.id == id)
     result = await db.execute(stmt)
@@ -194,7 +194,7 @@ async def update_table(id: int, table: TableUpdate, db: AsyncSession=Depends(get
     return db_table
 
 
-@tables_router.delete("/{id}")
+@tables_router.delete("/tables/{id}")
 async def delete_table(id: int, db: AsyncSession=Depends(get_db)):
     stmt = select(Table).where(Table.id == id)
     result = await db.execute(stmt)
@@ -208,7 +208,7 @@ async def delete_table(id: int, db: AsyncSession=Depends(get_db)):
     return {"detail": "Table deleted"}
 
 
-@tables_router.patch("/{table_id}/status", response_model=TableOut)
+@tables_router.patch("/tables/{table_id}/status", response_model=TableOut)
 async def quick_change_table_status(
     table_id: int,
     payload: TableQuickStatus,
@@ -232,7 +232,7 @@ async def quick_change_table_status(
 rooms_router = APIRouter()
 
 
-@rooms_router.get("/", response_model=List[RoomOut])
+@rooms_router.get("/rooms", response_model=List[RoomOut])
 async def get_rooms(status: Optional[str]=None, db: AsyncSession=Depends(get_db)):
     stmt = select(Room)
     if status:
@@ -241,7 +241,7 @@ async def get_rooms(status: Optional[str]=None, db: AsyncSession=Depends(get_db)
     return result.scalars().all()
 
 
-@rooms_router.post("/", response_model=RoomOut)
+@rooms_router.post("/rooms", response_model=RoomOut)
 async def create_room(room: RoomCreate, db: AsyncSession=Depends(get_db)):
     new_room = Room(**room.dict())
     db.add(new_room)
@@ -250,7 +250,7 @@ async def create_room(room: RoomCreate, db: AsyncSession=Depends(get_db)):
     return new_room
 
 
-@rooms_router.put("/{id}", response_model=RoomOut)
+@rooms_router.put("/rooms/{id}", response_model=RoomOut)
 async def update_room(id: int, room: RoomUpdate, db: AsyncSession=Depends(get_db)):
     stmt = select(Room).where(Room.id == id)
     result = await db.execute(stmt)
@@ -267,7 +267,7 @@ async def update_room(id: int, room: RoomUpdate, db: AsyncSession=Depends(get_db
     return db_room
 
 
-@rooms_router.delete("/{id}")
+@rooms_router.delete("/rooms/{id}")
 async def delete_room(id: int, db: AsyncSession=Depends(get_db)):
     stmt = select(Room).where(Room.id == id)
     result = await db.execute(stmt)
@@ -281,7 +281,7 @@ async def delete_room(id: int, db: AsyncSession=Depends(get_db)):
     return {"detail": "Room deleted"}
 
 
-@rooms_router.patch("/{room_id}/status", response_model=RoomOut)
+@rooms_router.patch("/rooms/{room_id}/status", response_model=RoomOut)
 async def quick_change_room_status(
     room_id: int,
     payload: RoomQuickStatus,
@@ -315,13 +315,13 @@ async def quick_change_room_status(
 # รวม routers ทั้งหมดเข้ากับ app
 app.include_router(auth_router , prefix="/api/auth", tags=["Authentication"])
 app.include_router(users_router , prefix="/api/users", tags=["Users"])
-app.include_router(tables_router , prefix="/api/tables", tags=["Tables"])
-app.include_router(rooms_router , prefix="/api/rooms", tags=["Rooms"])
+app.include_router(tables_router , prefix="/api", tags=["Tables"])
+app.include_router(rooms_router , prefix="/api", tags=["Rooms"])
 app.include_router(reservations_router , prefix="/api", tags=["Reservations"])
 app.include_router(menu_router , prefix="/api", tags=["Menus"])
 app.include_router(orders_router , prefix="/api", tags=["Orders"])
 app.include_router(payments_router , prefix="/api", tags=["Payments"])
-app.include_router(store_router, prefix="/api/store/profile", tags=["Store"])
+app.include_router(store_router, prefix="/api", tags=["Store"])
 app.include_router(customers_router, prefix="/api/customers", tags=["Customers"])
 app.include_router(file_upload_router.router, prefix="/api/files", tags=["File Upload"])
 

@@ -10,7 +10,7 @@
       <span>โต๊ะ/ห้อง</span>
       <span>
         <ng-container *ngIf="reservation.table">โต๊ะ {{ reservation.table.table_number }}</ng-container>
-        <ng-container *ngIf="reservation.room">ห้อง {{ reservation.room.name }}</ng-container>
+        <ng-container *ngIf="reservation.room">ห้อง {{ reservation.room.room_name }}</ng-container>
       </span>
     </div>
     <div class="bill-row bill-total">

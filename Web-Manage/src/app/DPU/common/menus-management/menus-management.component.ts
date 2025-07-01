@@ -244,7 +244,7 @@ export class MenusManagementComponent {
   changeCategoly() {
     console.log(this.categorySelected)
     if (this.categorySelected != 'all') {
-      this.filterList = this.itemsList.filter(e => e.category == this.categorySelected)
+      this.filterList = this.itemsList.filter(e => e.category_id == this.categorySelected)
     } else {
       this.filterList = this.itemsList
     }

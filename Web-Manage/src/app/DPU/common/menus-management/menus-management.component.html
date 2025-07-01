@@ -26,9 +26,9 @@
                      [(ngModel)]="categorySelected"
                      (change)="changeCategoly()">
             <ng-option value="all">ทั้งหมด</ng-option>
-            <ng-option value="food">อาหาร</ng-option>
-            <ng-option value="drink">เครื่องดื่ม</ng-option>
-            <ng-option value="dessert">ขนมของกินเล่น</ng-option>
+            <ng-option value="1">อาหาร</ng-option>
+            <ng-option value="2">เครื่องดื่ม</ng-option>
+            <ng-option value="3">ขนมของกินเล่น</ng-option>
           </ng-select>
         </div>
       </div>
@@ -53,7 +53,7 @@
         </span>
       </div>
       <p class="mb-2 text-sm text-gray-600 truncate">รายละเอียด: {{ item.description }}</p>
-      <p class="mb-2 text-sm text-gray-600"><span class="font-semibold">หมวดหมู่:</span> {{ item.category }}</p>
+      <p class="mb-2 text-sm text-gray-600"><span class="font-semibold">หมวดหมู่:</span> {{ item.category?.name }}</p>
       <div class="flex justify-between items-center mt-auto">
         <div class="font-semibold text-base text-primary">฿{{ item.price | number:'1.0-2' }}</div>
         <div class="flex gap-2">
@@ -109,10 +109,10 @@
           </div>
           <div class="col-span-6">
             <label class="form-label">หมวดหมู่</label>
-            <ng-select [(ngModel)]="selectModel.category">
-              <ng-option value="food">อาหาร</ng-option>
-              <ng-option value="drink">เครื่องดื่ม</ng-option>
-              <ng-option value="dessert">ขนมของกินเล่น</ng-option>
+            <ng-select [(ngModel)]="selectModel.category_id">
+              <ng-option [value]="1">อาหาร</ng-option>
+              <ng-option [value]="2">เครื่องดื่ม</ng-option>
+              <ng-option [value]="3">ขนมของกินเล่น</ng-option>
             </ng-select>
           </div>
           <div class="col-span-12">

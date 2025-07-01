@@ -39,7 +39,7 @@ class UserBase(BaseModel):
     is_active: bool
 
 class UserCreate(UserBase):
-    password: str = Field(..., min_length=8)
+    password: str = Field(..., min_length=4)
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None

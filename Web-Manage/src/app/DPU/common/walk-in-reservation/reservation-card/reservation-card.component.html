@@ -12,7 +12,7 @@
     <img *ngIf="reservation.room?.picture" [src]="reservation.room?.getPicture()" alt="cover"
       class="main-img" />
     <div class="title">
-      {{ reservation.table ? 'โต๊ะ #' + reservation.table.table_number : 'ห้อง: ' + (reservation.room?.name || '-') }}
+      {{ reservation.table ? 'โต๊ะ #' + reservation.table.table_number : 'ห้อง: ' + (reservation.room?.room_name || '-') }}
     </div>
     <div class="meta">เวลา {{ reservation.start_time | date: 'HH:mm' }}</div>
     <div class="meta">

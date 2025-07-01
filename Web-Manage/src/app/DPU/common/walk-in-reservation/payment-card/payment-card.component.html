@@ -15,7 +15,7 @@
 
     <div class="modern-payment-card__detail">
       <div class="card-label">
-        {{ checkout.table ? 'โต๊ะ #' + checkout.table.table_number : 'ห้อง: ' + (checkout.room?.name || '-') }}
+        {{ checkout.table ? 'โต๊ะ #' + checkout.table.table_number : 'ห้อง: ' + (checkout.room?.room_name || '-') }}
       </div>
       <div class="meta">เวลา {{ checkout.start_time | date: 'HH:mm' }}</div>
       <div class="meta">{{ checkout.num_people || '-' }} คน ({{ checkout.user.name || checkout.user.phone || checkout.user_id || '-' }})</div>

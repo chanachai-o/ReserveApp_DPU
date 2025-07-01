@@ -13,7 +13,7 @@
         <i class="ri-table-fill"></i> โต๊ะ {{ reservation.table.table_number }}
       </span>
       <span *ngIf="reservation.room" class="badge badge-room">
-        <i class="ri-door-lock-fill"></i> ห้อง {{ reservation.room.name }}
+        <i class="ri-door-lock-fill"></i> ห้อง {{ reservation.room.room_name }}
       </span>
       <span class="badge badge-status" [ngClass]="{
         'status-pending': reservation.status === 'pending',

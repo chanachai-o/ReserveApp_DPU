@@ -61,7 +61,7 @@ export class TableModel extends BaseModel implements Table {
 
 export interface Room {
   id: number;
-  name: string;
+  room_name: string;
   capacity: number;
   equipment?: string | null;
   status: RoomStatus;
@@ -71,7 +71,7 @@ export interface Room {
 }
 export class RoomModel extends BaseModel implements Room {
   id = 0;
-  name = '';
+  room_name = '';
   capacity = 0;
   equipment?: string | null = null;
   status = RoomStatus.Available;
@@ -79,7 +79,7 @@ export class RoomModel extends BaseModel implements Room {
   constructor(data: Partial<Room> = {}) {
     super(data);
     this.id = data.id || 0;
-    this.name = data.name || '';
+    this.room_name = data.room_name || '';
     this.capacity = data.capacity || 0;
     this.equipment = data.equipment || null;
     this.status = data.status || RoomStatus.Available;
@@ -132,7 +132,13 @@ export interface Menus {
   id: number;
   name: string;
   description?: string | null;
-  category?: string | null;
+  category_id?: string | null;
+  category?: {
+    name: string;
+    description: string;
+    id: number;
+    is_active: boolean;
+  };
   price: number;
   is_active: boolean;
   picture?: string | null;
@@ -142,7 +148,8 @@ export class MenusModel extends BaseModel implements Menus {
   id = 0;
   name = '';
   description = '';
-  category = '';
+  category_id = '';
+  category?
   price = 0;
   is_active = false;
   picture?: string | null = null;
@@ -151,7 +158,13 @@ export class MenusModel extends BaseModel implements Menus {
     this.id = data.id || 0;
     this.name = data.name || '';
     this.description = data.description || '';
-    this.category = data.category || '';
+    this.category_id = data.category_id || '';
+    this.category = data.category ? {
+      name: data.category.name || '',
+      description: data.category.description || '',
+      id: data.category.id || 0,
+      is_active: data.category.is_active || false
+    } : undefined;
     this.price = data.price || 0;
     this.is_active = data.is_active || false;
     this.picture = data.picture || null;
