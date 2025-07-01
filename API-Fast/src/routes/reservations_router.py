@@ -12,6 +12,7 @@ from ..config.database import get_db
 # เพิ่ม Notification model เข้ามา
 from ..models import Reservation, User, Table, Room, Order, OrderItem, Payment, ReservationStatus, TableStatus, RoomStatus, Notification
 from ..schemas import ReservationCreate, ReservationUpdate, ReservationOut, OrderOut, PaymentOut
+from src.models import Menu
 # from ..middlewares.auth_middleware import require_role # หากต้องการใช้ auth
 
 reservations_router = APIRouter()
@@ -19,6 +20,7 @@ reservations_router = APIRouter()
 # ================================================================
 #                       Helper Function
 # ================================================================
+
 
 async def get_full_reservation(reservation_id: int, db: AsyncSession) -> Optional[Reservation]:
     """
@@ -40,15 +42,15 @@ async def get_full_reservation(reservation_id: int, db: AsyncSession) -> Optiona
     result = await db.execute(stmt)
     return result.scalars().unique().first()
 
-
 # ================================================================
 #                       Reservation Endpoints
 # ================================================================
 
+
 @reservations_router.post("/reservations", response_model=ReservationOut, status_code=status.HTTP_201_CREATED)
 async def create_new_reservation(
     reservation_in: ReservationCreate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession=Depends(get_db)
 ):
     """
     สร้างการจองโต๊ะหรือห้องใหม่ (Dine-in Reservation)
@@ -95,25 +97,30 @@ async def create_new_reservation(
 
 @reservations_router.get("/reservations", response_model=List[ReservationOut])
 async def get_all_reservations(
-    user_id: Optional[int] = None,
-    status: Optional[ReservationStatus] = None,
-    table_id: Optional[int] = None,
-    room_id: Optional[int] = None,
-    start_time: Optional[datetime] = Query(None, description="Filter reservations starting after this time"),
-    end_time: Optional[datetime] = Query(None, description="Filter reservations ending before this time"),
-    db: AsyncSession = Depends(get_db)
+    user_id: Optional[int]=None,
+    status: Optional[ReservationStatus]=None,
+    table_id: Optional[int]=None,
+    room_id: Optional[int]=None,
+    start_time: Optional[datetime]=Query(None, description="Filter reservations starting after this time"),
+    end_time: Optional[datetime]=Query(None, description="Filter reservations ending before this time"),
+    db: AsyncSession=Depends(get_db)
 ):
     """
     ดึงข้อมูลการจองทั้งหมด พร้อมความสามารถในการกรองข้อมูล
     """
+
+
     stmt = (
         select(Reservation)
         .options(
+            # --- แก้ไขจุดนี้: เพิ่มการโหลด category ที่ซ้อนอยู่ใน menu ---
             selectinload(Reservation.customer),
             selectinload(Reservation.table),
             selectinload(Reservation.room),
             selectinload(Reservation.orders).options(
-                selectinload(Order.order_items).selectinload(OrderItem.menu),
+                selectinload(Order.order_items).options(
+                    selectinload(OrderItem.menu).selectinload(Menu.category)
+                ),
                 selectinload(Order.payments)
             )
         )
@@ -142,7 +149,7 @@ async def get_all_reservations(
 @reservations_router.get("/reservations/{reservation_id}", response_model=ReservationOut)
 async def get_reservation_by_id(
     reservation_id: int,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession=Depends(get_db)
 ):
     """
     ดึงข้อมูลการจองตาม ID พร้อมรายละเอียดทั้งหมด
@@ -157,7 +164,7 @@ async def get_reservation_by_id(
 async def update_reservation_details(
     reservation_id: int,
     reservation_in: ReservationUpdate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession=Depends(get_db)
 ):
     """
     อัปเดตรายละเอียดการจอง เช่น เวลา, จำนวนคน หรือสถานะ
@@ -199,7 +206,7 @@ async def update_reservation_details(
 
 
 @reservations_router.post("/reservations/{reservation_id}/checkin", response_model=ReservationOut)
-async def checkin_reservation(reservation_id: int, db: AsyncSession = Depends(get_db)):
+async def checkin_reservation(reservation_id: int, db: AsyncSession=Depends(get_db)):
     """
     ทำการ Check-in สำหรับการจอง
     """
@@ -237,7 +244,7 @@ async def checkin_reservation(reservation_id: int, db: AsyncSession = Depends(ge
 
 
 @reservations_router.post("/reservations/{reservation_id}/checkout", response_model=ReservationOut)
-async def checkout_reservation(reservation_id: int, db: AsyncSession = Depends(get_db)):
+async def checkout_reservation(reservation_id: int, db: AsyncSession=Depends(get_db)):
     """
     ทำการ Check-out และเสร็จสิ้นการจอง
     """
@@ -277,7 +284,7 @@ async def checkout_reservation(reservation_id: int, db: AsyncSession = Depends(g
 
 
 @reservations_router.delete("/reservations/{reservation_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_reservation(reservation_id: int, db: AsyncSession = Depends(get_db)):
+async def delete_reservation(reservation_id: int, db: AsyncSession=Depends(get_db)):
     """
     ลบการจอง (สำหรับ Admin/Manager)
     """

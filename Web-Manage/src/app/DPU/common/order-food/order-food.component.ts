@@ -61,7 +61,7 @@ export class OrderFoodComponent implements OnInit, OnChanges {
       status: ['pending', Validators.required],
       user_id: [this.userId, Validators.required],
       reservation_id: [this.reservationId, Validators.required],
-      items: this.fb.array([])
+      order_items: this.fb.array([])
     });
 
     // ถ้ามี orderItems เดิม preload เข้า FormArray
@@ -75,7 +75,7 @@ export class OrderFoodComponent implements OnInit, OnChanges {
   }
 
   get items(): FormArray {
-    return this.form.get('items') as FormArray;
+    return this.form.get('order_items') as FormArray;
   }
 
   createItem(item?: OrderItem): FormGroup {

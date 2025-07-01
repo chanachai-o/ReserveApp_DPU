@@ -1,7 +1,7 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="order-form">
   <div>
     <label class="order-label">รายการอาหาร</label>
-    <div formArrayName="items" class="order-items-list">
+    <div formArrayName="order_items" class="order-items-list">
       <div [formGroupName]="i" *ngFor="let item of items.controls; let i = index" class="order-item-card">
         <div class="order-item-img">
           <img *ngIf="menuById(item.value.menu_id)?.image_url" [src]="menuById(item.value.menu_id)?.getPicture()" alt="menu" />

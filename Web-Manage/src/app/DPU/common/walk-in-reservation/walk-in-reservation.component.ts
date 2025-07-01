@@ -313,35 +313,15 @@ export class WalkInReservationComponent {
     })
   }
 
-  // onBill(item: any) {
-  //   console.log("bile", item)
-  //   item.end_time = new Date().toISOString()
-  //   item.status = 'checked_out'
-  //   console.log(item)
-  //   this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
-  //     console.log(result)
-  //     this.tableService.cancelReseave(item.table_id).subscribe(result => {
-  //       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-  //       this.ngOnInit()
-  //     })
-  //   })
-  //   // this.http.post("http://127.0.0.1:8000/payments/orders/" + item.id + "/payment", {
-  //   //   "amount": 0,
-  //   //   "slip_url": ""
-  //   // }).subscribe(result => {
-  //   //   swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-  //   //   this.ngOnInit()
-  //   // })
-  // }
-
   onOrder(item: any) {
     this.reservation = item
     console.log("order", item)
   }
 
   handleOrder(item: any) {
+    item.status = 'PENDING'
     console.log("submitOrderL0", item)
-    this.http.post("http://127.0.0.1:8000/orders", item).subscribe(result => {
+    this.http.post("http://127.0.0.1:8000/api/orders", item).subscribe(result => {
       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
       this.ngOnInit()
     })
