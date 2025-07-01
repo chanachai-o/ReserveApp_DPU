@@ -10,7 +10,7 @@ import { MenusService } from '../../services/menu.service';
 import { ReservationService } from '../../services/reservation.service';
 import { RoomService } from '../../services/room.service';
 import { TablesService } from '../../services/tables.service';
-import { AvailableItem } from '../../models/all.model';
+import { AvailableItem, ReservationModel } from '../../models/all.model';
 import { ReservationCustomerCardComponent } from '../reservation-card/reservation-card.component';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -30,7 +30,7 @@ export class CustomerReservationPageComponent implements OnInit {
   availableTables: AvailableItem[] = [];
   availableRooms: AvailableItem[] = [];
   reservationList: any[] = [];
-  selectedItem: any = null;
+  selectedItem: AvailableItem;
   selectedOrderRes: any = null;
   selectedBillRes: any = null;
   menuList: any[] = [];
@@ -106,9 +106,16 @@ export class CustomerReservationPageComponent implements OnInit {
   }
   handleReserved(item: any) {
     this.showReserveModal = false;
+    if (!item.user_id) {
+      item.user_id = this.tokenService.getUser().id
+    }
     console.log('API', item);
-    item.status = 'pending'
+    item.status = 'PENDING'
     item.end_time = item.start_time
+    if (this.selectedItem && this.selectedItem.capacity < item.num_people) {
+      swal("Error!!", "จำนวนคนที่จองเกินกว่าความจุของโต๊ะ/ห้อง", "error");
+      return;
+    }
     swal({
       title: "Are you sure?",
       text: "คุณต้องการบันทึกการจองนี้หรือไม่?",
@@ -197,21 +204,12 @@ export class CustomerReservationPageComponent implements OnInit {
   handleOrder(item: any) {
     this.showOrderModal = false;
     console.log('Order data:', item);
-    swal({
-      title: "Are you sure?",
-      text: "คุณต้องการบันทึกออเดอร์นี้หรือไม่?",
-      icon: "warning",
-      dangerMode: true,
-      buttons: ["Cancel", "Yes, Save it!"],
+    item.status = 'PENDING'
+    console.log("submitOrderL0", item)
+    this.http.post("http://127.0.0.1:8000/api/orders", item).subscribe(result => {
+      swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+      this.ngOnInit()
     })
-      .then((willDelete: any) => {
-        if (willDelete) {
-          this.http.post("http://127.0.0.1:8000/orders", item).subscribe(result => {
-            swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-            this.ngOnInit()
-          })
-        }
-      });
 
   }
   onViewBill(res: any) {
@@ -222,9 +220,12 @@ export class CustomerReservationPageComponent implements OnInit {
   handleUploadSlip(item: any) {
     this.showBillModal = false;
     // ส่ง formData ไป backend (POST /payments หรือแล้วแต่ API)
-    this.http.put("http://127.0.0.1:8000/payments/orders/" + item.orders[0].id + "/payment", {
-      "amount": item.orders[0].total_amount,
-      "slip_url": item.payments[0].slip_url
+    this.http.post("http://127.0.0.1:8000/api/payments", {
+      "amount": this.getTotalOrderAmount(item),
+      "payment_method": "",
+      "slip_url": item.orders[0].payments[0].slip_url,
+      "status": "PENDING",
+      "order_id": item.orders[0].id
     }).subscribe(result => {
       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
       this.ngOnInit()
@@ -235,11 +236,9 @@ export class CustomerReservationPageComponent implements OnInit {
     console.log(item);
     this.showBillModal = false;
     item.end_time = new Date().toISOString()
-    item.status = 'checked_out'
+    item.status = 'COMPLETED'
+    this.reserveService.checkOut(item.id).subscribe(result => {
 
-    this.http.put("http://127.0.0.1:8000/reservations/" + item.id, item).subscribe(result => {
-      console.log(result);
-      this.savePayment(item.orders[0].id)
       // เช็คว่าเป็นการจองโต๊ะหรือห้อง เพื่อยกเลิกสถานะ
       if (item.table_id) {
         this.tableService.cancelReseave(item.table_id).subscribe(_ => {
@@ -258,12 +257,63 @@ export class CustomerReservationPageComponent implements OnInit {
   }
 
   savePayment(orderId: string) {
-    this.http.post("http://127.0.0.1:8000/payments/orders/" + orderId + "/payment", {
+    this.http.post("http://127.0.0.1:8000/api/payments", {
       "amount": 0,
-      "slip_url": ""
+      "payment_method": "",
+      "slip_url": "",
+      "status": "PENDING",
+      "order_id": orderId
     }).subscribe(result => {
       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
       this.ngOnInit()
     })
+  }
+
+  getPaymentStatus(reservation: ReservationModel): { status: 'Paid' | 'Partial' | 'Unpaid'; paidAmount: number; totalAmount: number } {
+
+    // วิธีที่ 1: ตรวจสอบจากสถานะของการจองโดยตรง (ง่ายและแนะนำ)
+    // if (reservation.status === 'COMPLETED') {
+    //   const totalAmount = this.getTotalOrderAmount(reservation);
+    //   return { status: 'Paid', paidAmount: totalAmount, totalAmount: totalAmount };
+    // }
+
+    // วิธีที่ 2: คำนวณจากยอดชำระจริง (ละเอียดกว่า)
+    const totalAmount = this.getTotalOrderAmount(reservation);
+    const paidAmount = this.getTotalPaidAmount(reservation);
+
+    if (totalAmount === 0) {
+      return { status: 'Unpaid', paidAmount: 0, totalAmount: 0 };
+    }
+
+    if (paidAmount >= totalAmount) {
+      return { status: 'Paid', paidAmount: paidAmount, totalAmount: totalAmount };
+    } else if (paidAmount > 0) {
+      return { status: 'Partial', paidAmount: paidAmount, totalAmount: totalAmount };
+    } else {
+      return { status: 'Unpaid', paidAmount: 0, totalAmount: totalAmount };
+    }
+  }
+
+  getTotalOrderAmount(reservation: ReservationModel): number {
+    if (!reservation.orders || reservation.orders.length === 0) {
+      return 0;
+    }
+    return reservation.orders.reduce((sum, order) => sum + Number(order.total_amount), 0);
+  }
+
+  getTotalPaidAmount(reservation: ReservationModel): number {
+    if (!reservation.orders || reservation.orders.length === 0) {
+      return 0;
+    }
+    let totalPaid = 0;
+    reservation.orders.forEach(order => {
+      if (order.payments && order.payments.length > 0) {
+        const paidInOrder = order.payments
+          .filter(p => p.status === 'COMPLETED')
+          .reduce((sum, payment) => sum + Number(payment.amount), 0);
+        totalPaid += paidInOrder;
+      }
+    });
+    return totalPaid;
   }
 }
