@@ -16,7 +16,7 @@ import { TakeHomeService } from '../../services/take-home.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { TokenService } from '../../../shared/services/token.service';
 import { environment } from '../../../../environments/environment';
-
+import swal from 'sweetalert';
 @Component({
   selector: 'app-take-home',
   standalone: true,
@@ -170,7 +170,8 @@ export class TakeHomeComponent implements OnInit, OnDestroy {
       finalize(() => this.isSubmitting = false)
     ).subscribe({
       next: (createdOrder) => {
-        alert(`สั่งอาหารสำเร็จ! หมายเลขออเดอร์ของคุณคือ #${createdOrder.id}`);
+        // alert(`สั่งอาหารสำเร็จ! หมายเลขออเดอร์ของคุณคือ #${createdOrder.id}`);
+        swal("Order Success!", `สั่งอาหารสำเร็จ! หมายเลขออเดอร์ของคุณคือ #${createdOrder.id}`, "success");
         this.form.reset();
         this.items.clear();
         this.addItem();
@@ -178,7 +179,8 @@ export class TakeHomeComponent implements OnInit, OnDestroy {
       },
       error: (err: any) => {
         console.error("Order submission failed:", err);
-        alert(`เกิดข้อผิดพลาด: ${err.error?.detail || 'ไม่สามารถสั่งอาหารได้'}`);
+        // alert(`เกิดข้อผิดพลาด: ${err.error?.detail || 'ไม่สามารถสั่งอาหารได้'}`);
+        swal("Order Failed!", `เกิดข้อผิดพลาด: ${err.error?.detail || 'ไม่สามารถสั่งอาหารได้'}`, "error");
       }
     });
   }

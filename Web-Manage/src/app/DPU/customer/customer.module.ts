@@ -10,6 +10,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { NotificationComponent } from './notification/notification.component';
 import { CustomerReservationPageComponent } from './customer-reservation-page/customer-reservation-page.component';
 import { TakeHomeComponent } from '../common/take-home/take-home.component';
+import { ProfileEditComponent } from '../common/profile-detail/profile-detail.component';
 export const customerRoutes: Routes = [
   {
     path: 'customer', children: [
@@ -19,7 +20,10 @@ export const customerRoutes: Routes = [
       { path: 'reservations/:id', component: ReservationDetailComponent },
       { path: 'reservations/:id/order', component: OrderFoodComponent },
       { path: 'reservations/:id/bill', component: BillComponent },
-      { path: 'profile', component: ProfileComponent },
+      {
+        path: 'profile',
+        component: ProfileEditComponent
+      },
       { path: 'notifications', component: NotificationComponent }
     ]
   },

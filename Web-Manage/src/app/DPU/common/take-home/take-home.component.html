@@ -19,7 +19,7 @@
                 placeholder="เลือกเมนู" class="menu-select">
                 <ng-template ng-option-tmp let-item="item">
                   <span class="option-flex">
-                    <img [src]="getImageUrl(item.image_url)" class="option-img" alt="menu" />
+                    <img [src]="getImageUrl(item.image_url)" class="option-img" alt="menu" width="100px" />
                     <span>
                       {{item.name}}
                       <span class="option-price">({{item.price | number:'1.2-2'}} ฿)</span>

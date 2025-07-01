@@ -120,7 +120,7 @@ export class NavService implements OnDestroy {
     // ];
     return [{ headTitle: 'Admin' },
     // { path: '/admin/home', title: 'หน้าแรก', type: 'link' },
-    { path: '/admin/profile', title: 'โปรไฟล์', type: 'link', show: true },
+    { icon: 'user', path: '/admin/profile', title: 'โปรไฟล์', type: 'link', show: true },
     {
       title: 'การจัดการ',
       show: false,
@@ -163,7 +163,7 @@ export class NavService implements OnDestroy {
     return [
       { headTitle: 'ลูกค้า' },
       // หน้าหลักจองโต๊ะ/ห้อง
-      { path: '/admin/profile', title: 'โปรไฟล์', type: 'link', show: true },
+      { icon: 'user', path: '/customer/profile', title: 'โปรไฟล์', type: 'link', show: true },
       {
         icon: 'calendar-check', // ใช้ icon library ที่ใช้อยู่ เช่น RemixIcon, FontAwesome ฯลฯ
         path: '/customer/home-customer',
@@ -171,7 +171,7 @@ export class NavService implements OnDestroy {
         type: 'link',
       },
       {
-        icon: 'take-away', // ใช้ icon library ที่ใช้อยู่ เช่น RemixIcon, FontAwesome ฯลฯ
+        icon: 'restaurant', // ใช้ icon library ที่ใช้อยู่ เช่น RemixIcon, FontAwesome ฯลฯ
         path: '/customer/take-away',
         title: 'บริการนำกลับบ้าน',
         type: 'link',
