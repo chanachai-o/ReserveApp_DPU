@@ -198,7 +198,7 @@ async def update_reservation_details(
     return await get_full_reservation(reservation_id, db)
 
 
-@reservations_router.post("/{reservation_id}/checkin", response_model=ReservationOut)
+@reservations_router.post("/reservations/{reservation_id}/checkin", response_model=ReservationOut)
 async def checkin_reservation(reservation_id: int, db: AsyncSession = Depends(get_db)):
     """
     ทำการ Check-in สำหรับการจอง
@@ -236,7 +236,7 @@ async def checkin_reservation(reservation_id: int, db: AsyncSession = Depends(ge
     return await get_full_reservation(reservation_id, db)
 
 
-@reservations_router.post("/{reservation_id}/checkout", response_model=ReservationOut)
+@reservations_router.post("/reservations/{reservation_id}/checkout", response_model=ReservationOut)
 async def checkout_reservation(reservation_id: int, db: AsyncSession = Depends(get_db)):
     """
     ทำการ Check-out และเสร็จสิ้นการจอง
@@ -276,7 +276,7 @@ async def checkout_reservation(reservation_id: int, db: AsyncSession = Depends(g
     return await get_full_reservation(reservation_id, db)
 
 
-@reservations_router.delete("/{reservation_id}", status_code=status.HTTP_204_NO_CONTENT)
+@reservations_router.delete("/reservations/{reservation_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_reservation(reservation_id: int, db: AsyncSession = Depends(get_db)):
     """
     ลบการจอง (สำหรับ Admin/Manager)

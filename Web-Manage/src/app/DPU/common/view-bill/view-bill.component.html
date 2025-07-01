@@ -4,7 +4,7 @@
   <div class="bill-section">
     <div class="bill-row">
       <span>ลูกค้า</span>
-      <span class="bill-strong bill-color">{{ reservation.user.name || reservation.user.phone || '-' }}</span>
+      <span class="bill-strong bill-color">{{ reservation.customer.name || reservation.customer.phone || '-' }}</span>
     </div>
     <div class="bill-row">
       <span>โต๊ะ/ห้อง</span>
@@ -43,20 +43,20 @@
   <!-- Payment & Slip -->
   <div *ngIf="reservation.status === 'COMPLETED'" class="bill-pay-section">
     <h4><i class="ri-money-dollar-circle-line"></i> ชำระเงิน</h4>
-    <div *ngIf="reservation.payments && reservation.payments[0]">
+    <div *ngIf="reservation.orders && reservation.orders[0].payments[0]">
       <div class="pay-info">
-        <span class="pay-amount">{{ reservation.payments[0].amount | number:'1.2-2' }} ฿</span>
+        <span class="pay-amount">{{ reservation.orders[0].total_amount | number:'1.2-2' }} ฿</span>
         <span class="pay-status"
-              [ngClass]="reservation.payments[0].status === 'COMPLETED' || reservation.status === 'COMPLETED'
+              [ngClass]="reservation.orders[0].payments[0].status === 'COMPLETED' || reservation.status === 'COMPLETED'
               ? 'pay-status-completed' : 'pay-status-waiting'">
-          {{ reservation.payments[0].status === 'COMPLETED' || reservation.status === 'COMPLETED'
+          {{ reservation.orders[0].payments[0].status === 'COMPLETED' || reservation.status === 'COMPLETED'
           ? 'ชำระแล้ว' : 'รอตรวจสอบ' }}
         </span>
       </div>
-      <div *ngIf="reservation.payments[0].slip_url" class="slip-img-wrap">
-        <img [src]="urlLink + reservation.payments[0].slip_url" alt="Slip" />
+      <div *ngIf="reservation.orders[0].payments[0].slip_url" class="slip-img-wrap">
+        <img [src]="urlLink + reservation.orders[0].payments[0].slip_url" alt="Slip" />
       </div>
-      <div *ngIf="!reservation.payments[0].slip_url && reservation.status === 'COMPLETED'" class="slip-upload-wrap">
+      <div *ngIf="!reservation.orders[0].payments[0].slip_url && reservation.status === 'COMPLETED'" class="slip-upload-wrap">
         <dropzone class="dropzone-container" [config]="config" [disabled]="disabled"
           [message]="'คลิกหรือวางไฟล์สลิปที่นี่เพื่ออัปโหลด'" (init)="onUploadInit($event)"
           (error)="onUploadError($event)" (success)="onUploadSuccess($event)">

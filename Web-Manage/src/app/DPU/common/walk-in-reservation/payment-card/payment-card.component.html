@@ -8,8 +8,8 @@
   </div>
 
   <div class="modern-payment-card__main">
-    <img *ngIf="checkout.payments[0]?.slip_url"
-      [src]="checkout.payments[0].getSlipUrl()"
+    <img *ngIf="getSlipUrl()"
+      [src]="getSlipUrl()"
       alt="bill slip"
       class="slip-img" />
 
@@ -18,7 +18,7 @@
         {{ checkout.table ? 'โต๊ะ #' + checkout.table.table_number : 'ห้อง: ' + (checkout.room?.room_name || '-') }}
       </div>
       <div class="meta">เวลา {{ checkout.start_time | date: 'HH:mm' }}</div>
-      <div class="meta">{{ checkout.num_people || '-' }} คน ({{ checkout.user.name || checkout.user.phone || checkout.user_id || '-' }})</div>
+      <div class="meta">{{ checkout.num_people || '-' }} คน ({{ checkout.customer.name || checkout.customer.phone || checkout.user_id || '-' }})</div>
     </div>
 
     <div class="modern-payment-card__summary">

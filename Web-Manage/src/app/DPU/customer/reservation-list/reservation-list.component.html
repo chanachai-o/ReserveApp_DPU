@@ -47,9 +47,9 @@
             class="hover:bg-blue-50 dark:hover:bg-neutral-800/70 transition">
             <td class="px-3 py-2 text-gray-500">{{ i+1 }}</td>
             <td class="px-3 py-2 flex items-center gap-2">
-              <img [src]="res.user.getPicture() || './assets/images/faces/111.jpg'"
+              <img [src]="res.customer.getPicture() || './assets/images/faces/111.jpg'"
                 class="w-8 h-8 rounded-full border" />
-              <span>{{ res.user.name || res.user.phone }}</span>
+              <span>{{ res.customer.name || res.customer.phone }}</span>
             </td>
             <td class="px-3 py-2">
               <span *ngIf="res.table">โต๊ะ {{ res.table.table_number }}</span>

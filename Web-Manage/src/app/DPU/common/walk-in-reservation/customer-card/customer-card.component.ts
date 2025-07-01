@@ -39,4 +39,21 @@ export class CustomerCardComponent {
     return hrs ? `${hrs} ชม. ${mins} นาที` : `${mins} นาที`;
   }
 
+  getOverallPaymentStatus(): 'COMPLETED' | 'PENDING' {
+    if (!this.occupied || !this.occupied.orders || this.occupied.orders.length === 0) {
+      return 'PENDING';
+    }
+    // เช็คว่าทุก payment ในทุก order มีสถานะเป็น COMPLETED หรือไม่
+    const allPaid = this.occupied.orders.every(order =>
+      order.payments && order.payments.every(p => p.status === 'COMPLETED')
+    );
+
+    // หรืออาจจะเช็คจากสถานะของ Reservation โดยตรง
+    if (this.occupied.status === 'COMPLETED') {
+      return 'COMPLETED';
+    }
+
+    return 'PENDING';
+  }
+
 }

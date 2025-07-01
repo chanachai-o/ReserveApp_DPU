@@ -7,16 +7,16 @@
     <span class="badge-res">เลขที่ #{{ reservation.id }}</span>
   </div>
   <div class="modern-reservation-card__main">
-    <img *ngIf="reservation.table?.picture" [src]="reservation.table?.getPicture()" alt="cover"
-      class="main-img" />
-    <img *ngIf="reservation.room?.picture" [src]="reservation.room?.getPicture()" alt="cover"
-      class="main-img" />
+    <img *ngIf="reservation.table?.picture" [src]="reservation.table?.getPicture()" alt="cover" class="main-img" />
+    <img *ngIf="reservation.room?.picture" [src]="reservation.room?.getPicture()" alt="cover" class="main-img" />
     <div class="title">
-      {{ reservation.table ? 'โต๊ะ #' + reservation.table.table_number : 'ห้อง: ' + (reservation.room?.room_name || '-') }}
+      {{ reservation.table ? 'โต๊ะ #' + reservation.table.table_number : 'ห้อง: ' + (reservation.room?.room_name || '-')
+      }}
     </div>
     <div class="meta">เวลา {{ reservation.start_time | date: 'HH:mm' }}</div>
     <div class="meta">
-      {{ reservation.num_people || '-' }} คน ({{ reservation.user.name || reservation.user.phone || reservation.user_id || '-' }})
+      {{ reservation.num_people || '-' }} คน ({{ reservation.customer.name || reservation.customer.phone || reservation.user_id
+      || '-' }})
     </div>
   </div>
   <div class="modern-reservation-card__action">
@@ -39,7 +39,7 @@
         </li>
       </ul>
     </div>
-    <div *ngIf="reservation.payments.length > 0" class="payment">
+    <div *ngIf="getPaymentStatus(reservation).paidAmount" class="payment">
       <span><i class="ri-money-dollar-circle-line"></i> มีการชำระเงินแล้ว</span>
     </div>
   </div>

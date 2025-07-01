@@ -91,7 +91,7 @@ export class ViewBillComponent {
       if (item.isSuccess) {
         const res = JSON.parse(response);
         console.log("res", res);
-        this.reservation.payments[0].slip_url = res.filename
+        this.reservation.orders[0].payments[0].slip_url = res.filename
         swal(res.message, "บันทึกสำเร็จ", "success");
 
       } else {
@@ -143,6 +143,6 @@ export class ViewBillComponent {
 
   public onUploadSuccess(args: any): void {
     console.log('onUploadSuccess:', args);
-    this.reservation.payments[0].slip_url = args[1].filename
+    this.reservation.orders[0].payments[0].slip_url = args[1].filename
   }
 }

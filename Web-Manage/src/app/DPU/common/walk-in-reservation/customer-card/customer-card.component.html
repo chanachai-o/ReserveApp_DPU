@@ -7,8 +7,8 @@
     <span class="badge-occupied">เลขที่ #{{ occupied.id }}</span>
   </div>
   <div class="modern-occupied-card__main">
-    <img [src]="occupied.user.getPicture()" alt="user" class="user-avatar" />
-    <div class="user-name">{{ occupied.user.name || occupied.user.phone || occupied.user_id || '-' }}   ({{ occupied.table ? 'โต๊ะ #' + occupied.table.table_number : 'ห้อง: ' + (occupied.room?.room_name || '-') }})</div>
+    <img [src]="occupied.customer.getPicture()" alt="user" class="user-avatar" />
+    <div class="user-name">{{ occupied.customer.name || occupied.customer.phone || occupied.user_id || '-' }}   ({{ occupied.table ? 'โต๊ะ #' + occupied.table.table_number : 'ห้อง: ' + (occupied.room?.room_name || '-') }})</div>
     <div class="meta">เริ่มใช้ {{ occupied.start_time | date: 'HH:mm' }} ({{ occupied.num_people || '-' }} คน)</div>
   </div>
   <div class="modern-occupied-card__action">
@@ -31,7 +31,7 @@
         </li>
       </ul>
     </div>
-    <div *ngIf="occupied.payments.length > 0" class="payment">
+    <div *ngIf="getOverallPaymentStatus()" class="payment">
       <span><i class="ri-money-dollar-circle-line"></i> มีการชำระเงินแล้ว</span>
     </div>
   </div>

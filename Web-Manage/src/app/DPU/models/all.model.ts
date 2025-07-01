@@ -207,28 +207,38 @@ export class OrderItemModel extends BaseModel implements OrderItem {
 }
 
 export interface Order {
-  id: number;
   user_id: number;
-  reservation_id?: number | null;
+  reservation_id: number;
   status: OrderStatus;
+  id: number;
   total_amount: number;
-  order_items: OrderItem[];
+  created_at: string;
+  user: UserProfileModel;
+  order_items: OrderItemModel[];
+  payments: PaymentModel[];
 }
 export class OrderModel extends BaseModel implements Order {
-  id = 0;
   user_id = 0;
-  reservation_id?: number | null = null;
+  reservation_id = 0;
   status = OrderStatus.Pending;
+  id = 0;
   total_amount = 0;
-  order_items: OrderItem[] = [];
+  created_at = new Date().toISOString();
+  user: UserProfileModel = new UserProfileModel();
+  order_items: OrderItemModel[] = [];
+  payments: PaymentModel[] = [];
+
   constructor(data: Partial<Order> = {}) {
     super(data);
-    this.id = data.id || 0;
     this.user_id = data.user_id || 0;
-    this.reservation_id = data.reservation_id || null;
+    this.reservation_id = data.reservation_id || 0;
     this.status = data.status || OrderStatus.Pending;
+    this.id = data.id || 0;
     this.total_amount = data.total_amount || 0;
+    this.created_at = data.created_at || new Date().toISOString();
+    this.user = new UserProfileModel(data.user);
     this.order_items = data.order_items ? data.order_items.map(item => new OrderItemModel(item)) : [];
+    this.payments = data.payments ? data.payments.map(payment => new PaymentModel(payment)) : [];
   }
 }
 
@@ -318,52 +328,49 @@ export class NotificationModel extends BaseModel implements Notification {
 
 // ========== RESERVATION ==========
 export interface ReservationDetailModel {
-  id: number;
-  user_id?: number | null;
-  table_id?: number | null;
-  room_id?: number | null;
+  user_id: number;
+  table_id: number;
+  room_id: number;
+  num_people: number;
   start_time: string;
   end_time: string;
-  num_people: number;
+  note: string;
   status: ReservationStatus;
-  note?: string | null;
-  user: UserProfileModel;
-  table?: Table;
-  room?: Room;
-  orders: Order[];
-  payments: Payment[];
+  id: number;
+  customer: UserProfileModel;
+  table: Table | null;
+  room: Room | null;
+  orders: any[];
 }
 export class ReservationModel extends BaseModel implements ReservationDetailModel {
-  id = 0;
-  user_id?: number | null = null;
-  table_id?: number | null = null;
-  room_id?: number | null = null;
+  user_id = 0;
+  table_id = 0;
+  room_id = 0;
+  num_people = 0;
   start_time = '';
   end_time = '';
-  num_people = 0;
-  status = ReservationStatus.Pending;
-  note?: string | null = '';
-  user: UserProfileModel = new UserProfileModel();
-  table?: Table = undefined;
-  room?: Room = undefined;
-  orders: Order[] = [];
-  payments: Payment[] = [];
-  constructor(data: Partial<ReservationDetailModel>) {
+  note = '';
+  status: ReservationStatus = ReservationStatus.Pending;
+  id = 0;
+  customer: UserProfileModel = new UserProfileModel();
+  table: TableModel | null = null;
+  room: RoomModel | null = null;
+  orders: OrderModel[] = [];
+
+  constructor(data: Partial<ReservationDetailModel> = {}) {
     super(data);
-    this.id = data.id || 0;
-    this.user_id = data.user_id || null;
-    this.table_id = data.table_id || null;
-    this.room_id = data.room_id || null;
+    this.user_id = data.user_id || 0;
+    this.table_id = data.table_id || 0;
+    this.room_id = data.room_id || 0;
+    this.num_people = data.num_people || 0;
     this.start_time = data.start_time || '';
     this.end_time = data.end_time || '';
-    this.num_people = data.num_people || 0;
-    this.status = data.status || ReservationStatus.Pending;
     this.note = data.note || '';
-
-    this.user = data.user ? new UserProfileModel(data.user) : new UserProfileModel();
-    this.table = data.table ? new TableModel(data.table) : undefined;
-    this.room = data.room ? new RoomModel(data.room) : undefined;
-    this.orders = data.orders ? data.orders.map(o => new OrderModel(o)) : [];
-    this.payments = data.payments ? data.payments.map(p => new PaymentModel(p)) : [];
+    this.status = data.status || ReservationStatus.Pending;
+    this.id = data.id || 0;
+    this.customer = new UserProfileModel(data.customer);
+    this.table = data.table ? new TableModel(data.table) : null;
+    this.room = data.room ? new RoomModel(data.room) : null;
+    this.orders = data.orders ? data.orders.map(order => new OrderModel(order)) : [];
   }
 }
