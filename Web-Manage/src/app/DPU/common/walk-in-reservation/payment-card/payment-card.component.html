@@ -24,9 +24,9 @@
     <div class="modern-payment-card__summary">
       <div class="amount">{{ getTotalAmount(checkout.orders) | number:'1.2-2' }} ฿</div>
       <span class="badge-status"
-        [ngClass]="checkout.status === 'completed' ? 'badge-success' : 'badge-wait'">
+        [ngClass]="checkout.status === 'COMPLETED' ? 'badge-success' : 'badge-wait'">
         <i class="ri-exchange-dollar-line"></i>
-        {{ checkout.status === 'completed' ? 'ชำระแล้ว' : 'รอชำระ' }}
+        {{ checkout.status === 'COMPLETED' ? 'ชำระแล้ว' : 'รอชำระ' }}
       </span>
     </div>
   </div>
@@ -35,7 +35,7 @@
     <button class="btn-modern btn-primary" (click)="onViewBill()" title="ดูบิล" data-hs-overlay="#view-bill">
       <i class="ri-file-list-3-line"></i> ดูบิล
     </button>
-    <button class="btn-modern btn-success" (click)="onVerify()" *ngIf="checkout.status !== 'completed'">
+    <button class="btn-modern btn-success" (click)="onVerify()" *ngIf="checkout.status !== 'COMPLETED'">
       <i class="ri-check-double-line"></i> ยืนยันรับเงิน
     </button>
   </div>

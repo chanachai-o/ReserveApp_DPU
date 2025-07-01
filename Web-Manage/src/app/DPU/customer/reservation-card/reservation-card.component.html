@@ -16,10 +16,10 @@
         <i class="ri-door-lock-fill"></i> ห้อง {{ reservation.room.room_name }}
       </span>
       <span class="badge badge-status" [ngClass]="{
-        'status-pending': reservation.status === 'pending',
-        'status-in': reservation.status === 'checked_in' || reservation.status === 'checked_out',
-        'status-success': reservation.status === 'completed',
-        'status-cancel': reservation.status === 'cancelled'
+        'status-pending': reservation.status === 'PENDING',
+        'status-in': reservation.status === 'CHECKED_IN',
+        'status-success': reservation.status === 'COMPLETED',
+        'status-cancel': reservation.status === 'CANCELLED',
       }">{{ getStatusLabel(reservation.status) }}</span>
     </div>
     <div class="reservation-card__info">
@@ -30,23 +30,23 @@
       <i class="ri-information-line"></i> {{ reservation.note }}
     </div>
     <div class="reservation-card__actions">
-      <button *ngIf="reservation.status === 'pending'" class="btn btn-warning" (click)="order.emit(reservation)">
+      <button *ngIf="reservation.status === 'PENDING'" class="btn btn-warning" (click)="order.emit(reservation)">
         <i class="ri-restaurant-2-line"></i> สั่งอาหารล่วงหน้า
       </button>
-      <button *ngIf="reservation.status === 'pending' && reservation.orders.length==0" class="btn btn-danger"
+      <button *ngIf="reservation.status === 'PENDING' && reservation.orders.length==0" class="btn btn-danger"
         (click)="cancel.emit(reservation)">
         <i class="ri-close-line"></i> ยกเลิก
       </button>
-      <button *ngIf="reservation.status === 'checked_in'" class="btn btn-primary"
+      <button *ngIf="reservation.status === 'CHECKED_IN'" class="btn btn-primary"
         (click)="order.emit(reservation)">
         <i class="ri-restaurant-2-line"></i> สั่งอาหาร
       </button>
-      <button *ngIf="(reservation.status === 'checked_in' || reservation.orders.length > 0 ) && reservation.status !== 'completed'"
+      <button *ngIf="(reservation.status === 'CHECKED_IN' || reservation.orders.length > 0 ) && reservation.status !== 'COMPLETED'"
         class="btn btn-success" (click)="viewBill.emit(reservation)">
         <i class="ri-bill-line"></i>
-        {{ reservation.status === 'checked_out' && reservation.orders.length > 0 ? 'ดูบิล/ชำระเงิน' : 'เรียกบิล' }}
+        {{  'ดูบิล/ชำระเงิน'  }}
       </button>
-      <button *ngIf="reservation.status === 'completed'" class="btn btn-primary" (click)="viewBill.emit(reservation)">
+      <button *ngIf="reservation.status === 'COMPLETED'" class="btn btn-primary" (click)="viewBill.emit(reservation)">
         <i class="ri-file-list-3-line"></i> ดูบิล
       </button>
     </div>

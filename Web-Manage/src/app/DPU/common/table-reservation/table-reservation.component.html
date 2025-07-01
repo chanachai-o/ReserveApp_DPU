@@ -61,14 +61,14 @@
   <input type="hidden" formControlName="status">
 
   <div class="flex flex-row-reverse gap-2 mt-6">
-    <button *ngIf="status !== 'checked_in'"
+    <button *ngIf="status !== 'CHECKED_IN'"
             class="ti-btn ti-btn-primary !rounded-lg px-6 py-2 shadow hover:scale-105 transition-all"
             type="submit"
             [disabled]="!form.valid"
             data-hs-overlay="#add-reserve">
       <i class="ri-calendar-check-line mr-1"></i> ยืนยันจอง{{ form.value.room_id ? 'ห้อง' : 'โต๊ะ' }}
     </button>
-    <button *ngIf="status === 'checked_in'"
+    <button *ngIf="status === 'CHECKED_IN'"
             class="ti-btn ti-btn-success !rounded-lg px-6 py-2 shadow hover:scale-105 transition-all"
             type="submit"
             [disabled]="!form.valid"

@@ -41,22 +41,22 @@
   </div>
 
   <!-- Payment & Slip -->
-  <div *ngIf="reservation.status === 'checked_out' || reservation.status === 'completed'" class="bill-pay-section">
+  <div *ngIf="reservation.status === 'COMPLETED'" class="bill-pay-section">
     <h4><i class="ri-money-dollar-circle-line"></i> ชำระเงิน</h4>
     <div *ngIf="reservation.payments && reservation.payments[0]">
       <div class="pay-info">
         <span class="pay-amount">{{ reservation.payments[0].amount | number:'1.2-2' }} ฿</span>
         <span class="pay-status"
-              [ngClass]="reservation.payments[0].status === 'completed' || reservation.status === 'completed'
+              [ngClass]="reservation.payments[0].status === 'COMPLETED' || reservation.status === 'COMPLETED'
               ? 'pay-status-completed' : 'pay-status-waiting'">
-          {{ reservation.payments[0].status === 'completed' || reservation.status === 'completed'
+          {{ reservation.payments[0].status === 'COMPLETED' || reservation.status === 'COMPLETED'
           ? 'ชำระแล้ว' : 'รอตรวจสอบ' }}
         </span>
       </div>
       <div *ngIf="reservation.payments[0].slip_url" class="slip-img-wrap">
         <img [src]="urlLink + reservation.payments[0].slip_url" alt="Slip" />
       </div>
-      <div *ngIf="!reservation.payments[0].slip_url || reservation.status === 'checked_out'">
+      <div *ngIf="!reservation.payments[0].slip_url && reservation.status === 'COMPLETED'" class="slip-upload-wrap">
         <dropzone class="dropzone-container" [config]="config" [disabled]="disabled"
           [message]="'คลิกหรือวางไฟล์สลิปที่นี่เพื่ออัปโหลด'" (init)="onUploadInit($event)"
           (error)="onUploadError($event)" (success)="onUploadSuccess($event)">
@@ -69,7 +69,7 @@
   </div>
 
   <!-- ปุ่มเช็คบิล สำหรับยังไม่เช็คบิล -->
-  <div *ngIf="reservation.status != 'completed' && reservation.status != 'checked_out'"
+  <div *ngIf="reservation.status != 'COMPLETED'"
     class="bill-checkout-btn-wrap">
     <button class="ti-btn ti-btn-success ti-btn-lg bill-checkout-btn"
       (click)="checkBill()" data-hs-overlay="#view-bill">

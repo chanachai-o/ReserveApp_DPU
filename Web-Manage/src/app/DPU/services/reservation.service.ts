@@ -7,19 +7,6 @@ import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ReservationModel } from '../models/all.model';
 
-// export interface Reservation {
-//   id?: number;                 // undefined เมื่อยังไม่สร้าง
-//   user_id?: number;            // backend ใส่เอง
-//   table_id?: number | null;
-//   room_id?:  number | null;
-//   start_time: string;          // ISO-8601
-//   end_time:   string;
-//   num_people: number;
-//   status?:   'pending' | 'checked_in' | 'completed' | 'cancelled' | 'no_show';
-//   note?: string | null;
-// }
-// export type ReservationCreate = Omit<Reservation, 'id' | 'status'>;   // payload ตอนสร้าง
-// export type ReservationUpdate = Partial<Omit<Reservation, 'id'>>;     // payload ตอนแก้ไข
 
 @Injectable({
   providedIn: 'root',

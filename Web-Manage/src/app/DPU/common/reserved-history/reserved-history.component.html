@@ -68,10 +68,10 @@
             <td class="px-3 py-2 text-center">{{ res.num_people }}</td>
             <td class="px-3 py-2">
               <span class="badge px-3 py-1" [ngClass]="{
-              'bg-primary/10 text-primary': res.status === 'pending',
-              'bg-warning text-green-700': (res.status === 'checked_in' || res.status === 'checked_out'),
-              'bg-success text-gray-400': res.status === 'completed',
-              'bg-danger text-rose-500': res.status === 'cancelled'
+              'bg-primary/10 text-primary': res.status === 'PENDING',
+              'bg-warning text-green-700': res.status === 'CHECKED_IN',
+              'bg-success text-gray-400': res.status === 'COMPLETED',
+              'bg-danger text-rose-500': res.status === 'NO_SHOW'
             }">
                 {{ getStatusLabel(res.status) }}
               </span>

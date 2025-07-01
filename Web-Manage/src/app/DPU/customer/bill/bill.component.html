@@ -18,8 +18,8 @@
   <div class="mt-4">
     <span class="font-semibold">สถานะ:</span>
     <span [ngClass]="{
-      'text-success': reservation.status === 'completed' || reservation.status === 'checked_out',
-      'text-warning': reservation.status === 'checked_in' || reservation.status === 'pending'
+      'text-success': reservation.status === 'COMPLETED',
+      'text-warning': reservation.status === 'CHECKED_IN' || reservation.status === 'PENDING'
     }">
       {{ reservation.status }}
     </span>

@@ -84,11 +84,10 @@ export class ReservedHistoryComponent {
 
   getStatusLabel(status: string): string {
     switch (status) {
-      case 'pending': return 'รอดำเนินการ';
-      case 'checked_in': return 'เข้าใช้บริการ';
-      case 'checked_out': return 'เช็คบิล';
-      case 'completed': return 'สำเร็จ';
-      case 'cancelled': return 'ยกเลิก';
+      case 'PENDING': return 'รอดำเนินการ';
+      case 'CHECKED_IN': return 'เข้าใช้บริการ';
+      case 'COMPLETED': return 'สำเร็จ';
+      case 'NO_SHOW': return 'ยกเลิก';
       default: return status;
     }
   }

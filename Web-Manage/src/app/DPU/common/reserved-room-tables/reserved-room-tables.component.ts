@@ -15,7 +15,7 @@ import swal from 'sweetalert';
 import { RoomModel, TablesModel } from '../../models/menus.model';
 import { StoreProfile, StoreProfileService } from '../../services/store-profile.service';
 import { TableReservationComponent } from '../table-reservation/table-reservation.component';
-import { AvailableItem } from '../../models/all.model';
+import { AvailableItem, Table } from '../../models/all.model';
 @Component({
   selector: 'app-reserved-room-tables',
   standalone: true,
@@ -60,7 +60,7 @@ export class ReservedRoomTablesComponent {
   }
   projectId = ""
   _searchTerm = "";
-  selectedTable?: any
+  selectedTable?: AvailableItem
   isEdit = false;
   storeModel: StoreProfile
   constructor(private http: HttpClient, private tableService: TablesService, public translate: TranslateService, private tokenService: TokenService, private storeService: StoreProfileService) {
@@ -254,6 +254,11 @@ export class ReservedRoomTablesComponent {
 
   reserveTable(item: any) {
     console.log('API', item);
+    console.log('selectModel', this.selectedTable);
+    if(this.selectedTable && this.selectedTable.capacity < item.num_people) {
+      swal("Error!!", "จำนวนคนที่จองเกินกว่าความจุของโต๊ะ/ห้อง", "error");
+      return;
+    }
     item.status = 'pending'
     item.end_time = item.start_time
     delete item.room_id

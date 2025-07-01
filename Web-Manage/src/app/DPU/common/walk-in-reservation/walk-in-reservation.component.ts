@@ -94,8 +94,8 @@ export class WalkInReservationComponent {
     }
     this.reserveService.getReservations(params).subscribe({
       next: (result) => {
-        this.reservationList = result.filter(e => e.status === 'pending');
-        this.activeTableList = result.filter(e => e.status === 'checked_in');
+        this.reservationList = result.filter(e => e.status === 'PENDING');
+        this.activeTableList = result.filter(e => e.status === 'CHECKED_IN');
         this.paymentList = result.filter(e => ['checked_out', 'completed'].includes(e.status));
         this.isLoading = false;
         console.log(this.reservationList)
@@ -105,19 +105,6 @@ export class WalkInReservationComponent {
         this.isLoading = false;
       }
     });
-    // this.http.get<ReservationModel[]>("http://127.0.0.1:8000/reservations", { params })
-    //   .subscribe({
-    //     next: (result) => {
-    //       this.reservationList = result.filter(e => e.status === 'pending');
-    //       this.activeTableList = result.filter(e => e.status === 'checked_in');
-    //       this.paymentList = result.filter(e => ['checked_out', 'completed'].includes(e.status));
-    //       this.isLoading = false;
-    //     },
-    //     error: () => {
-    //       this.errorMsg = "โหลดข้อมูลไม่สำเร็จ";
-    //       this.isLoading = false;
-    //     }
-    //   });
   }
 
   handleOpenTable(item: AvailableItem) {
@@ -134,8 +121,15 @@ export class WalkInReservationComponent {
 
   reserveTable(item: any) {
     console.log('API', item);
-    item.status = 'pending'
+    item.status = 'PENDING'
     item.end_time = item.start_time
+    if (!item.user_id) {
+      item.user_id = this.tokenService.getUser().id
+    }
+    if (this.selectedTable && this.selectedTable.capacity < item.num_people) {
+      swal("Error!!", "จำนวนคนที่จองเกินกว่าความจุของโต๊ะ/ห้อง", "error");
+      return;
+    }
     swal({
       title: "Are you sure?",
       text: "คุณต้องการบันทึกการจองนี้หรือไม่?",
@@ -166,15 +160,18 @@ export class WalkInReservationComponent {
 
   checkInTable(item: any) {
     console.log('API', item);
-    item.status = 'checked_in'
+    item.status = 'CHECKED_IN'
     item.end_time = item.start_time
     if (!item.user_id) {
       item.user_id = this.tokenService.getUser().id
     }
+    if (this.selectedTable && this.selectedTable.capacity < item.num_people) {
+      swal("Error!!", "จำนวนคนที่จองเกินกว่าความจุของโต๊ะ/ห้อง", "error");
+      return;
+    }
     delete item.room_id
     console.log(item)
-    this.http.post("http://127.0.0.1:8000/reservations", item).subscribe(result => {
-      console.log(result)
+    this.reserveService.createReservation(item).subscribe(result => {
       this.tableService.reserve(item.table_id).subscribe(result => {
         swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
         this.ngOnInit()

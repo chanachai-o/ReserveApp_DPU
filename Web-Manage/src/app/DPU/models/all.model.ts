@@ -17,10 +17,10 @@ export const UserRoleLabel = {
 
 export enum TableStatus { Available = 'available', Reserved = 'reserved', Occupied = 'occupied', Cleaning = 'cleaning', Maintenance = 'maintenance', }
 export enum RoomStatus { Available = 'available', Reserved = 'reserved', Occupied = 'occupied', Cleaning = 'cleaning', Maintenance = 'maintenance', }
-export enum ReservationStatus { Pending = 'pending', CheckedIn = 'checked_in', CheckedOut = 'checked_out', Completed = 'completed', Cancelled = 'cancelled', NoShow = 'no_show', }
+export enum ReservationStatus { Pending = 'PENDING', CheckedIn = 'CHECKED_IN', Completed = 'COMPLETED', Cancelled = 'CANCELLED', NoShow = 'NO_SHOW', }
 export enum OrderStatus { Pending = 'pending', Preparing = 'preparing', Cooked = 'cooked', Served = 'served', Rejected = 'rejected', }
 export enum OrderItemStatus { Pending = 'pending', Preparing = 'preparing', Cooked = 'cooked', Served = 'served', Rejected = 'rejected', }
-export enum PaymentStatus { Pending = 'pending', Completed = 'completed', Declined = 'declined', }
+export enum PaymentStatus { Pending = 'PENDING', Completed = 'COMPLETED', Declined = 'FAILED', }
 
 // ========== BASE MODEL ==========
 export class BaseModel {
