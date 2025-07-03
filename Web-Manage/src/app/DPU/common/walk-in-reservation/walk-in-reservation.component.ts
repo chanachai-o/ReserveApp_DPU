@@ -86,7 +86,7 @@ export class WalkInReservationComponent implements OnInit, OnDestroy {
     // ).subscribe(() => {
     //   this.getReservations();
     // });
-      this.getReservations();
+    this.getReservations();
   }
 
 
@@ -335,14 +335,24 @@ export class WalkInReservationComponent implements OnInit, OnDestroy {
     //     this.ngOnInit()
     //   })
     // })
-    this.http.post("http://127.0.0.1:8000/api/payments/" + item.orders[0].payments[0].id + "/verify", {
-      "payment_id": item.orders[0].payments[0].id,
-      "transaction_id": "string",
-      "status": "COMPLETED"
-    }).subscribe(result => {
-      swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-      this.ngOnInit()
-    })
+    if (item.orders && item.orders.length > 0 && item.orders[0].payments && item.orders[0].payments.length > 0) {
+      this.http.post("http://127.0.0.1:8000/api/payments/" + item.orders[0].payments[0].id + "/verify", {
+        "payment_id": item.orders[0].payments[0].id,
+        "transaction_id": "string",
+        "status": "COMPLETED"
+      }).subscribe(result => {
+        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+        this.ngOnInit()
+      })
+    } else {
+      this.http.put("http://127.0.0.1:8000/api/reservations/" + item.id, item).subscribe(result => {
+        console.log(result)
+        this.tableService.cancelReseave(item.table_id).subscribe(result => {
+          swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+          this.ngOnInit()
+        })
+      })
+    }
   }
 
   onViewBill(item: any) {

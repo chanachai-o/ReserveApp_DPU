@@ -218,14 +218,14 @@ export class CustomerReservationPageComponent implements OnInit {
   }
 
   handleUploadSlip(item: any) {
-    this.showBillModal = false;
     // ส่ง formData ไป backend (POST /payments หรือแล้วแต่ API)
+    // this.savePayment(item.orders[0].id);
     this.http.post("http://127.0.0.1:8000/api/payments", {
       "amount": 0,
       "payment_method": "",
-      "slip_url": item.orders[0].payments[0].slip_url,
+      "slip_url": item,
       "status": "PENDING",
-      "order_id": item.orders[0].id
+      "order_id": this.selectedBillRes?.orders[0].id
     }).subscribe(result => {
       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
       this.ngOnInit()

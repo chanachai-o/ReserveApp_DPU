@@ -102,7 +102,6 @@ export class ViewBillComponent {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes)
     // update form when @Input changes (ไม่ต้อง reset ทั้ง form)
     if (changes['reservation'] && changes['reservation'].currentValue) {
       this.reservation = changes['reservation'].currentValue
@@ -115,7 +114,6 @@ export class ViewBillComponent {
     // แก้ไข: ตรวจสอบให้แน่ใจว่าเข้าถึง payments array ได้ถูกต้อง
     const firstOrderWithPayment = this.reservation?.orders?.find(o => o.payments && o.payments.length > 0);
     const slipUrl = firstOrderWithPayment?.payments[0]?.slip_url;
-    console.log("Slip URL:", slipUrl);
     if (slipUrl) {
       // ตรวจสอบว่า slipUrl เป็น URL เต็มแล้วหรือยัง
       if (slipUrl.startsWith('http')) {
@@ -222,10 +220,16 @@ export class ViewBillComponent {
     if (!this.reservation || !this.reservation.orders || this.reservation.orders.length === 0) {
       return 'PENDING';
     }
-    // เช็คว่าทุก payment ในทุก order มีสถานะเป็น COMPLETED หรือไม่
-    const allPaid = this.reservation.orders.every(order =>
-      order.payments && order.payments.every(p => p.status === 'COMPLETED')
-    );
+    // รวบรวม payments ทั้งหมดจากทุก order
+    const allPayments = this.reservation.orders.flatMap(order => order.payments || []);
+
+    // ถ้าไม่มี payment เลยสักรายการ สถานะคือ PENDING
+    if (allPayments.length === 0) {
+      return 'PENDING';
+    }
+
+    // เช็คว่า payment ที่มีอยู่ทั้งหมด มีสถานะเป็น COMPLETED หรือไม่
+    const allPaid = allPayments.every(p => p.status === 'COMPLETED');
 
     // หรืออาจจะเช็คจากสถานะของ Reservation โดยตรง
     // if (this.reservation.status === 'COMPLETED') {

@@ -83,10 +83,16 @@ export class PaymentCardComponent {
     if (!this.checkout || !this.checkout.orders || this.checkout.orders.length === 0) {
       return 'PENDING';
     }
-    // เช็คว่าทุก payment ในทุก order มีสถานะเป็น COMPLETED หรือไม่
-    const allPaid = this.checkout.orders.every(order =>
-      order.payments && order.payments.every(p => p.status === 'COMPLETED')
-    );
+    // รวบรวม payments ทั้งหมดจากทุก order
+    const allPayments = this.checkout.orders.flatMap(order => order.payments || []);
+
+    // ถ้าไม่มี payment เลยสักรายการ สถานะคือ PENDING
+    if (allPayments.length === 0) {
+      return 'PENDING';
+    }
+
+    // เช็คว่า payment ที่มีอยู่ทั้งหมด มีสถานะเป็น COMPLETED หรือไม่
+    const allPaid = allPayments.every(p => p.status === 'COMPLETED');
 
     // หรืออาจจะเช็คจากสถานะของ Reservation โดยตรง
     // if (this.checkout.status === 'COMPLETED') {

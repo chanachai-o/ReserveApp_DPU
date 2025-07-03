@@ -35,7 +35,7 @@
     <button class="btn-modern btn-primary" (click)="onViewBill()" title="ดูบิล" data-hs-overlay="#view-bill">
       <i class="ri-file-list-3-line"></i> ดูบิล
     </button>
-    <button class="btn-modern btn-success" (click)="onVerify()" *ngIf="getOverallPaymentStatus() === 'PENDING'">
+    <button class="btn-modern btn-success" (click)="onVerify()" *ngIf="getOverallPaymentStatus() === 'PENDING' && checkout.orders.length > 0">
       <i class="ri-check-double-line"></i> ยืนยันรับเงิน
     </button>
   </div>
