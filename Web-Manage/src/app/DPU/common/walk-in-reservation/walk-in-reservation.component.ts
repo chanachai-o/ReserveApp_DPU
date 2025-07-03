@@ -51,7 +51,7 @@ export class WalkInReservationComponent {
   constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private roomService: RoomService, private reserveService: ReservationService) {
     setInterval(() => {
       this.getReservations();
-    }, 2000); // Refresh every 10 seconds
+    }, 5000); // Refresh every 10 seconds
 
   }
 
