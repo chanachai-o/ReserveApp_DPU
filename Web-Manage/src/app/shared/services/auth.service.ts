@@ -27,7 +27,7 @@ export class AuthService {
   }
 
   registerCustomer(body: UserProfileModel) {
-    return this.http.post<UserProfileModel>("/users", new UserProfileModel(body));
+    return this.http.post<UserProfileModel>("/api/users", new UserProfileModel(body));
   }
 
 }

@@ -155,6 +155,12 @@ export class NavService implements OnDestroy {
       title: 'บริการหน้าร้าน',
       type: 'link',
       show: true
+    },
+    {
+      path: '/admin/take-home-list',
+      title: 'บริการนำกลับบ้าน',
+      type: 'link',
+      show: true
     }
     ]
   }

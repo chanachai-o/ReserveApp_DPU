@@ -1,0 +1,59 @@
+<!-- src/app/DPU/staff/take-home-management/take-home-list.component.html -->
+<div class="page-header">
+  <h1 class="page-title">จัดการออเดอร์สั่งกลับบ้าน</h1>
+  <p class="page-subtitle">แสดงรายการออเดอร์ที่ลูกค้าสั่งกลับบ้านทั้งหมด</p>
+</div>
+
+<div class="kanban-board">
+  <!-- Column: PENDING -->
+  <div class="kanban-column">
+    <div class="kanban-column__header header-pending">
+      <i class="ri-inbox-line"></i>
+      <h3>รอรับออเดอร์ ({{ pendingOrders.length }})</h3>
+    </div>
+    <div class="kanban-column__body">
+      <div *ngIf="isLoading && pendingOrders.length === 0" class="loading-placeholder">กำลังโหลด...</div>
+      <div *ngIf="!isLoading && pendingOrders.length === 0" class="empty-placeholder">ไม่มีออเดอร์ใหม่</div>
+      <app-take-home-card
+        *ngFor="let order of pendingOrders"
+        [order]="order"
+        (statusUpdated)="handleStatusUpdate($event)">
+      </app-take-home-card>
+    </div>
+  </div>
+
+  <!-- Column: PREPARING -->
+  <div class="kanban-column">
+    <div class="kanban-column__header header-preparing">
+      <i class="ri-fire-line"></i>
+      <h3>กำลังเตรียม ({{ preparingOrders.length }})</h3>
+    </div>
+    <div class="kanban-column__body">
+       <div *ngIf="isLoading && preparingOrders.length === 0" class="loading-placeholder">กำลังโหลด...</div>
+       <div *ngIf="!isLoading && preparingOrders.length === 0" class="empty-placeholder">ไม่มีออเดอร์ที่กำลังเตรียม</div>
+      <app-take-home-card
+        *ngFor="let order of preparingOrders"
+        [order]="order"
+        (statusUpdated)="handleStatusUpdate($event)">
+      </app-take-home-card>
+    </div>
+  </div>
+
+  <!-- Column: READY -->
+  <div class="kanban-column">
+    <div class="kanban-column__header header-ready">
+      <i class="ri-shopping-bag-3-line"></i>
+      <h3>พร้อมรับ ({{ readyOrders.length }})</h3>
+    </div>
+    <div class="kanban-column__body">
+      <div *ngIf="isLoading && readyOrders.length === 0" class="loading-placeholder">กำลังโหลด...</div>
+      <div *ngIf="!isLoading && readyOrders.length === 0" class="empty-placeholder">ไม่มีออเดอร์ที่พร้อมรับ</div>
+      <app-take-home-card
+        *ngFor="let order of readyOrders"
+        [order]="order"
+        (statusUpdated)="handleStatusUpdate($event)">
+      </app-take-home-card>
+    </div>
+  </div>
+</div>
+

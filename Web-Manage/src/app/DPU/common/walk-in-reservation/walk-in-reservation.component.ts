@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FlatpickrModule, FlatpickrDefaults } from 'angularx-flatpickr';
@@ -23,7 +23,8 @@ import { OrderFoodComponent } from '../order-food/order-food.component';
 import { MenusService } from '../../services/menu.service';
 import { RoomService } from '../../services/room.service';
 import { ViewBillComponent } from '../view-bill/view-bill.component';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject, timer } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ReservationService } from '../../services/reservation.service';
 @Component({
   selector: 'app-walk-in-reservation',
@@ -33,7 +34,7 @@ import { ReservationService } from '../../services/reservation.service';
   templateUrl: './walk-in-reservation.component.html',
   styleUrl: './walk-in-reservation.component.scss'
 })
-export class WalkInReservationComponent {
+export class WalkInReservationComponent implements OnInit, OnDestroy {
   availableTables: AvailableItem[] = [];
   availableRooms: AvailableItem[] = [];
   filteredAvailable: AvailableItem[] = []
@@ -48,18 +49,19 @@ export class WalkInReservationComponent {
   tableType = '';
   filterDate: string = '';
   maxDate: string = '';
-  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private roomService: RoomService, private reserveService: ReservationService) {
-    setInterval(() => {
-      this.getReservations();
-    }, 5000); // Refresh every 10 seconds
-
-  }
+  private destroy$ = new Subject<void>();
+  constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private roomService: RoomService, private reserveService: ReservationService) { }
 
   ngOnInit(): void {
     this.maxDate = this.getToday();
     this.filterDate = this.getToday();
     this.getTable();
-    this.getReservations();
+    this.startReservationRefresh();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   getToday(): string {
@@ -76,6 +78,14 @@ export class WalkInReservationComponent {
     this.tableType = '';
     this.getReservations();
     this.onTypeChange()
+  }
+
+  startReservationRefresh(): void {
+    timer(0, 5000).pipe( // Refresh every 5 seconds, and immediately at start
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.getReservations();
+    });
   }
 
 

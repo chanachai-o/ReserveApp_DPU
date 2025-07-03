@@ -64,6 +64,11 @@ export const admin: Routes = [
       loadComponent: () =>
         import('./take-home/take-home.component').then((m) => m.TakeHomeComponent),
     },
+    {
+      path: 'take-home-list',
+      loadComponent: () =>
+        import('./take-home-list/take-home-list.component').then((m) => m.TakeHomeListComponent),
+    },
 
     ]
   },

@@ -1,0 +1,35 @@
+<!-- src/app/DPU/staff/take-home-management/take-home-card.component.html -->
+<div class="order-card" [class.is-updating]="isUpdating">
+  <div class="order-card__header">
+    <div class="order-id">ออเดอร์ #{{ order.id }}</div>
+    <div class="order-time">{{ order.created_at | date:'HH:mm' }} น.</div>
+  </div>
+
+  <div class="order-card__customer">
+    <i class="ri-user-line"></i>
+    <span>{{ order.user.name }} ({{ order.user.phone }})</span>
+  </div>
+
+  <div class="order-card__items">
+    <ul>
+      <li *ngFor="let item of order.order_items">
+        {{ item.menu.name }} <span class="item-qty">x{{ item.quantity }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="order-card__footer">
+    <div class="total-amount">{{ order.total_amount | currency:'฿' }}</div>
+    <div class="action-buttons">
+      <button *ngIf="order.status === 'PENDING'" (click)="updateStatus('PREPARING')" class="btn btn-prepare">
+        <i class="ri-fire-line"></i> เริ่มเตรียม
+      </button>
+      <button *ngIf="order.status === 'PREPARING'" (click)="updateStatus('READY')" class="btn btn-ready">
+        <i class="ri-shopping-bag-3-line"></i> พร้อมรับ
+      </button>
+      <button *ngIf="order.status === 'READY'" (click)="updateStatus('COMPLETED')" class="btn btn-complete">
+        <i class="ri-check-double-line"></i> ลูกค้ารับแล้ว
+      </button>
+    </div>
+  </div>
+</div>

@@ -3,14 +3,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { TakeawayOrder, OrderStatus, OrderStatusUpdate } from './staff-take-home.models';
+import { OrderStatus, OrderStatusUpdate, TakeawayOrder } from '../models/staff-take-home.models';
+import { environment } from '../../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class StaffOrderService {
-  private apiUrl = `${environment.apiUrl}/api/orders`;
+  private apiUrl = `${environment.baseUrl}/api/orders`;
 
   constructor(private http: HttpClient) { }
 
