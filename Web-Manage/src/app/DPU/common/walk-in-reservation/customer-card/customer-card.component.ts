@@ -65,10 +65,10 @@ export class CustomerCardComponent {
       order.payments && order.payments.every(p => p.status === 'COMPLETED')
     );
 
-    // หรืออาจจะเช็คจากสถานะของ Reservation โดยตรง
-    if (this.occupied.status === 'COMPLETED') {
-      return 'COMPLETED';
-    }
+    // // หรืออาจจะเช็คจากสถานะของ Reservation โดยตรง
+    // if (this.occupied.status === 'COMPLETED') {
+    //   return 'COMPLETED';
+    // }
 
     return 'PENDING';
   }

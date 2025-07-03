@@ -89,36 +89,11 @@ export class PaymentCardComponent {
     );
 
     // หรืออาจจะเช็คจากสถานะของ Reservation โดยตรง
-    if (this.checkout.status === 'COMPLETED') {
-      return 'COMPLETED';
-    }
-
-    return 'PENDING';
-  }
-
-  getPaymentStatus(reservation: ReservationModel): { status: 'Paid' | 'Partial' | 'Unpaid'; paidAmount: number; totalAmount: number } {
-
-    // วิธีที่ 1: ตรวจสอบจากสถานะของการจองโดยตรง (ง่ายและแนะนำ)
-    // if (reservation.status === 'COMPLETED') {
-    //   const totalAmount = this.getTotalOrderAmount(reservation);
-    //   return { status: 'Paid', paidAmount: totalAmount, totalAmount: totalAmount };
+    // if (this.checkout.status === 'COMPLETED') {
+    //   return 'COMPLETED';
     // }
 
-    // วิธีที่ 2: คำนวณจากยอดชำระจริง (ละเอียดกว่า)
-    const totalAmount = this.getTotalOrderAmount(reservation);
-    const paidAmount = this.getTotalPaidAmount(reservation);
-
-    // if (totalAmount === 0) {
-    //   return { status: 'Unpaid', paidAmount: 0, totalAmount: 0 };
-    // }
-
-    if (paidAmount >= totalAmount) {
-      return { status: 'Paid', paidAmount: paidAmount, totalAmount: totalAmount };
-    } else if (paidAmount > 0) {
-      return { status: 'Partial', paidAmount: paidAmount, totalAmount: totalAmount };
-    } else {
-      return { status: 'Unpaid', paidAmount: 0, totalAmount: totalAmount };
-    }
+    return allPaid ? 'COMPLETED' : 'PENDING';
   }
 
   getTotalOrderAmount(reservation: ReservationModel): number {
@@ -142,6 +117,31 @@ export class PaymentCardComponent {
       }
     });
     return totalPaid;
+  }
+
+  getPaymentStatus(reservation: ReservationModel): { status: 'Paid' | 'Partial' | 'Unpaid'; paidAmount: number; totalAmount: number } {
+
+    // วิธีที่ 1: ตรวจสอบจากสถานะของการจองโดยตรง (ง่ายและแนะนำ)
+    // if (reservation.status === 'COMPLETED') {
+    //   const totalAmount = this.getTotalOrderAmount(reservation);
+    //   return { status: 'Paid', paidAmount: totalAmount, totalAmount: totalAmount };
+    // }
+
+    // วิธีที่ 2: คำนวณจากยอดชำระจริง (ละเอียดกว่า)
+    const totalAmount = this.getTotalOrderAmount(reservation);
+    const paidAmount = this.getTotalPaidAmount(reservation);
+
+    if (totalAmount === 0) {
+      return { status: 'Unpaid', paidAmount: 0, totalAmount: 0 };
+    }
+
+    if (paidAmount >= totalAmount) {
+      return { status: 'Paid', paidAmount: paidAmount, totalAmount: totalAmount };
+    } else if (paidAmount > 0) {
+      return { status: 'Partial', paidAmount: paidAmount, totalAmount: totalAmount };
+    } else {
+      return { status: 'Unpaid', paidAmount: 0, totalAmount: totalAmount };
+    }
   }
 
 }

@@ -1,7 +1,7 @@
 // src/app/DPU/staff/take-home-management/staff-take-home.models.ts
 
 // OrderStatus ควร import มาจากที่เดียวกับที่อื่นใช้
-export type OrderStatus = 'PENDING' | 'PREPARING' | 'READY' | 'COMPLETED' | 'CANCELLED';
+export type OrderStatus = 'PENDING' | 'PREPARING' | 'READY' | 'SERVED' | 'CANCELLED';
 
 // โครงสร้างข้อมูลเมนูในออเดอร์
 export interface OrderItemMenu {

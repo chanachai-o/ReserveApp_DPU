@@ -221,7 +221,7 @@ export class CustomerReservationPageComponent implements OnInit {
     this.showBillModal = false;
     // ส่ง formData ไป backend (POST /payments หรือแล้วแต่ API)
     this.http.post("http://127.0.0.1:8000/api/payments", {
-      "amount": this.getTotalOrderAmount(item),
+      "amount": 0,
       "payment_method": "",
       "slip_url": item.orders[0].payments[0].slip_url,
       "status": "PENDING",

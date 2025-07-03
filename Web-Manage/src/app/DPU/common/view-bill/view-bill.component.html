@@ -50,21 +50,21 @@
     <div>
       <div class="pay-info">
         <span class="pay-amount">{{ getTotalAmount() | number:'1.2-2' }} ฿</span>
-        <span class="pay-status" [ngClass]="reservation.orders.length == 0 || getOverallPaymentStatus()=='COMPLETED'
+        <span class="pay-status" [ngClass]="reservation.orders.length == 0 || getOverallPaymentStatus() === 'COMPLETED'
               ? 'pay-status-completed' : 'pay-status-waiting'">
-          {{ reservation.orders.length == 0 || getOverallPaymentStatus()=='COMPLETED'
-          ? 'ชำระแล้ว' : 'รอตรวจสอบ' }}
+          {{ reservation.orders.length == 0 || getOverallPaymentStatus() === 'COMPLETED'
+            ? 'ชำระแล้ว' : 'รอชำระ' }}
         </span>
       </div>
       <div class="slip-img-wrap" *ngIf="getSlipUrl()">
         <img  [src]="getSlipUrl()" alt="Slip Image" class="slip-img" />
       </div>
-      <div class="slip-upload-wrap" *ngIf="getPaymentStatus(reservation).status !== 'Paid'">
+      <div class="slip-upload-wrap" *ngIf="getOverallPaymentStatus() === 'PENDING'">
         <dropzone class="dropzone-container" [config]="config" [disabled]="disabled"
           [message]="'คลิกหรือวางไฟล์สลิปที่นี่เพื่ออัปโหลด'" (init)="onUploadInit($event)"
           (error)="onUploadError($event)" (success)="onUploadSuccess($event)">
         </dropzone>
-        <button type="button" class="ti-btn ti-btn-success ti-btn-xs mt-3 w-full" (click)="submitSlip()">
+        <button *ngIf="getOverallPaymentStatus() === 'PENDING'" type="button" class="ti-btn ti-btn-success ti-btn-xs mt-3 w-full" (click)="submitSlip()">
           <i class="ri-upload-cloud-2-line mr-1"></i> อัปโหลดสลิป
         </button>
       </div>
@@ -72,7 +72,7 @@
   </div>
 
   <!-- ปุ่มเช็คบิล สำหรับยังไม่เช็คบิล -->
-  <div *ngIf="getPaymentStatus(reservation).status !== 'Paid' && reservation.status=='CHECKED_IN'" class="bill-checkout-btn-wrap">
+  <div *ngIf="getOverallPaymentStatus() === 'PENDING' && reservation.status !== 'COMPLETED'" class="bill-checkout-btn-wrap">
     <button class="ti-btn ti-btn-success ti-btn-lg bill-checkout-btn" (click)="checkBill()"
       data-hs-overlay="#view-bill">
       <i class="ri-bill-line"></i> เช็คบิล/ชำระเงิน

@@ -12,14 +12,14 @@
         <div formArrayName="order_items" class="order-items-list">
           <div [formGroupName]="i" *ngFor="let item of items.controls; let i = index" class="order-item-card">
             <div class="order-item-img">
-              <img [src]="getImageUrl(menuById(item.value.menu_id)?.image_url ?? undefined)" alt="menu" />
+              <img [src]="getImageUrl(item.get('menu_id')?.value?.image_url)" alt="menu" />
             </div>
             <div class="order-item-info">
               <ng-select [items]="menuList" bindLabel="name" bindValue="id" [searchable]="true" formControlName="menu_id"
                 placeholder="เลือกเมนู" class="menu-select">
                 <ng-template ng-option-tmp let-item="item">
                   <span class="option-flex">
-                    <img [src]="getImageUrl(item.image_url)" class="option-img" alt="menu" width="100px" />
+                    <img [src]="getImageUrl(item.image_url)" class="option-img" alt="menu" />
                     <span>
                       {{item.name}}
                       <span class="option-price">({{item.price | number:'1.2-2'}} ฿)</span>
@@ -63,7 +63,7 @@
   <aside class="sidebar-content">
     <div class="history-card">
       <div class="history-header">
-        <h2 class="history-title">ประวัติการสั่งซื้อล่าสุด</h2>
+        <h2 class="history-title">สถานะออเดอร์ล่าสุด</h2>
         <button class="refresh-btn" (click)="getOrderHistory()" [disabled]="isLoadingHistory">
           <i class="ri-refresh-line" [class.spin]="isLoadingHistory"></i>
         </button>
@@ -87,8 +87,9 @@
             <div class="history-item__summary">
               {{ order.order_items.length }} รายการ · {{ order.total_amount | currency:'฿' }}
             </div>
-            <div class="history-item__status" [ngClass]="getStatusClass(order.status)">
-              {{ order.status }}
+            <div class="history-item__status" [ngClass]="getStatusInfo(order.status).cssClass">
+              <i [class]="getStatusInfo(order.status).icon"></i>
+              {{ getStatusInfo(order.status).text }}
             </div>
           </div>
         </li>

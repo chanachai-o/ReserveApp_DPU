@@ -151,7 +151,7 @@ async def get_order_by_id(
     return order
 
 
-@orders_router.post("/{order_id}/status", response_model=OrderOut)
+@orders_router.post("/orders/{order_id}/status", response_model=OrderOut)
 async def update_order_status(
     order_id: int,
     order_in: OrderUpdate,
@@ -194,7 +194,7 @@ async def update_order_status(
     return await get_full_order(order_id, db)
 
 
-@orders_router.delete("/{order_id}", status_code=status.HTTP_204_NO_CONTENT)
+@orders_router.delete("/orders/{order_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_order(
     order_id: int,
     db: AsyncSession = Depends(get_db)

@@ -27,7 +27,7 @@
       <button *ngIf="order.status === 'PREPARING'" (click)="updateStatus('READY')" class="btn btn-ready">
         <i class="ri-shopping-bag-3-line"></i> พร้อมรับ
       </button>
-      <button *ngIf="order.status === 'READY'" (click)="updateStatus('COMPLETED')" class="btn btn-complete">
+      <button *ngIf="order.status === 'READY'" (click)="updateStatus('SERVED')" class="btn btn-complete">
         <i class="ri-check-double-line"></i> ลูกค้ารับแล้ว
       </button>
     </div>

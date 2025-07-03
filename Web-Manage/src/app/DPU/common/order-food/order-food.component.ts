@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, OnInit, SimpleChanges, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MenusModel, Order, OrderItem } from '../../models/all.model';
+import { MenusModel, Order, OrderItem, OrderModel } from '../../models/all.model';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MenusService } from '../../services/menu.service';
 
@@ -17,7 +17,7 @@ export class OrderFoodComponent implements OnInit, OnChanges {
   @Input() reservationId!: number;
   menuList: MenusModel[] = [];
   @Input() orderItems?: OrderItem[] = []; // <-- เพิ่ม input ตรงนี้
-  @Output() submitOrder = new EventEmitter<any>();
+  @Output() submitOrder = new EventEmitter<OrderModel>();
   @Input() isStaff = false
 
   form!: FormGroup;

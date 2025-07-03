@@ -184,4 +184,22 @@ export class TakeHomeComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  getStatusInfo(status: string) {
+    switch (status) {
+      case 'PENDING':
+        return { text: 'รอดำเนินการ', icon: 'fa-solid fa-hourglass-start', cssClass: 'status-pending' };
+      case 'PREPARING':
+        return { text: 'กำลังทำอาหาร', icon: 'fa-solid fa-utensils', cssClass: 'status-preparing' };
+      case 'READY':
+        return { text: 'พร้อมเสิร์ฟ', icon: 'fa-solid fa-check-circle', cssClass: 'status-ready' };
+      case 'SERVED':
+      case 'COMPLETED':
+        return { text: 'เสิร์ฟแล้ว', icon: 'fa-solid fa-thumbs-up', cssClass: 'status-completed' };
+      case 'CANCELLED':
+        return { text: 'ยกเลิก', icon: 'fa-solid fa-ban', cssClass: 'status-cancelled' };
+      default:
+        return { text: 'ไม่ทราบสถานะ', icon: 'fa-solid fa-question-circle', cssClass: '' };
+    }
+  }
 }

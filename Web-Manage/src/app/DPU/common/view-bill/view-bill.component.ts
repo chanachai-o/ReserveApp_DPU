@@ -38,9 +38,10 @@ export class ViewBillComponent {
     maxFilesize: 5000
   };
   @Input() reservation!: ReservationModel;
-  @Output() uploadSlip = new EventEmitter<ReservationModel>();
+  @Output() uploadSlip = new EventEmitter<string>();
   @Output() checkOut = new EventEmitter<ReservationModel>();
   selectedFile?: File;
+  slipFileUrl: string = "";
   uploaderSlip: FileUploader | undefined;
   uploadErrorMsg: string = "";
   urlLink = environment.baseUrl + "/images/"
@@ -90,7 +91,6 @@ export class ViewBillComponent {
     ) => {
       if (item.isSuccess) {
         const res = JSON.parse(response);
-        console.log("res", res);
         this.reservation.orders[0].payments[0].slip_url = res.filename
         swal(res.message, "บันทึกสำเร็จ", "success");
 
@@ -108,13 +108,14 @@ export class ViewBillComponent {
       this.reservation = changes['reservation'].currentValue
     }
 
+
   }
 
   getSlipUrl(): string | null {
     // แก้ไข: ตรวจสอบให้แน่ใจว่าเข้าถึง payments array ได้ถูกต้อง
     const firstOrderWithPayment = this.reservation?.orders?.find(o => o.payments && o.payments.length > 0);
     const slipUrl = firstOrderWithPayment?.payments[0]?.slip_url;
-
+    console.log("Slip URL:", slipUrl);
     if (slipUrl) {
       // ตรวจสอบว่า slipUrl เป็น URL เต็มแล้วหรือยัง
       if (slipUrl.startsWith('http')) {
@@ -143,7 +144,7 @@ export class ViewBillComponent {
   }
 
   submitSlip() {
-    this.uploadSlip.emit(this.reservation);
+    this.uploadSlip.emit(this.slipFileUrl);
   }
 
   checkBill() {
@@ -159,8 +160,11 @@ export class ViewBillComponent {
   }
 
   public onUploadSuccess(args: any): void {
-    console.log('onUploadSuccess:', args);
-    this.reservation.orders[0].payments[0].slip_url = args[1].filename
+    // อัพเดต slip_url ใน reservation หลังจากอัพโหลดสำเร็จ
+    if (!this.reservation.orders || this.reservation.orders.length === 0) {
+      return;
+    }
+    this.slipFileUrl = args[1].filename
   }
 
   getPaymentStatus(reservation: ReservationModel): { status: 'Paid' | 'Partial' | 'Unpaid'; paidAmount: number; totalAmount: number } {
@@ -224,10 +228,10 @@ export class ViewBillComponent {
     );
 
     // หรืออาจจะเช็คจากสถานะของ Reservation โดยตรง
-    if (this.reservation.status === 'COMPLETED') {
-      return 'COMPLETED';
-    }
+    // if (this.reservation.status === 'COMPLETED') {
+    //   return 'COMPLETED';
+    // }
 
-    return 'PENDING';
+   return allPaid ? 'COMPLETED' : 'PENDING';
   }
 }

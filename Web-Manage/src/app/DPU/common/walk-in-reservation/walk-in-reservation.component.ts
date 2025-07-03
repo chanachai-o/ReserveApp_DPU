@@ -81,11 +81,12 @@ export class WalkInReservationComponent implements OnInit, OnDestroy {
   }
 
   startReservationRefresh(): void {
-    timer(0, 5000).pipe( // Refresh every 5 seconds, and immediately at start
-      takeUntil(this.destroy$)
-    ).subscribe(() => {
+    // timer(0, 5000).pipe( // Refresh every 5 seconds, and immediately at start
+    //   takeUntil(this.destroy$)
+    // ).subscribe(() => {
+    //   this.getReservations();
+    // });
       this.getReservations();
-    });
   }
 
 
@@ -262,11 +263,11 @@ export class WalkInReservationComponent implements OnInit, OnDestroy {
     // ส่ง formData ไป backend (POST /payments หรือแล้วแต่ API)
     // this.savePayment(item.orders[0].id);
     this.http.post("http://127.0.0.1:8000/api/payments", {
-      "amount": this.getTotalOrderAmount(item),
+      "amount": 0,
       "payment_method": "",
-      "slip_url": item.orders[0].payments[0].slip_url,
+      "slip_url": item,
       "status": "PENDING",
-      "order_id": item.orders[0].id
+      "order_id": this.reservation?.orders[0].id
     }).subscribe(result => {
       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
       this.ngOnInit()
@@ -324,16 +325,16 @@ export class WalkInReservationComponent implements OnInit, OnDestroy {
   }
 
   onVerifyPayment(item: any) {
-    console.log(item)
-    item.status = 'COMPLETED'
-    console.log(item)
-    this.http.put("http://127.0.0.1:8000/api/reservations/" + item.id, item).subscribe(result => {
-      console.log(result)
-      this.tableService.cancelReseave(item.table_id).subscribe(result => {
-        swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
-        this.ngOnInit()
-      })
-    })
+    // console.log(item)
+    // item.status = 'COMPLETED'
+    // console.log(item)
+    // this.http.put("http://127.0.0.1:8000/api/reservations/" + item.id, item).subscribe(result => {
+    //   console.log(result)
+    //   this.tableService.cancelReseave(item.table_id).subscribe(result => {
+    //     swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
+    //     this.ngOnInit()
+    //   })
+    // })
     this.http.post("http://127.0.0.1:8000/api/payments/" + item.orders[0].payments[0].id + "/verify", {
       "payment_id": item.orders[0].payments[0].id,
       "transaction_id": "string",

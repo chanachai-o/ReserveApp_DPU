@@ -231,7 +231,7 @@ class OrderOut(OrderBase):
 #                       Reservation Schemas
 # ================================================================
 class ReservationBase(BaseModel):
-    user_id: int
+    user_id: Optional[int] = None
     table_id: Optional[int] = None
     room_id: Optional[int] = None
     num_people: int = Field(..., gt=0)
