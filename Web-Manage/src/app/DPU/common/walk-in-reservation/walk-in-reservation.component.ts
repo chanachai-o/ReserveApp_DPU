@@ -49,6 +49,9 @@ export class WalkInReservationComponent {
   filterDate: string = '';
   maxDate: string = '';
   constructor(private tableService: TablesService, private http: HttpClient, private tokenService: TokenService, private roomService: RoomService, private reserveService: ReservationService) {
+    setInterval(() => {
+      this.getReservations();
+    }, 2000); // Refresh every 10 seconds
 
   }
 
