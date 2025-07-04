@@ -81,12 +81,12 @@ export class WalkInReservationComponent implements OnInit, OnDestroy {
   }
 
   startReservationRefresh(): void {
-    // timer(0, 5000).pipe( // Refresh every 5 seconds, and immediately at start
-    //   takeUntil(this.destroy$)
-    // ).subscribe(() => {
-    //   this.getReservations();
-    // });
-    this.getReservations();
+    timer(0, 10000).pipe( // Refresh every 5 seconds, and immediately at start
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.getReservations();
+    });
+    // this.getReservations();
   }
 
 
