@@ -34,7 +34,7 @@ async def upload_image(file: UploadFile = File(...)):
         content={
             "message": "File uploaded successfully",
             "filename": new_filename,
-            "path": f"/uploaded_images/{new_filename}",
+            "path": f"{new_filename}",
         },
     )
 
@@ -69,7 +69,7 @@ async def upload_image_base64(base64_image: str = Form(...)):
         content={
             "message": "File uploaded successfully",
             "filename": new_filename,
-            "path": f"/uploaded_images/{new_filename}",
+            "path": f"{new_filename}",
         },
     )
 

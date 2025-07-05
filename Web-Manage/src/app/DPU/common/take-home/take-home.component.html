@@ -46,6 +46,15 @@
         <span class="total-value">{{ getTotal() | number:'1.2-2' }} ฿</span>
       </div>
 
+      <div class="form-group">
+        <label for="slipUpload" class="order-label">แนบสลิปโอนเงิน (ถ้ามี)</label>
+        <input type="file" id="slipUpload" (change)="onFileSelected($event)" accept="image/jpeg, image/png, image/jpg" class="form-control-file">
+        <div *ngIf="uploadedSlipUrl" class="mt-2">
+          <p>สลิปที่อัปโหลด:</p>
+          <img [src]="getImageUrl(uploadedSlipUrl)" alt="Slip Image" class="img-thumbnail" style="max-width: 200px;">
+        </div>
+      </div>
+
       <div class="order-actions">
         <button type="submit" class="order-submit-btn" [disabled]="!form.valid || items.length < 1 || isSubmitting">
           <i class="ri-check-line"></i>
@@ -91,6 +100,10 @@
               <i [class]="getStatusInfo(order.status).icon"></i>
               {{ getStatusInfo(order.status).text }}
             </div>
+          </div>
+          <div *ngIf="order.payments && order.payments.length > 0 && order.payments[0].slip_url" class="history-item__slip">
+            <p>สลิปการชำระเงิน:</p>
+            <img [src]="getImageUrl(order.payments[0].slip_url)" alt="Slip" style="max-width: 100px; border-radius: 4px;">
           </div>
         </li>
       </ul>

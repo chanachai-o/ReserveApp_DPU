@@ -180,7 +180,7 @@ class PaymentBase(BaseModel):
     status: Optional[PaymentStatus] = PaymentStatus.PENDING
 
 class PaymentCreate(PaymentBase):
-    order_id: int
+    pass
 
 class PaymentUpdate(BaseModel):
     status: Optional[PaymentStatus] = None
@@ -212,6 +212,7 @@ class OrderBase(BaseModel):
 
 class OrderCreate(OrderBase):
     order_items: List[OrderItemCreate]
+    payment: Optional[PaymentCreate] = None
 
 class OrderUpdate(BaseModel):
     status: Optional[OrderStatus] = None
@@ -313,3 +314,4 @@ class TakeawayOrderCreate(BaseModel):
     customer_phone: str
     order_items: List[OrderItemCreate]
     expected_pickup_time: Optional[datetime] = None
+    payment: Optional[PaymentCreate] = None # New field for payment details, including slip_url

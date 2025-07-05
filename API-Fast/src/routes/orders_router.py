@@ -10,7 +10,8 @@ from decimal import Decimal
 # --- Local Imports ---
 from ..config.database import get_db
 # เพิ่ม Notification model เข้ามา
-from ..models import Order, OrderItem, Reservation, Menu, User, OrderStatus, MenuCategory, Notification
+from ..models import Order, OrderItem, Reservation, Menu, User, OrderStatus, MenuCategory, Notification, Payment
+from ..schemas import OrderCreate, OrderUpdate, OrderOut, PaymentCreate
 from ..schemas import OrderCreate, OrderUpdate, OrderOut
 # from ..middlewares.auth_middleware import require_role
 
@@ -90,7 +91,18 @@ async def create_new_order(
 
     db.add_all(order_item_objects)
     db_order.total_amount = total_amount
-    
+
+    # Handle payment if provided
+    if order_in.payment:
+        db_payment = Payment(
+            order_id=db_order.id,
+            amount=order_in.payment.amount,
+            payment_method=order_in.payment.payment_method,
+            slip_url=order_in.payment.slip_url,
+            status=order_in.payment.status
+        )
+        db.add(db_payment)
+
     # --- เพิ่มการสร้าง Notification ---
     notification_for_customer = Notification(
         user_id=db_order.user_id,

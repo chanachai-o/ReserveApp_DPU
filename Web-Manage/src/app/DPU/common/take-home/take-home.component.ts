@@ -7,11 +7,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { finalize, Subject, takeUntil, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-
+import { HttpClient } from '@angular/common/http'; // Import HttpClient
 
 import { MenusModel, Order } from '../../models/all.model';
 import { UserProfileModel } from '../../models/user.model';
-import { OrderCreatePayload, OrderHistoryItem } from '../../models/take-home.models';
+import { OrderCreatePayload, OrderHistoryItem, PaymentCreate, PaymentStatus } from '../../models/take-home.models'; // Import PaymentCreate and PaymentStatus
 import { TakeHomeService } from '../../services/take-home.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { TokenService } from '../../../shared/services/token.service';
@@ -35,6 +35,8 @@ export class TakeHomeComponent implements OnInit, OnDestroy {
   isLoadingMenu = true;
   isSubmitting = false;
   isLoadingHistory = true;
+  selectedSlipFile: File | null = null; // To store the selected file
+  uploadedSlipUrl: string | null = null; // To store the URL of the uploaded slip
 
   private destroy$ = new Subject<void>();
   private statusRefreshTimer$ = timer(0, 30000); // รีเฟรชสถานะทุก 30 วินาที
@@ -42,7 +44,8 @@ export class TakeHomeComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private takeHomeService: TakeHomeService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private http: HttpClient // Inject HttpClient
   ) { }
 
   ngOnInit(): void {
@@ -76,7 +79,9 @@ export class TakeHomeComponent implements OnInit, OnDestroy {
 
     this.takeHomeService.getOrderHistory(this.currentUser.id).pipe(
       finalize(() => this.isLoadingHistory = false)
-    ).subscribe(history => this.orderHistory = history);
+    ).subscribe(history => {
+      this.orderHistory = history
+    });
   }
 
   startStatusRefresh(): void {
@@ -88,14 +93,19 @@ export class TakeHomeComponent implements OnInit, OnDestroy {
         }
         return [];
       })
-    ).subscribe(history => this.orderHistory = history);
+    ).subscribe(history => this.orderHistory = history.filter(order => order.reservation_id== undefined));
   }
 
   // --- Form Management ---
   initForm(): void {
     this.form = this.fb.group({
-      order_items: this.fb.array([this.createItem()])
+      order_items: this.fb.array([this.createItem()]),
+      customer_name: [this.currentUser?.name || '', Validators.required],
+      customer_phone: [this.currentUser?.phone || '', Validators.required],
+      expected_pickup_time: [null] // New field for pickup time
     });
+    this.selectedSlipFile = null;
+    this.uploadedSlipUrl = null;
   }
 
   get items(): FormArray {
@@ -117,6 +127,41 @@ export class TakeHomeComponent implements OnInit, OnDestroy {
     if (this.items.length > 1) {
       this.items.removeAt(index);
     }
+  }
+
+  // --- File Upload ---
+  onFileSelected(event: Event): void {
+    const element = event.currentTarget as HTMLInputElement;
+    let fileList: FileList | null = element.files;
+    if (fileList && fileList.length > 0) {
+      this.selectedSlipFile = fileList[0];
+      this.uploadSlipImage();
+    } else {
+      this.selectedSlipFile = null;
+      this.uploadedSlipUrl = null;
+    }
+  }
+
+  uploadSlipImage(): void {
+    if (!this.selectedSlipFile) return;
+
+    const formData = new FormData();
+    formData.append('file', this.selectedSlipFile, this.selectedSlipFile.name);
+
+    this.http.post<any>(`${environment.baseUrl}/api/files/upload-image/`, formData).pipe(
+      finalize(() => { /* Optional: handle loading state */ })
+    ).subscribe({
+      next: (response) => {
+        this.uploadedSlipUrl = response.path; // Store the URL returned by the backend
+        swal("Upload Success!", "อัปโหลดสลิปสำเร็จ", "success");
+      },
+      error: (err) => {
+        console.error("Slip upload failed:", err);
+        swal("Upload Failed!", `เกิดข้อผิดพลาดในการอัปโหลดสลิป: ${err.error?.detail || 'ไม่สามารถอัปโหลดไฟล์ได้'}`, "error");
+        this.selectedSlipFile = null;
+        this.uploadedSlipUrl = null;
+      }
+    });
   }
 
   // --- UI Logic ---
@@ -163,8 +208,22 @@ export class TakeHomeComponent implements OnInit, OnDestroy {
     const formValue = this.form.getRawValue();
     const payload: OrderCreatePayload = {
       user_id: this.currentUser.id,
-      order_items: formValue.order_items
+      customer_name: formValue.customer_name,
+      customer_phone: formValue.customer_phone,
+      order_items: formValue.order_items,
+      expected_pickup_time: formValue.expected_pickup_time
     };
+
+    // Add payment details if a slip was uploaded
+    if (this.uploadedSlipUrl) {
+      const payment: PaymentCreate = {
+        amount: this.getTotal(), // Assuming total amount is the payment amount
+        payment_method: 'transfer', // Or allow user to select
+        slip_url: this.uploadedSlipUrl,
+        status: PaymentStatus.COMPLETED // Assuming payment is completed upon slip upload
+      };
+      payload.payment = payment;
+    }
 
     this.takeHomeService.submitOrder(payload).pipe(
       finalize(() => this.isSubmitting = false)
@@ -203,3 +262,4 @@ export class TakeHomeComponent implements OnInit, OnDestroy {
     }
   }
 }
+

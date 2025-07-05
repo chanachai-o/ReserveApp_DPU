@@ -18,6 +18,11 @@
     </ul>
   </div>
 
+  <div *ngIf="order.payments && order.payments.length > 0 && order.payments[0].slip_url" class="history-item__slip">
+    <p>สลิปการชำระเงิน:</p>
+    <img [src]="getImageUrl(order.payments[0].slip_url)" alt="Slip" style="max-width: 100px; border-radius: 4px;">
+  </div>
+
   <div class="order-card__footer">
     <div class="total-amount">{{ order.total_amount | currency:'฿' }}</div>
     <div class="action-buttons">

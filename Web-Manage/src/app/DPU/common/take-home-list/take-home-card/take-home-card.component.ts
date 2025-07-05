@@ -5,6 +5,7 @@ import { finalize } from 'rxjs/operators';
 import { StaffOrderService } from '../../../services/staff-order.service';
 import { OrderStatus, TakeawayOrder } from '../../../models/staff-take-home.models';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-take-home-card',
@@ -19,7 +20,7 @@ export class TakeHomeCardComponent {
 
   isUpdating = false;
 
-  constructor(private staffOrderService: StaffOrderService) {}
+  constructor(private staffOrderService: StaffOrderService) { }
 
   updateStatus(newStatus: OrderStatus): void {
     if (this.isUpdating) return;
@@ -36,5 +37,10 @@ export class TakeHomeCardComponent {
           alert('เกิดข้อผิดพลาดในการอัปเดตสถานะ');
         }
       });
+  }
+
+  getImageUrl(path?: string): string {
+    if (!path) return 'https://placehold.co/100x100/e2e8f0/64748b?text=No+Image';
+    return path.startsWith('http') ? path : `${environment.baseUrl}/images/${path}`;
   }
 }

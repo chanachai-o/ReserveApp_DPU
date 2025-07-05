@@ -48,9 +48,12 @@ export class TakeHomeListComponent implements OnInit, OnDestroy {
   }
 
   filterOrdersByStatus(orders: TakeawayOrder[]): void {
-    this.pendingOrders = orders.filter(o => o.status === 'PENDING').sort((a,b) => +new Date(a.created_at) - +new Date(b.created_at));
-    this.preparingOrders = orders.filter(o => o.status === 'PREPARING').sort((a,b) => +new Date(a.created_at) - +new Date(b.created_at));
-    this.readyOrders = orders.filter(o => o.status === 'READY').sort((a,b) => +new Date(a.created_at) - +new Date(b.created_at));
+    this.pendingOrders = orders.filter(o => o.status === 'PENDING' && !o.reservation_id).sort((a,b) => +new Date(a.created_at) - +new Date(b.created_at));
+    this.preparingOrders = orders.filter(o => o.status === 'PREPARING' && !o.reservation_id).sort((a,b) => +new Date(a.created_at) - +new Date(b.created_at));
+    this.readyOrders = orders.filter(o => o.status === 'READY' && !o.reservation_id).sort((a,b) => +new Date(a.created_at) - +new Date(b.created_at));
+    console.log('Pending Orders:', this.pendingOrders);
+    console.log('Preparing Orders:', this.preparingOrders);
+    console.log('Ready Orders:', this.readyOrders);
   }
 
   handleStatusUpdate(orderId: number): void {
