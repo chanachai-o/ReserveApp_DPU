@@ -69,6 +69,7 @@ export class CustomerRegisterComponent {
         user.phone = phone;
         user.password = password;
         user.name = name || `ลูกค้า${phone.slice(-4)}`;
+        user.is_active = true;
         this.authService.registerCustomer(user).subscribe(result => {
           if (result) {
             this.tokenService.saveToken(result);
