@@ -224,7 +224,7 @@ export class CustomerReservationPageComponent implements OnInit {
       "amount": 0,
       "payment_method": "",
       "slip_url": item,
-      "status": "PENDING",
+      "status": "COMPLETED",
       "order_id": this.selectedBillRes?.orders[0].id
     }).subscribe(result => {
       swal("Save Success!!", "บันทึกข้อมูลสำเร็จ", "success");
