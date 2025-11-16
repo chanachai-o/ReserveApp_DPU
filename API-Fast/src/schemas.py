@@ -180,6 +180,7 @@ class PaymentBase(BaseModel):
     status: Optional[PaymentStatus] = PaymentStatus.PENDING
 
 class PaymentCreate(PaymentBase):
+    order_id: Optional[int] = None  # อาจจะไม่ต้องระบุ order_id ในการสร้าง Payment ใหม่
     pass
 
 class PaymentUpdate(BaseModel):
